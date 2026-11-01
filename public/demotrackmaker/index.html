@@ -190,6 +190,14 @@
   .fx-top select, #fxDlg select { padding: 5px 6px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); }
   .fx-note { font-size: 12px; margin: 4px 0 0; }
   #nameDlg, #mixDlg { width: min(460px, calc(100vw - 32px)); }
+  #posDlg { width: min(520px, calc(100vw - 32px)); }
+  .pos-value { margin: 0 0 10px; color: var(--muted); }
+  .pos-value b { color: var(--fg); font-variant-numeric: tabular-nums; }
+  .pos-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; margin-bottom: 10px; }
+  .pos-grid button { padding: 6px 4px; font-variant-numeric: tabular-nums; }
+  .pos-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .pos-row label { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--muted); }
+  .pos-row input { width: 110px; padding: 6px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); font-variant-numeric: tabular-nums; }
   .mix-opts { display: grid; gap: 8px; margin-bottom: 10px; }
   .mix-opt { display: flex; gap: 10px; align-items: flex-start; border: 1px solid var(--line); border-radius: 10px; padding: 10px; cursor: pointer; }
   .mix-opt:has(input:checked) { border-color: var(--fg); box-shadow: 0 0 0 1px var(--fg) inset; }
@@ -370,6 +378,21 @@
   </fieldset>
   <div class="acts"><button data-close data-i18n="dlg.close">Close</button></div>
 </dialog>
+<dialog id="posDlg" tabindex="-1" aria-labelledby="posTitle">
+  <h2 id="posTitle">Position</h2>
+  <p class="pos-value"><span data-i18n="pos.start">Starts at</span> <b id="posValue"></b></p>
+  <div class="pos-grid">
+    <button data-nudge="-1,bar" data-i18n="pos.mBar">−1 bar</button><button data-nudge="-1,beat" data-i18n="pos.mBeat">−1 beat</button><button data-nudge="-10,ms">−10 ms</button><button data-nudge="-1,ms">−1 ms</button>
+    <button data-nudge="1,ms">+1 ms</button><button data-nudge="10,ms">+10 ms</button><button data-nudge="1,beat" data-i18n="pos.pBeat">+1 beat</button><button data-nudge="1,bar" data-i18n="pos.pBar">+1 bar</button>
+  </div>
+  <div class="pos-row">
+    <label><span data-i18n="pos.ms">Offset (ms)</span> <input id="posMs" type="number" step="1" min="-600000" max="600000" /></label>
+    <button id="posZero" data-i18n="pos.zero">Back to 0</button>
+    <button id="posLoop" class="toggle" aria-pressed="false">Loop</button>
+  </div>
+  <p class="fx-note" data-i18n="pos.note">+ moves the audio later, − earlier. Audio moved before 0 s is not played. The recorded file itself is not changed.</p>
+  <div class="acts"><button data-close data-i18n="dlg.close">Close</button></div>
+</dialog>
 <dialog id="mixDlg" tabindex="-1" aria-labelledby="mixTitle">
   <h2 id="mixTitle" data-i18n="mix.title">Mixdown</h2>
   <div class="mix-opts" role="radiogroup" data-i18n-attr="aria-label:mix.format">
@@ -422,7 +445,7 @@
 const I18N = {
   en: {
     "menu.settings": "Settings", "menu.help": "How to use",
-    "song.title": "Chords & backing", "mix.title": "Mixdown", "mix.format": "File format", "mix.wav": "Uncompressed, best quality (16-bit stereo). Larger files.", "mix.mp3": "Small files for sharing and listening on phones.", "mix.kbps": "Quality", "mix.ok": "Next", "mix.encoding": "Converting to MP3…", "mix.lameFail": "Could not load the MP3 encoder. Connect to the internet and try again, or choose WAV.", "name.title": "File name", "name.ok": "Export", "name.hint": "The file goes to your browser's download folder.", "fx.title": "Effects: {name}", "fx.open": "Effects for {name}", "fx.preset": "Preset", "fx.custom": "(custom)", "fx.dyn": "Compressor / drive", "fx.sends": "Reverb / delay (amount sent)", "fx.shared": "Shared by all tracks", "fx.revLen": "Reverb length", "fx.dlyNote": "Delay time", "fx.dlyFb": "Delay repeats", "fx.note": "The delay follows the tempo. Double-click a slider to reset it.", "fx.low": "Low (120 Hz)", "fx.mid": "Mid", "fx.mf": "Mid frequency", "fx.high": "High (8 kHz)", "fx.comp": "Compressor", "fx.drive": "Drive (distortion)", "fx.rev": "Reverb", "fx.dly": "Delay", "view.label": "View", "view.out": "Zoom out", "view.in": "Zoom in", "view.fit": "Whole song", "view.hint": "Pinch or Ctrl + wheel to zoom, drag to scroll, tap to move the playhead", "song.moved": "Moved bar {from} to position {to}.", "song.grip": "Move bar {n} (drag, long-press, or arrow keys)", "song.variation": "Variation", "song.reseed": "Another take", "song.reseeded": "Picked a different set of variations.", "song.ending": "Ending", "ed.varNote": "Automatic variations are not shown here; they are added on top of the pattern.", "ed.varBar": "Shows what plays, including automatic variations.", "song.bounce": "Backing → audio track", "part.bounce": "Render this part to an audio track", "msg.bounced": "Rendered “{name}” to an audio track and muted the original part.", "msg.noBacking": "The backing is off or has no notes.", "tk.bounced": "{name} (rendered)", "tk.backing": "Backing", "song.on": "Backing on", "song.offLabel": "Backing off", "song.bars": "Bars", "song.barsLess": "Remove a bar", "song.barsMore": "Add a bar",
+    "song.title": "Chords & backing", "pos.menu": "Adjust position…", "pos.title": "Position: {name}", "pos.start": "Starts at", "pos.beats": "beats", "pos.mBar": "−1 bar", "pos.mBeat": "−1 beat", "pos.pBeat": "+1 beat", "pos.pBar": "+1 bar", "pos.ms": "Offset (ms)", "pos.zero": "Back to 0", "pos.loop": "▶ Loop bar {n}", "pos.note": "+ moves the audio later, − earlier. Audio moved before 0 s is not played. The recorded file itself is not changed.", "mix.title": "Mixdown", "mix.format": "File format", "mix.wav": "Uncompressed, best quality (16-bit stereo). Larger files.", "mix.mp3": "Small files for sharing and listening on phones.", "mix.kbps": "Quality", "mix.ok": "Next", "mix.encoding": "Converting to MP3…", "mix.lameFail": "Could not load the MP3 encoder. Connect to the internet and try again, or choose WAV.", "name.title": "File name", "name.ok": "Export", "name.hint": "The file goes to your browser's download folder.", "fx.title": "Effects: {name}", "fx.open": "Effects for {name}", "fx.preset": "Preset", "fx.custom": "(custom)", "fx.dyn": "Compressor / drive", "fx.sends": "Reverb / delay (amount sent)", "fx.shared": "Shared by all tracks", "fx.revLen": "Reverb length", "fx.dlyNote": "Delay time", "fx.dlyFb": "Delay repeats", "fx.note": "The delay follows the tempo. Double-click a slider to reset it.", "fx.low": "Low (120 Hz)", "fx.mid": "Mid", "fx.mf": "Mid frequency", "fx.high": "High (8 kHz)", "fx.comp": "Compressor", "fx.drive": "Drive (distortion)", "fx.rev": "Reverb", "fx.dly": "Delay", "view.label": "View", "view.out": "Zoom out", "view.in": "Zoom in", "view.fit": "Whole song", "view.hint": "Pinch or Ctrl + wheel to zoom, drag to scroll, tap to move the playhead", "song.moved": "Moved bar {from} to position {to}.", "song.grip": "Move bar {n} (drag, long-press, or arrow keys)", "song.variation": "Variation", "song.reseed": "Another take", "song.reseeded": "Picked a different set of variations.", "song.ending": "Ending", "ed.varNote": "Automatic variations are not shown here; they are added on top of the pattern.", "ed.varBar": "Shows what plays, including automatic variations.", "song.bounce": "Backing → audio track", "part.bounce": "Render this part to an audio track", "msg.bounced": "Rendered “{name}” to an audio track and muted the original part.", "msg.noBacking": "The backing is off or has no notes.", "tk.bounced": "{name} (rendered)", "tk.backing": "Backing", "song.on": "Backing on", "song.offLabel": "Backing off", "song.bars": "Bars", "song.barsLess": "Remove a bar", "song.barsMore": "Add a bar",
     "song.swing": "Swing", "song.humanize": "Feel", "song.text": "Type as text…", "song.undo": "Undo edit", "song.chords": "Chords",
     "song.noFill": "No fill", "song.fillOf": "Drum fill in bar {n}", "song.chordAt": "Chord, bar {bar} beat {beat}", "song.editBar": "Edit", "song.editBarN": "Edit notes in bar {n}",
     "song.badChord": "Unknown chord name (examples: C, Am7, F#m7b5, G7sus4, C/E)", "song.textTitle": "Chords as text", "song.apply": "Apply", "song.textEmpty": "No bars found. Write bars like | C | G |",
@@ -459,7 +482,7 @@ const I18N = {
     "lat.body": "What you record reaches the browser a little later than what you hear. Demo Track Maker moves each new take earlier by this amount so it lines up with the other tracks. If takes sound late, increase it; if early, decrease it.",
     "lat.label": "Offset (ms)", "lat.auto": "Auto", "lat.info": "Auto estimate on this device: {ms} ms (output {out} ms + input {inp} ms + processing {proc} ms)",
     "help.title": "How to use",
-    "help.body": "<ol><li>Type chords in <b>Chords &amp; backing</b> (one box per beat; an empty box keeps the previous chord). Bass, piano and drums play along automatically. Pick a pattern and a sound for each part, and choose a drum fill for any bar.</li><li><b>Backing as MIDI</b> saves bass, piano and drums as a standard MIDI file (with tempo, time signature and chord names as markers) to open in a DAW. <b>Backing → audio track</b> (or ⋯ on a part) renders the backing into a recorded track, so you can edit or export it like any take.</li><li><b>Variation</b> makes the band play like people do: bass runs into the next chord, the piano anticipates chord changes and adds colour notes, the drums add crashes, open hi-hats, ghost notes and short lead-ins at the end of 4- and 8-bar phrases. <b>Another take</b> picks a different set; set Variation to 0 for the plain pattern. <b>Ending</b> stops the band on the first beat of the last bar.</li><li>To change single notes, press <b>Edit</b> on a part (or double-tap its lane). Choose <b>Whole pattern</b> to change every bar, or <b>This bar only</b>.</li><li>Press <b>R</b> on a track to arm it (the browser asks for the microphone the first time).</li><li>Press <b>●</b> to record. With Count-in on, one bar of clicks plays first. Use headphones so other tracks do not leak into the microphone.</li><li>Press <b>■</b> to stop. Recording again on the same track replaces only the recorded range. <b>Undo</b> brings back the previous take.</li><li><b>FX</b> on each track and part opens its effects: EQ, compressor, drive, and how much goes to the shared reverb and tempo-synced delay. Presets (vocal, acoustic, crunch guitar …) are a starting point.</li><li>Each part has a <b>Sound</b> menu: 8 bass sounds (finger, pick, slap, muted, upright, synth, analog synth, 808) and 6 drum kits (standard, rock, brushes, 808, 909, lo-fi). Drums also have clap, tambourine, shaker and cowbell.</li><li>Tap the timeline to move the playhead (■ always goes back to the start). Pinch, Ctrl + wheel or − / + to zoom, drag or scroll sideways to move along; during playback the view follows the playhead. Drag a bar in the chord chart (long-press on a touch screen, or ⠿ and the arrow keys) to move it.</li><li>Your work is saved in this browser automatically. To keep it safe or move it to another device, use <b>Export project (.zip)</b> and later <b>Open project…</b>. When exporting you choose the file name (the project name by default); in Chrome / Edge on a computer you also choose the folder. The zip contains <code>project.json</code> (settings) and one WAV file per track.</li></ol>",
+    "help.body": "<ol><li>Type chords in <b>Chords &amp; backing</b> (one box per beat; an empty box keeps the previous chord). Bass, piano and drums play along automatically. Pick a pattern and a sound for each part, and choose a drum fill for any bar.</li><li><b>Backing as MIDI</b> saves bass, piano and drums as a standard MIDI file (with tempo, time signature and chord names as markers) to open in a DAW. <b>Backing → audio track</b> (or ⋯ on a part) renders the backing into a recorded track, so you can edit or export it like any take.</li><li><b>Variation</b> makes the band play like people do: bass runs into the next chord, the piano anticipates chord changes and adds colour notes, the drums add crashes, open hi-hats, ghost notes and short lead-ins at the end of 4- and 8-bar phrases. <b>Another take</b> picks a different set; set Variation to 0 for the plain pattern. <b>Ending</b> stops the band on the first beat of the last bar.</li><li>To change single notes, press <b>Edit</b> on a part (or double-tap its lane). Choose <b>Whole pattern</b> to change every bar, or <b>This bar only</b>.</li><li>Press <b>R</b> on a track to arm it (the browser asks for the microphone the first time).</li><li>Press <b>●</b> to record. With Count-in on, one bar of clicks plays first. Use headphones so other tracks do not leak into the microphone.</li><li>Press <b>■</b> to stop. Recording again on the same track replaces only the recorded range. <b>Undo</b> brings back the previous take.</li><li><b>FX</b> on each track and part opens its effects: EQ, compressor, drive, and how much goes to the shared reverb and tempo-synced delay. Presets (vocal, acoustic, crunch guitar …) are a starting point.</li><li>To line up an imported or recorded take, use ⋯ → <b>Adjust position…</b> on the track: move it by 1 ms, 10 ms, a beat or a bar, or type the offset, while looping the bar.</li><li>Each part has a <b>Sound</b> menu: 8 bass sounds (finger, pick, slap, muted, upright, synth, analog synth, 808) and 6 drum kits (standard, rock, brushes, 808, 909, lo-fi). Drums also have clap, tambourine, shaker and cowbell.</li><li>Tap the timeline to move the playhead (■ always goes back to the start). Pinch, Ctrl + wheel or − / + to zoom, drag or scroll sideways to move along; during playback the view follows the playhead. Drag a bar in the chord chart (long-press on a touch screen, or ⠿ and the arrow keys) to move it.</li><li>Your work is saved in this browser automatically. To keep it safe or move it to another device, use <b>Export project (.zip)</b> and later <b>Open project…</b>. When exporting you choose the file name (the project name by default); in Chrome / Edge on a computer you also choose the folder. The zip contains <code>project.json</code> (settings) and one WAV file per track.</li></ol>",
     "privacy.title": "Privacy",
     "privacy.body": "<p>Audio is recorded and processed only on your device. Nothing you record is sent to any server.</p><p>Your project (settings and audio) is kept in this browser's storage (IndexedDB) so you can continue after reloading. “Clear all” deletes it. Exported files are saved only where you choose.</p><p>Only when you choose MP3 for a mixdown, the MP3 encoder (lamejs) is downloaded once from jsDelivr (cdn.jsdelivr.net), which receives your IP address like any website. Your audio is not sent: the conversion runs on your device.</p>",
     "about.title": "About this app",
@@ -469,7 +492,7 @@ const I18N = {
   },
   ja: {
     "menu.settings": "設定", "menu.help": "使い方",
-    "song.title": "コードと伴奏", "mix.title": "ミックスダウン", "mix.format": "ファイル形式", "mix.wav": "無圧縮で最高音質（16bit ステレオ）。ファイルは大きめ。", "mix.mp3": "ファイルが小さく、共有やスマホで聞くのに向く。", "mix.kbps": "音質", "mix.ok": "次へ", "mix.encoding": "MP3 に変換中…", "mix.lameFail": "MP3 の変換部品を読み込めませんでした。ネットにつないでもう一度試すか、WAV を選んでください。", "name.title": "ファイル名", "name.ok": "書き出す", "name.hint": "ブラウザのダウンロード先に保存されます。", "fx.title": "エフェクト: {name}", "fx.open": "{name}のエフェクト", "fx.preset": "プリセット", "fx.custom": "（調整済み）", "fx.dyn": "コンプ・歪み", "fx.sends": "リバーブ・ディレイ（送る量）", "fx.shared": "全トラック共通", "fx.revLen": "リバーブの長さ", "fx.dlyNote": "ディレイの間隔", "fx.dlyFb": "ディレイの繰り返し", "fx.note": "ディレイの間隔はテンポに合わせます。つまみをダブルクリックすると元に戻ります。", "fx.low": "低音（120 Hz）", "fx.mid": "中音", "fx.mf": "中音の周波数", "fx.high": "高音（8 kHz）", "fx.comp": "コンプレッサー", "fx.drive": "歪み（ドライブ）", "fx.rev": "リバーブ", "fx.dly": "ディレイ", "view.label": "表示", "view.out": "縮小", "view.in": "拡大", "view.fit": "全体", "view.hint": "ピンチ・Ctrl＋ホイールで拡大縮小、ドラッグで左右に移動、タップで再生位置", "song.moved": "{from} 小節目を {to} 番目に移動しました。", "song.grip": "{n} 小節目を移動（ドラッグ・長押し・矢印キー）", "song.variation": "バリエーション", "song.reseed": "別の案", "song.reseeded": "バリエーションの組み合わせを変えました。", "song.ending": "エンディング", "ed.varNote": "自動のバリエーションはここには出ません（パターンの上に足されます）。", "ed.varBar": "自動のバリエーションも含めて、実際に鳴る音を表示しています。", "song.bounce": "伴奏を音声トラックに", "part.bounce": "このパートを音声トラックに書き出す", "msg.bounced": "「{name}」を音声トラックに書き出し、元のパートはミュートしました。", "msg.noBacking": "伴奏がオフか、音がありません。", "tk.bounced": "{name}（書き出し）", "tk.backing": "伴奏", "song.on": "伴奏オン", "song.offLabel": "伴奏オフ", "song.bars": "小節", "song.barsLess": "小節を減らす", "song.barsMore": "小節を増やす",
+    "song.title": "コードと伴奏", "pos.menu": "位置を調整…", "pos.title": "位置の調整: {name}", "pos.start": "開始位置", "pos.beats": "拍", "pos.mBar": "−1 小節", "pos.mBeat": "−1 拍", "pos.pBeat": "+1 拍", "pos.pBar": "+1 小節", "pos.ms": "ずらす量（ミリ秒）", "pos.zero": "0 に戻す", "pos.loop": "▶ {n} 小節目を繰り返し", "pos.note": "+ で後ろ、− で前に動きます。0 秒より前に出た部分は鳴りません。音声ファイルそのものは変わりません。", "mix.title": "ミックスダウン", "mix.format": "ファイル形式", "mix.wav": "無圧縮で最高音質（16bit ステレオ）。ファイルは大きめ。", "mix.mp3": "ファイルが小さく、共有やスマホで聞くのに向く。", "mix.kbps": "音質", "mix.ok": "次へ", "mix.encoding": "MP3 に変換中…", "mix.lameFail": "MP3 の変換部品を読み込めませんでした。ネットにつないでもう一度試すか、WAV を選んでください。", "name.title": "ファイル名", "name.ok": "書き出す", "name.hint": "ブラウザのダウンロード先に保存されます。", "fx.title": "エフェクト: {name}", "fx.open": "{name}のエフェクト", "fx.preset": "プリセット", "fx.custom": "（調整済み）", "fx.dyn": "コンプ・歪み", "fx.sends": "リバーブ・ディレイ（送る量）", "fx.shared": "全トラック共通", "fx.revLen": "リバーブの長さ", "fx.dlyNote": "ディレイの間隔", "fx.dlyFb": "ディレイの繰り返し", "fx.note": "ディレイの間隔はテンポに合わせます。つまみをダブルクリックすると元に戻ります。", "fx.low": "低音（120 Hz）", "fx.mid": "中音", "fx.mf": "中音の周波数", "fx.high": "高音（8 kHz）", "fx.comp": "コンプレッサー", "fx.drive": "歪み（ドライブ）", "fx.rev": "リバーブ", "fx.dly": "ディレイ", "view.label": "表示", "view.out": "縮小", "view.in": "拡大", "view.fit": "全体", "view.hint": "ピンチ・Ctrl＋ホイールで拡大縮小、ドラッグで左右に移動、タップで再生位置", "song.moved": "{from} 小節目を {to} 番目に移動しました。", "song.grip": "{n} 小節目を移動（ドラッグ・長押し・矢印キー）", "song.variation": "バリエーション", "song.reseed": "別の案", "song.reseeded": "バリエーションの組み合わせを変えました。", "song.ending": "エンディング", "ed.varNote": "自動のバリエーションはここには出ません（パターンの上に足されます）。", "ed.varBar": "自動のバリエーションも含めて、実際に鳴る音を表示しています。", "song.bounce": "伴奏を音声トラックに", "part.bounce": "このパートを音声トラックに書き出す", "msg.bounced": "「{name}」を音声トラックに書き出し、元のパートはミュートしました。", "msg.noBacking": "伴奏がオフか、音がありません。", "tk.bounced": "{name}（書き出し）", "tk.backing": "伴奏", "song.on": "伴奏オン", "song.offLabel": "伴奏オフ", "song.bars": "小節", "song.barsLess": "小節を減らす", "song.barsMore": "小節を増やす",
     "song.swing": "ハネ", "song.humanize": "揺らぎ", "song.text": "テキストで入力…", "song.undo": "編集を戻す", "song.chords": "コード",
     "song.noFill": "フィルなし", "song.fillOf": "{n} 小節目のドラムのフィル", "song.chordAt": "{bar} 小節 {beat} 拍目のコード", "song.editBar": "編集", "song.editBarN": "{n} 小節目の音を編集",
     "song.badChord": "読めないコード名です（例: C, Am7, F#m7b5, G7sus4, C/E）", "song.textTitle": "テキストでコード入力", "song.apply": "反映", "song.textEmpty": "小節が見つかりません。| C | G | のように書いてください",
@@ -506,7 +529,7 @@ const I18N = {
     "lat.body": "録音した音は、聞こえている音より少し遅れてブラウザに届きます。新しく録った音をこの時間だけ前にずらして、ほかのトラックとそろえます。録った音が遅れて聞こえるなら増やし、早いなら減らしてください。",
     "lat.label": "補正（ミリ秒）", "lat.auto": "自動", "lat.info": "この端末での自動の推定値: {ms} ms（出力 {out} ms ＋ 入力 {inp} ms ＋ 処理 {proc} ms）",
     "help.title": "使い方",
-    "help.body": "<ol><li><b>コードと伴奏</b> にコードを入力します（1 拍に 1 マス。空のマスは前のコードが続きます）。ベース・ピアノ・ドラムが自動で伴奏します。パートごとにパターンと音色を選び、ドラムのフィルは小節ごとに選べます。</li><li><b>伴奏を MIDI で書き出し</b> で、ベース・ピアノ・ドラムを標準 MIDI ファイル（テンポ・拍子・コード名のマーカー入り）に書き出し、DAW で開けます。<b>伴奏を音声トラックに</b>（またはパートの ⋯）で、伴奏を録音トラックの音声に変換できます。</li><li><b>バリエーション</b> で、人が弾くような変化を自動で付けます。ベースは次のコードへ駆け上がり、ピアノはコードを先取りして和音に色を足し、ドラムは 4 小節・8 小節の区切りでクラッシュ・オープンハイハット・ゴーストノート・短いつなぎを入れます。<b>別の案</b> で組み合わせが変わり、0 にすると元のパターンのままです。<b>エンディング</b> がオンなら、最後の小節の 1 拍目で全員が止まります。</li><li>1 音ずつ変えるときは、パートの <b>編集</b>（またはパートの行をダブルタップ）。<b>パターン全体</b> ならすべての小節に、<b>この小節だけ</b> ならその小節にだけ反映されます。</li><li>トラックの <b>R</b> を押して録音待機にします（初回はマイクの許可を求められます）。</li><li><b>●</b> で録音開始。「カウント」がオンなら 1 小節クリックが鳴ってから始まります。ほかのトラックの音がマイクに入らないよう、ヘッドホンを使ってください。</li><li><b>■</b> で停止。同じトラックにもう一度録ると、録った範囲だけ置き換わります。<b>元に戻す</b>で前のテイクに戻せます。</li><li>トラックとパートの <b>FX</b> でエフェクト（EQ・コンプ・歪み、共通のリバーブとテンポに合わせたディレイへ送る量）を付けられます。プリセット（ボーカル・アコギ・エレキなど）から始めると簡単です。</li><li>パートごとに <b>音色</b> を選べます。ベースは 8 種類（指弾き・ピック・スラップ・ミュート・ウッドベース・シンセ・アナログシンセ・808）、ドラムは 6 セット（スタンダード・ロック・ブラシ・808・909・ローファイ）。ドラムにはクラップ・タンバリン・シェイカー・カウベルもあります。</li><li>タイムラインを押すと再生位置が動きます（■ はいつも先頭に戻ります）。ピンチ・Ctrl＋ホイール・− / + で拡大縮小、ドラッグや横スクロールで左右に移動し、再生中は再生位置に合わせて表示が送られます。コード譜の小節は、ドラッグ（タッチ画面では長押ししてから）か ⠿ と矢印キーで移動できます。</li><li>作業内容はこのブラウザに自動で保存されます。消えないように残したいときや別の端末に移すときは <b>書き出し（.zip）</b>、続きをやるときは <b>読み込み…</b>。書き出すときはファイル名を選べます（最初はプロジェクト名）。PC の Chrome・Edge では保存先のフォルダも選べます。zip の中身は設定の <code>project.json</code> とトラックごとの WAV ファイルです。</li></ol>",
+    "help.body": "<ol><li><b>コードと伴奏</b> にコードを入力します（1 拍に 1 マス。空のマスは前のコードが続きます）。ベース・ピアノ・ドラムが自動で伴奏します。パートごとにパターンと音色を選び、ドラムのフィルは小節ごとに選べます。</li><li><b>伴奏を MIDI で書き出し</b> で、ベース・ピアノ・ドラムを標準 MIDI ファイル（テンポ・拍子・コード名のマーカー入り）に書き出し、DAW で開けます。<b>伴奏を音声トラックに</b>（またはパートの ⋯）で、伴奏を録音トラックの音声に変換できます。</li><li><b>バリエーション</b> で、人が弾くような変化を自動で付けます。ベースは次のコードへ駆け上がり、ピアノはコードを先取りして和音に色を足し、ドラムは 4 小節・8 小節の区切りでクラッシュ・オープンハイハット・ゴーストノート・短いつなぎを入れます。<b>別の案</b> で組み合わせが変わり、0 にすると元のパターンのままです。<b>エンディング</b> がオンなら、最後の小節の 1 拍目で全員が止まります。</li><li>1 音ずつ変えるときは、パートの <b>編集</b>（またはパートの行をダブルタップ）。<b>パターン全体</b> ならすべての小節に、<b>この小節だけ</b> ならその小節にだけ反映されます。</li><li>トラックの <b>R</b> を押して録音待機にします（初回はマイクの許可を求められます）。</li><li><b>●</b> で録音開始。「カウント」がオンなら 1 小節クリックが鳴ってから始まります。ほかのトラックの音がマイクに入らないよう、ヘッドホンを使ってください。</li><li><b>■</b> で停止。同じトラックにもう一度録ると、録った範囲だけ置き換わります。<b>元に戻す</b>で前のテイクに戻せます。</li><li>トラックとパートの <b>FX</b> でエフェクト（EQ・コンプ・歪み、共通のリバーブとテンポに合わせたディレイへ送る量）を付けられます。プリセット（ボーカル・アコギ・エレキなど）から始めると簡単です。</li><li>読み込んだ音声や録ったテイクのタイミングは、トラックの ⋯ →「<b>位置を調整…</b>」で合わせられます（1 ms・10 ms・1 拍・1 小節ずつ、または数字で。小節を繰り返し聞きながら調整できます）。</li><li>パートごとに <b>音色</b> を選べます。ベースは 8 種類（指弾き・ピック・スラップ・ミュート・ウッドベース・シンセ・アナログシンセ・808）、ドラムは 6 セット（スタンダード・ロック・ブラシ・808・909・ローファイ）。ドラムにはクラップ・タンバリン・シェイカー・カウベルもあります。</li><li>タイムラインを押すと再生位置が動きます（■ はいつも先頭に戻ります）。ピンチ・Ctrl＋ホイール・− / + で拡大縮小、ドラッグや横スクロールで左右に移動し、再生中は再生位置に合わせて表示が送られます。コード譜の小節は、ドラッグ（タッチ画面では長押ししてから）か ⠿ と矢印キーで移動できます。</li><li>作業内容はこのブラウザに自動で保存されます。消えないように残したいときや別の端末に移すときは <b>書き出し（.zip）</b>、続きをやるときは <b>読み込み…</b>。書き出すときはファイル名を選べます（最初はプロジェクト名）。PC の Chrome・Edge では保存先のフォルダも選べます。zip の中身は設定の <code>project.json</code> とトラックごとの WAV ファイルです。</li></ol>",
     "privacy.title": "プライバシー",
     "privacy.body": "<p>録音と処理はすべてお使いの端末の中で行います。録音した音をサーバーに送ることはありません。</p><p>再読み込みしても続けられるよう、プロジェクト（設定と音声）をこのブラウザの保存領域（IndexedDB）に保存します。「すべてクリア」で消去できます。書き出したファイルは、あなたが選んだ場所にだけ保存されます。</p><p>ミックスダウンで MP3 を選んだときだけ、MP3 に変換する部品（lamejs）を jsDelivr（cdn.jsdelivr.net）から 1 回だけ読み込みます。そのとき、一般の Web サイトと同じく IP アドレスが jsDelivr に届きます。音声は送りません（変換は端末の中で行います）。</p>",
     "about.title": "このアプリについて",
@@ -618,7 +641,7 @@ const state = {
   fx: { revLen: 1.8, dlyNote: "8d", dlyFb: 0.35 }, // shared reverb and delay
 };
 function newTrack(n) {
-  return { id: uid(), name: t("tk.track", { n }), volume: 0.8, pan: 0, mute: false, solo: false, armed: false, buffer: null, rev: 0, fx: defaultFx() };
+  return { id: uid(), name: t("tk.track", { n }), volume: 0.8, pan: 0, mute: false, solo: false, armed: false, buffer: null, rev: 0, fx: defaultFx(), offset: 0 }; // offset: where the audio starts on the timeline (s, may be negative)
 }
 let undoInfo = null; // { trackId, buffer }
 
@@ -675,7 +698,7 @@ function startSources() {
     const src = ctx.createBufferSource();
     src.buffer = tr.buffer;
     src.connect(tr.input);
-    const off = transport.startPos;
+    const off = transport.startPos - (tr.offset || 0); // position inside the audio
     if (off < tr.buffer.duration) {
       if (off >= 0) src.start(transport.startAt, off);
       else src.start(transport.startAt - off, 0);
@@ -754,6 +777,7 @@ function startMetro(withCountIn) {
 
 function play() {
   if (transport.playing) return;
+  if (!$("#posDlg").open) transport.loop = null;
   if (!$("#editDlg").open) transport.stopAt = null;
   ensureCtx();
   transport.startPos = Math.max(0, transport.pos);
@@ -898,8 +922,17 @@ function stopRecording() {
   if (to - from < sr * 0.05) { drawAll(); return; }
   const take = all.subarray(from, to);
   const at = posOfSample0 + from / sr;
-  undoInfo = { trackId: r.track.id, buffer: r.track.buffer };
-  r.track.buffer = mergeInto(r.track.buffer, take, sr, at);
+  undoInfo = { trackId: r.track.id, buffer: r.track.buffer, offset: r.track.offset || 0 };
+  if (!r.track.buffer) r.track.offset = 0;
+  let rel = at - (r.track.offset || 0); // position inside the existing audio
+  if (rel < 0 && r.track.buffer) {
+    // the take starts before the existing audio: pad the audio at the front and move the offset back
+    const pad = Math.ceil(-rel * sr), old = r.track.buffer.sampleRate !== sr ? resampleSync(r.track.buffer, sr) : r.track.buffer;
+    const nb = ctx.createBuffer(old.numberOfChannels, old.length + pad, sr);
+    for (let c = 0; c < old.numberOfChannels; c++) nb.getChannelData(c).set(old.getChannelData(c), pad);
+    r.track.buffer = nb; r.track.offset -= pad / sr; rel = at - r.track.offset;
+  }
+  r.track.buffer = mergeInto(r.track.buffer, take, sr, rel);
   r.track.rev++;
   markAudioDirty(r.track);
   $("#undoBtn").disabled = false;
@@ -938,7 +971,7 @@ function resampleSync(buf, sr) {
 function undo() {
   if (!undoInfo) return;
   const tr = state.tracks.find((x) => x.id === undoInfo.trackId);
-  if (tr) { tr.buffer = undoInfo.buffer; tr.rev++; markAudioDirty(tr); }
+  if (tr) { tr.buffer = undoInfo.buffer; if (undoInfo.offset != null) tr.offset = undoInfo.offset; tr.rev++; markAudioDirty(tr); }
   undoInfo = null;
   $("#undoBtn").disabled = true;
   drawAll();
@@ -1077,7 +1110,7 @@ function projectJson(fileFor) {
     format: FORMAT, version: 1, app: "Demo Track Maker", savedAt: new Date().toISOString(),
     name: state.name, bpm: state.bpm, beatsPerBar: state.beats, metronome: state.metronome, countIn: state.countIn, latencyMs: state.latencyMs,
     tracks: state.tracks.map((tr, i) => ({
-      name: tr.name, volume: tr.volume, pan: tr.pan, mute: tr.mute, solo: tr.solo, fx: tr.fx,
+      name: tr.name, volume: tr.volume, pan: tr.pan, mute: tr.mute, solo: tr.solo, fx: tr.fx, offset: tr.offset || 0,
       file: tr.buffer ? fileFor(tr, i) : null,
       sampleRate: tr.buffer ? tr.buffer.sampleRate : null,
       channels: tr.buffer ? tr.buffer.numberOfChannels : null,
@@ -1105,7 +1138,7 @@ async function loadProject(json, getFile) {
     const tr = newTrack(i + 1);
     Object.assign(tr, {
       name: String(m.name || tr.name).slice(0, 40),
-      volume: clamp(+m.volume, 0, 1.5, 0.8), pan: clamp(+m.pan, -1, 1, 0), mute: !!m.mute, solo: !!m.solo, fx: normFx(m.fx),
+      volume: clamp(+m.volume, 0, 1.5, 0.8), pan: clamp(+m.pan, -1, 1, 0), mute: !!m.mute, solo: !!m.solo, fx: normFx(m.fx), offset: clamp(+m.offset, -600, 600, 0),
     });
     if (m.file) {
       const u8 = await getFile(m.file);
@@ -1148,7 +1181,7 @@ async function saveNow() {
   try {
     const meta = {
       name: state.name, bpm: state.bpm, beats: state.beats, metronome: state.metronome, countIn: state.countIn, latencyMs: state.latencyMs,
-      tracks: state.tracks.map((tr) => ({ id: tr.id, name: tr.name, volume: tr.volume, pan: tr.pan, mute: tr.mute, solo: tr.solo, armed: false, fx: tr.fx })),
+      tracks: state.tracks.map((tr) => ({ id: tr.id, name: tr.name, volume: tr.volume, pan: tr.pan, mute: tr.mute, solo: tr.solo, armed: false, fx: tr.fx, offset: tr.offset })),
       song: state.song, fx: state.fx,
     };
     for (const id of [...dirtyAudio]) {
@@ -1179,7 +1212,7 @@ async function restore() {
     state.song = normalizeSong(meta.song);
     state.fx = normGlobalFx(meta.fx);
     for (const m of meta.tracks || []) {
-      const tr = Object.assign(newTrack(state.tracks.length + 1), m, { armed: false, buffer: null, rev: 0, fx: normFx(m.fx) });
+      const tr = Object.assign(newTrack(state.tracks.length + 1), m, { armed: false, buffer: null, rev: 0, fx: normFx(m.fx), offset: clamp(+m.offset, -600, 600, 0) });
       const a = await audioGet(m.id);
       if (a && a.chans && a.chans.length) {
         tr.pending = a; // turned into an AudioBuffer by materializePending()
@@ -1418,7 +1451,7 @@ async function mixdown(fmt = "wav", kbps = 192) {
   const sr = ctx ? ctx.sampleRate : 48000;
   const events = getEvents();
   const tail = events.length ? songLen() + 1 + state.fx.revLen : 0;
-  const len = Math.max(tail, ...state.tracks.filter((x) => x.buffer && audibleGain(x) > 0).map((x) => x.buffer.duration + state.fx.revLen));
+  const len = Math.max(tail, ...state.tracks.filter((x) => x.buffer && audibleGain(x) > 0).map((x) => x.buffer.duration + (x.offset || 0) + state.fx.revLen));
   if (!len) { toast(t("msg.nothing")); return; }
   await exportFile(projectBase() + "-mix", fmt === "mp3" ? "mp3" : "wav", async () => {
   if (fmt === "mp3") {
@@ -1572,6 +1605,7 @@ function renderTrack(tr) {
           <button class="sbtn more" aria-haspopup="menu" aria-expanded="false">⋯</button>
           <div class="tmenu" role="menu" hidden>
             <button role="menuitem" class="m-import"></button>
+            <button role="menuitem" class="m-pos"></button>
             <button role="menuitem" class="m-export"></button>
             <button role="menuitem" class="m-clear"></button>
             <button role="menuitem" class="m-delete"></button>
@@ -1622,6 +1656,12 @@ function renderTrack(tr) {
   more.setAttribute("aria-label", t("tk.more"));
   q(".m-import").textContent = t("tk.importAudio");
   q(".m-export").textContent = t("tk.exportWav");
+  q(".m-pos").textContent = t("pos.menu");
+  q(".m-pos").addEventListener("click", () => {
+    closeMenus(); materializePending();
+    if (!tr.buffer) { toast(t("msg.nothing")); return; }
+    openPosDialog(tr, more);
+  });
   q(".m-clear").textContent = t("tk.clear");
   q(".m-delete").textContent = t("tk.delete");
   setupMenu(more, menu);
@@ -1629,10 +1669,10 @@ function renderTrack(tr) {
   q(".m-export").addEventListener("click", () => {
     closeMenus(); materializePending();
     if (!tr.buffer) { toast(t("msg.nothing")); return; }
-    exportFile(projectBase() + "-" + safeName(tr.name), "wav", async () => new Blob([encodeWav(tr.buffer, true)], { type: "audio/wav" }));
+    exportFile(projectBase() + "-" + safeName(tr.name), "wav", async () => new Blob([encodeWav(alignedBuffer(tr), true)], { type: "audio/wav" }));
   });
   const clearBtn = q(".m-clear"), delBtn = q(".m-delete");
-  twoTap(clearBtn, "tk.clear", () => { closeMenus(); undoInfo = { trackId: tr.id, buffer: tr.buffer }; $("#undoBtn").disabled = !tr.buffer; tr.buffer = null; tr.rev++; markAudioDirty(tr); drawAll(); });
+  twoTap(clearBtn, "tk.clear", () => { closeMenus(); undoInfo = { trackId: tr.id, buffer: tr.buffer, offset: tr.offset || 0 }; $("#undoBtn").disabled = !tr.buffer; tr.buffer = null; tr.offset = 0; tr.rev++; markAudioDirty(tr); drawAll(); });
   twoTap(delBtn, "tk.delete", () => {
     closeMenus();
     if (tr.gain) tr.gain.disconnect(); if (tr.panner) tr.panner.disconnect();
@@ -1744,6 +1784,74 @@ function attachSeek(target, onDouble, scrub) {
   target.addEventListener("gesturestart", (e) => { e.preventDefault(); gScale = 1; });
   target.addEventListener("gesturechange", (e) => { e.preventDefault(); zoomBy(gScale / e.scale, secAt(e.clientX)); gScale = e.scale; });
 }
+// ---- position of an audio track (offset), adjusted in a dialog
+function fmtOffset(sec) {
+  const ms = Math.round(sec * 1000), beats = sec / (60 / state.bpm);
+  return (ms > 0 ? "+" : "") + ms + " ms (" + (beats > 0 ? "+" : "") + beats.toFixed(2) + " " + t("pos.beats") + ")";
+}
+// The audio as it sits on the timeline from 0 s: padded with silence (later start) or trimmed (earlier start)
+function alignedBuffer(tr) {
+  const b = tr.buffer, o = tr.offset || 0, sr = b.sampleRate;
+  if (!o) return b;
+  const shift = Math.round(o * sr), len = Math.max(1, b.length + shift);
+  const nb = new AudioBuffer({ numberOfChannels: b.numberOfChannels, length: len, sampleRate: sr });
+  for (let c = 0; c < b.numberOfChannels; c++) {
+    const src = b.getChannelData(c), dst = nb.getChannelData(c);
+    if (shift >= 0) dst.set(src, shift); else dst.set(src.subarray(-shift));
+  }
+  return nb;
+}
+let posTrack = null;
+function openPosDialog(tr, opener) {
+  posTrack = tr;
+  $("#posTitle").textContent = t("pos.title", { name: tr.name });
+  // loop the bar under the playhead (or where the audio starts)
+  const bs = barSec(), p = transport.playing ? curPos() : transport.pos;
+  const start = p > 0 ? p : Math.max(0, tr.offset || 0);
+  const bar = Math.max(0, Math.floor(start / bs + 1e-9));
+  posLoop = { from: bar * bs, to: (bar + 1) * bs, bar };
+  $("#posLoop").textContent = t("pos.loop", { n: bar + 1 });
+  updatePosDialog();
+  openDlg("posDlg", opener);
+}
+let posLoop = null;
+function updatePosDialog() {
+  if (!posTrack) return;
+  const o = posTrack.offset || 0;
+  $("#posValue").textContent = fmtOffset(o);
+  if (document.activeElement !== $("#posMs")) $("#posMs").value = Math.round(o * 1000);
+  $("#posLoop").setAttribute("aria-pressed", !!transport.loop);
+}
+function setOffset(sec) {
+  const tr = posTrack;
+  if (!tr) return;
+  tr.offset = Math.max(-600, Math.min(600, Math.round(sec * 1e5) / 1e5));
+  if (transport.playing && !transport.recording) seek(curPos()); // restart the sources at the new position
+  drawAll(); updatePosDialog(); saveSoon();
+}
+function setupPosDialog() {
+  document.querySelectorAll("#posDlg [data-nudge]").forEach((b) => b.addEventListener("click", () => {
+    const [n, unit] = b.dataset.nudge.split(","), beat = 60 / state.bpm;
+    const step = unit === "ms" ? 0.001 : unit === "beat" ? beat : beat * state.beats;
+    setOffset((posTrack.offset || 0) + +n * step);
+  }));
+  $("#posMs").addEventListener("change", () => { const v = +$("#posMs").value; if (Number.isFinite(v)) setOffset(v / 1000); });
+  $("#posMs").addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); $("#posMs").dispatchEvent(new Event("change")); } });
+  $("#posZero").addEventListener("click", () => setOffset(0));
+  $("#posLoop").addEventListener("click", () => {
+    if (transport.loop) { transport.loop = null; if (transport.playing) pause(); updatePosDialog(); return; }
+    if (transport.playing) pause();
+    transport.loop = { from: posLoop.from, to: posLoop.to };
+    seek(posLoop.from);
+    play();
+    updatePosDialog();
+  });
+  $("#posDlg").addEventListener("close", () => {
+    if (transport.loop) { transport.loop = null; if (transport.playing) pause(); }
+    posTrack = null;
+  });
+}
+
 // menus
 function closeMenus(except) {
   document.querySelectorAll(".tmenu").forEach((m) => { if (m !== except) { m.hidden = true; const b = m.previousElementSibling; if (b) b.setAttribute("aria-expanded", "false"); } });
@@ -1770,7 +1878,7 @@ document.addEventListener("click", (e) => { if (!e.target.closest(".menu-wrap"))
 const peakCache = new WeakMap();
 function timelineLen() {
   let longest = 0;
-  for (const tr of state.tracks) if (tr.buffer) longest = Math.max(longest, tr.buffer.duration);
+  for (const tr of state.tracks) if (tr.buffer) longest = Math.max(longest, tr.buffer.duration + (tr.offset || 0));
   const bar = (60 / state.bpm) * state.beats;
   const want = state.song.enabled ? Math.max(songLen(), longest + 1, curPos() + 1) : Math.max(30, longest + 4, curPos() + 4);
   return Math.ceil(want / bar) * bar;
@@ -1859,15 +1967,22 @@ function drawTrack(tr, vr) {
   const pk = peaksFor(buf, pps);
   const mid = h / 2;
   g.fillStyle = audibleGain(tr) > 0 ? cssVar("--wave") : cssVar("--wave-dim");
-  const xEnd = Math.min(w, Math.ceil(xAt(vr, buf.duration, w)));
-  for (let x = Math.max(0, Math.floor(xAt(vr, 0, w))); x < xEnd; x++) {
-    const s0 = vr.start + (x / w) * vr.span, s1 = vr.start + ((x + 1) / w) * vr.span;
+  const o = tr.offset || 0;
+  const xEnd = Math.min(w, Math.ceil(xAt(vr, buf.duration + o, w)));
+  for (let x = Math.max(0, Math.floor(xAt(vr, Math.max(0, o), w))); x < xEnd; x++) {
+    const s0 = vr.start + (x / w) * vr.span - o, s1 = vr.start + ((x + 1) / w) * vr.span - o; // seconds inside the audio
+    if (s1 <= 0) continue;
     let i0 = Math.floor(s0 * pps), i1 = Math.max(i0 + 1, Math.floor(s1 * pps));
     if (i0 >= pk.n) break;
     let mn = 0, mx = 0;
     for (let i = i0; i < i1 && i < pk.n; i++) { if (pk.mins[i] < mn) mn = pk.mins[i]; if (pk.maxs[i] > mx) mx = pk.maxs[i]; }
     const y1 = mid - mx * mid * 0.95, y2 = mid - mn * mid * 0.95;
     g.fillRect(x, y1, 1, Math.max(dpr, y2 - y1));
+  }
+  if (o) { // show the offset in the corner
+    g.font = `${11 * dpr}px system-ui, sans-serif`; g.textBaseline = "top";
+    g.fillStyle = cssVar("--muted");
+    g.fillText(fmtOffset(o), 4 * dpr, 4 * dpr);
   }
 }
 function drawPlayheads() {
@@ -1889,6 +2004,7 @@ function updateClock() {
 function frame() {
   if (!transport.playing) { highlightBar(-1); return; }
   const p = curPos();
+  if (transport.loop && p >= transport.loop.to) { seek(transport.loop.from); requestAnimationFrame(frame); return; }
   if (transport.stopAt != null && p >= transport.stopAt) {
     const back = transport.stopAt - barSec();
     pause(); seek(Math.max(0, back)); highlightBar(-1); return;
@@ -1982,8 +2098,8 @@ $("#audioFile").addEventListener("change", async (e) => {
   if (!f || !tr) return;
   try {
     const buf = await decodeAudioFile(new Uint8Array(await f.arrayBuffer()));
-    undoInfo = { trackId: tr.id, buffer: tr.buffer }; $("#undoBtn").disabled = false;
-    tr.buffer = buf; tr.rev++;
+    undoInfo = { trackId: tr.id, buffer: tr.buffer, offset: tr.offset || 0 }; $("#undoBtn").disabled = false;
+    tr.buffer = buf; tr.offset = 0; tr.rev++;
     if (/^(Track|トラック) \d+$/.test(tr.name)) tr.name = f.name.replace(/\.[^.]+$/, "").slice(0, 40);
     markAudioDirty(tr); renderAll();
   } catch (err) { console.warn(err); toast(t("msg.decodeFail")); }
@@ -2150,7 +2266,9 @@ function renderMix(oc, dest, opts) {
     const s = makeStrip(oc, dest, bus);
     applyFx(s, tr.fx, oc);
     s.gain.gain.value = audibleGain(tr); s.pan.pan.value = tr.pan;
-    const src = oc.createBufferSource(); src.buffer = tr.buffer; src.connect(s.input); src.start(0);
+    const src = oc.createBufferSource(); src.buffer = tr.buffer; src.connect(s.input);
+    const o = tr.offset || 0;
+    if (tr.buffer.duration + o > 0) src.start(Math.max(0, o), Math.max(0, -o));
   }
 }
 
@@ -3907,6 +4025,7 @@ function setupSongPanel() {
 setupEditor();
 setupSongPanel();
 setupFxDialog();
+setupPosDialog();
 
 // ---------------------------------------------------------------- start
 applyI18n();
