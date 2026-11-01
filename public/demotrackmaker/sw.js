@@ -6,7 +6,7 @@ const CORE = ["./", "index.html", "ja/", "manifest.json", "THIRD_PARTY_LICENSES.
 // Libraries loaded from a CDN with a pinned version (WEBAPP_BASELINE.md §3-10): the content of such a URL
 // never changes, so it is cached on first use and served from the cache, which makes it work offline.
 // Also add the host to connect-src in public/_headers. Leave empty when no CDN library is used.
-const CDN = [];
+const CDN = ["https://cdn.jsdelivr.net/npm/lamejs@1.2.1/lame.min.js"]; // MP3 encoder (keep in sync with LAME_URL in index.html)
 
 self.addEventListener("install", (event) => {
   self.skipWaiting();

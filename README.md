@@ -25,11 +25,11 @@ Planned URL / 公開予定: https://ktkwmr.com/demotrackmaker/
 - Render the backing (or one part) to an audio track / 伴奏（またはパート 1 つ）を音声トラックに書き出し
 - Auto-save in the browser (IndexedDB) / ブラウザに自動保存
 - **Export the project** as a zip (`project.json` + one 32-bit float WAV per track) and open it again later or on another device / **プロジェクトを zip に書き出し**、あとで・別の端末で読み込んで続きができる
-- Stereo mixdown WAV / ミックスダウン WAV
+- Stereo mixdown as WAV or MP3 / ミックスダウン（WAV か MP3）
 - Recording latency compensation (⚙) / 録音のずれ補正
 
 ## Privacy / プライバシー
-Audio is processed only on your device. Nothing is sent to a server. / 音声は端末内だけで処理し、サーバーには送りません。
+Audio is processed only on your device. Nothing is sent to a server. Only when MP3 is chosen for a mixdown, the MP3 encoder (lamejs) is downloaded once from jsDelivr (cdn.jsdelivr.net). / 音声は端末内だけで処理し、サーバーには送りません。ミックスダウンで MP3 を選んだときだけ、MP3 変換の部品（lamejs）を jsDelivr から 1 回読み込みます。
 
 ## Development / 開発
 Open via a local server (not `file://`; the microphone and Service Worker need `http://localhost` or HTTPS).
@@ -42,4 +42,4 @@ npx wrangler dev   # → http://localhost:8787/demotrackmaker/  (Windows PowerSh
 Preview copy for a claude.ai Artifact: `node scripts/build-preview.mjs` → `.preview/index.html`
 
 ## License
-MIT (to be added)
+MIT (to be added). Third-party: see `public/demotrackmaker/THIRD_PARTY_LICENSES.md` (lamejs, LGPL-3.0).
