@@ -2354,7 +2354,7 @@ const clone = (x) => JSON.parse(JSON.stringify(x));
 
 // ---- song model
 function defaultSong(enabled = true) {
-  const prog = [["C"], [], [], [], [], [], [], []]; // start with just C on beat 1 of bar 1
+  const prog = [["C"]]; // start with one bar: C on beat 1
   const base = { volume: 0.8, pan: 0, mute: false, solo: false, custom: null, overrides: {} };
   return {
     enabled, bars: prog.length, swing: 0, humanize: 0.3, variation: 0.6, ending: true, seed: 0,
@@ -2362,7 +2362,7 @@ function defaultSong(enabled = true) {
     parts: {
       bass: { ...base, preset: "eighth", tone: "finger", volume: 0.85, fx: defaultFx({ comp: 0.3 }) },
       piano: { ...base, preset: "eighth", tone: "grand", volume: 0.7, overrides: {}, fx: defaultFx({ rev: 0.18 }) },
-      drums: { ...base, preset: "8beat", tone: "standard", volume: 0.8, overrides: {}, fx: defaultFx({ rev: 0.08 }), fills: { 3: "snare1", 7: "tom2" }, fillCustom: {}, crash: true },
+      drums: { ...base, preset: "8beat", tone: "standard", volume: 0.8, overrides: {}, fx: defaultFx({ rev: 0.08 }), fills: {}, fillCustom: {}, crash: true },
     },
   };
 }
