@@ -246,6 +246,7 @@
       <button id="folderSaveBtn" hidden data-i18n="pj.folderSave">Save to folder</button>
       <button id="folderOpenBtn" hidden data-i18n="pj.folderOpen">Open folder…</button>
       <button id="mixBtn" data-i18n="pj.mix">Mixdown (WAV)</button>
+      <button id="midiBtn" data-i18n="pj.midi">Backing as MIDI</button>
       <button id="newBtn" data-i18n="pj.new">New</button>
     </div>
     <input id="projectFile" type="file" accept=".zip,application/zip" hidden />
@@ -262,6 +263,7 @@
       <label><span data-i18n="song.humanize">Feel</span> <input id="humanize" type="range" min="0" max="1" step="0.05" value="0.3" /></label>
       <button id="chordTextBtn" data-i18n="song.text">Type as text…</button>
       <button class="songUndo" disabled data-i18n="song.undo">Undo edit</button>
+      <button id="bounceAllBtn" data-i18n="song.bounce">Backing → audio track</button>
     </div>
     <div id="songBody">
       <div id="chordGrid" class="chord-grid"></div>
@@ -351,7 +353,7 @@
 const I18N = {
   en: {
     "menu.settings": "Settings", "menu.help": "How to use",
-    "song.title": "Chords & backing", "song.on": "Backing on", "song.bars": "Bars", "song.barsLess": "Remove a bar", "song.barsMore": "Add a bar",
+    "song.title": "Chords & backing", "song.bounce": "Backing → audio track", "part.bounce": "Render this part to an audio track", "msg.bounced": "Rendered “{name}” to an audio track and muted the original part.", "msg.noBacking": "The backing is off or has no notes.", "tk.bounced": "{name} (rendered)", "tk.backing": "Backing", "song.on": "Backing on", "song.bars": "Bars", "song.barsLess": "Remove a bar", "song.barsMore": "Add a bar",
     "song.swing": "Swing", "song.humanize": "Feel", "song.text": "Type as text…", "song.undo": "Undo edit", "song.chords": "Chords",
     "song.noFill": "No fill", "song.fillOf": "Drum fill in bar {n}", "song.chordAt": "Chord, bar {bar} beat {beat}", "song.editBar": "Edit", "song.editBarN": "Edit notes in bar {n}",
     "song.badChord": "Unknown chord name (examples: C, Am7, F#m7b5, G7sus4, C/E)", "song.textTitle": "Chords as text", "song.apply": "Apply", "song.textEmpty": "No bars found. Write bars like | C | G |",
@@ -373,7 +375,7 @@ const I18N = {
     "tr.home": "Go to start", "tr.play": "Play / pause", "tr.stop": "Stop", "tr.rec": "Record",
     "tr.bpm": "BPM", "tr.beats": "Beats", "tr.metro": "Click", "tr.countin": "Count-in", "tr.input": "Input", "tr.undo": "Undo",
     "pj.label": "Project", "pj.name": "Project name", "pj.export": "Export project (.zip)", "pj.import": "Open project…",
-    "pj.folderSave": "Save to folder", "pj.folderSaveTo": "Save to “{name}”", "pj.folderOpen": "Open folder…", "pj.mix": "Mixdown (WAV)", "pj.new": "New", "pj.confirmNew": "Tap again to clear",
+    "pj.folderSave": "Save to folder", "pj.folderSaveTo": "Save to “{name}”", "pj.folderOpen": "Open folder…", "pj.mix": "Mixdown (WAV)", "pj.midi": "Backing as MIDI", "msg.rendering": "Rendering…", "pj.new": "New", "pj.confirmNew": "Tap again to clear",
     "pj.untitled": "Untitled",
     "tk.add": "+ Add track", "tk.track": "Track {n}", "tk.arm": "Arm for recording", "tk.mute": "Mute", "tk.solo": "Solo",
     "tk.vol": "Vol", "tk.pan": "Pan", "tk.more": "Track menu", "tk.importAudio": "Import audio file…", "tk.exportWav": "Export this track (WAV)",
@@ -388,7 +390,7 @@ const I18N = {
     "lat.body": "What you record reaches the browser a little later than what you hear. MiniMTR moves each new take earlier by this amount so it lines up with the other tracks. If takes sound late, increase it; if early, decrease it.",
     "lat.label": "Offset (ms)", "lat.auto": "Auto", "lat.info": "Auto estimate on this device: {ms} ms (output {out} ms + input {inp} ms + processing {proc} ms)",
     "help.title": "How to use",
-    "help.body": "<ol><li>Type chords in <b>Chords &amp; backing</b> (one box per beat; an empty box keeps the previous chord). Bass, piano and drums play along automatically. Pick a pattern and a sound for each part, and choose a drum fill for any bar.</li><li>To change single notes, press <b>Edit</b> on a part (or double-tap its lane). Choose <b>Whole pattern</b> to change every bar, or <b>This bar only</b>.</li><li>Press <b>R</b> on a track to arm it (the browser asks for the microphone the first time).</li><li>Press <b>●</b> to record. With Count-in on, one bar of clicks plays first. Use headphones so other tracks do not leak into the microphone.</li><li>Press <b>■</b> to stop. Recording again on the same track replaces only the recorded range. <b>Undo</b> brings back the previous take.</li><li>Tap or drag on the waveform or the ruler to move the playhead.</li><li>Your work is saved in this browser automatically. To keep it safe or move it to another device, use <b>Export project (.zip)</b> and later <b>Open project…</b>. The zip contains <code>project.json</code> (settings) and one WAV file per track.</li><li>In Chrome / Edge on a computer, <b>Save to folder</b> writes the same files into a folder you choose, and saves over it the next time.</li></ol>",
+    "help.body": "<ol><li>Type chords in <b>Chords &amp; backing</b> (one box per beat; an empty box keeps the previous chord). Bass, piano and drums play along automatically. Pick a pattern and a sound for each part, and choose a drum fill for any bar.</li><li><b>Backing as MIDI</b> saves bass, piano and drums as a standard MIDI file (with tempo, time signature and chord names as markers) to open in a DAW. <b>Backing → audio track</b> (or ⋯ on a part) renders the backing into a recorded track, so you can edit or export it like any take.</li><li>To change single notes, press <b>Edit</b> on a part (or double-tap its lane). Choose <b>Whole pattern</b> to change every bar, or <b>This bar only</b>.</li><li>Press <b>R</b> on a track to arm it (the browser asks for the microphone the first time).</li><li>Press <b>●</b> to record. With Count-in on, one bar of clicks plays first. Use headphones so other tracks do not leak into the microphone.</li><li>Press <b>■</b> to stop. Recording again on the same track replaces only the recorded range. <b>Undo</b> brings back the previous take.</li><li>Tap or drag on the waveform or the ruler to move the playhead.</li><li>Your work is saved in this browser automatically. To keep it safe or move it to another device, use <b>Export project (.zip)</b> and later <b>Open project…</b>. The zip contains <code>project.json</code> (settings) and one WAV file per track.</li><li>In Chrome / Edge on a computer, <b>Save to folder</b> writes the same files into a folder you choose, and saves over it the next time.</li></ol>",
     "privacy.title": "Privacy",
     "privacy.body": "<p>Audio is recorded and processed only on your device. Nothing you record is sent to any server.</p><p>Your project (settings and audio) is kept in this browser's storage (IndexedDB) so you can continue after reloading. “New” clears it. Exported files are saved only where you choose.</p>",
     "about.title": "About this app",
@@ -398,7 +400,7 @@ const I18N = {
   },
   ja: {
     "menu.settings": "設定", "menu.help": "使い方",
-    "song.title": "コードと伴奏", "song.on": "伴奏オン", "song.bars": "小節", "song.barsLess": "小節を減らす", "song.barsMore": "小節を増やす",
+    "song.title": "コードと伴奏", "song.bounce": "伴奏を音声トラックに", "part.bounce": "このパートを音声トラックに書き出す", "msg.bounced": "「{name}」を音声トラックに書き出し、元のパートはミュートしました。", "msg.noBacking": "伴奏がオフか、音がありません。", "tk.bounced": "{name}（書き出し）", "tk.backing": "伴奏", "song.on": "伴奏オン", "song.bars": "小節", "song.barsLess": "小節を減らす", "song.barsMore": "小節を増やす",
     "song.swing": "ハネ", "song.humanize": "揺らぎ", "song.text": "テキストで入力…", "song.undo": "編集を戻す", "song.chords": "コード",
     "song.noFill": "フィルなし", "song.fillOf": "{n} 小節目のドラムのフィル", "song.chordAt": "{bar} 小節 {beat} 拍目のコード", "song.editBar": "編集", "song.editBarN": "{n} 小節目の音を編集",
     "song.badChord": "読めないコード名です（例: C, Am7, F#m7b5, G7sus4, C/E）", "song.textTitle": "テキストでコード入力", "song.apply": "反映", "song.textEmpty": "小節が見つかりません。| C | G | のように書いてください",
@@ -420,7 +422,7 @@ const I18N = {
     "tr.home": "先頭へ", "tr.play": "再生／一時停止", "tr.stop": "停止", "tr.rec": "録音",
     "tr.bpm": "BPM", "tr.beats": "拍子", "tr.metro": "クリック", "tr.countin": "カウント", "tr.input": "入力", "tr.undo": "元に戻す",
     "pj.label": "プロジェクト", "pj.name": "プロジェクト名", "pj.export": "書き出し（.zip）", "pj.import": "読み込み…",
-    "pj.folderSave": "フォルダに保存", "pj.folderSaveTo": "「{name}」に保存", "pj.folderOpen": "フォルダから開く…", "pj.mix": "ミックスダウン（WAV）", "pj.new": "新規", "pj.confirmNew": "もう一度押すと消去",
+    "pj.folderSave": "フォルダに保存", "pj.folderSaveTo": "「{name}」に保存", "pj.folderOpen": "フォルダから開く…", "pj.mix": "ミックスダウン（WAV）", "pj.midi": "伴奏を MIDI で書き出し", "msg.rendering": "書き出し中…", "pj.new": "新規", "pj.confirmNew": "もう一度押すと消去",
     "pj.untitled": "無題",
     "tk.add": "＋ トラックを追加", "tk.track": "トラック {n}", "tk.arm": "録音待機", "tk.mute": "ミュート", "tk.solo": "ソロ",
     "tk.vol": "音量", "tk.pan": "定位", "tk.more": "トラックのメニュー", "tk.importAudio": "音声ファイルを読み込む…", "tk.exportWav": "このトラックを書き出す（WAV）",
@@ -435,7 +437,7 @@ const I18N = {
     "lat.body": "録音した音は、聞こえている音より少し遅れてブラウザに届きます。新しく録った音をこの時間だけ前にずらして、ほかのトラックとそろえます。録った音が遅れて聞こえるなら増やし、早いなら減らしてください。",
     "lat.label": "補正（ミリ秒）", "lat.auto": "自動", "lat.info": "この端末での自動の推定値: {ms} ms（出力 {out} ms ＋ 入力 {inp} ms ＋ 処理 {proc} ms）",
     "help.title": "使い方",
-    "help.body": "<ol><li><b>コードと伴奏</b> にコードを入力します（1 拍に 1 マス。空のマスは前のコードが続きます）。ベース・ピアノ・ドラムが自動で伴奏します。パートごとにパターンと音色を選び、ドラムのフィルは小節ごとに選べます。</li><li>1 音ずつ変えるときは、パートの <b>編集</b>（またはパートの行をダブルタップ）。<b>パターン全体</b> ならすべての小節に、<b>この小節だけ</b> ならその小節にだけ反映されます。</li><li>トラックの <b>R</b> を押して録音待機にします（初回はマイクの許可を求められます）。</li><li><b>●</b> で録音開始。「カウント」がオンなら 1 小節クリックが鳴ってから始まります。ほかのトラックの音がマイクに入らないよう、ヘッドホンを使ってください。</li><li><b>■</b> で停止。同じトラックにもう一度録ると、録った範囲だけ置き換わります。<b>元に戻す</b>で前のテイクに戻せます。</li><li>波形や上の目盛りを押す・なぞると再生位置が動きます。</li><li>作業内容はこのブラウザに自動で保存されます。消えないように残したいときや別の端末に移すときは <b>書き出し（.zip）</b>、続きをやるときは <b>読み込み…</b>。zip の中身は設定の <code>project.json</code> とトラックごとの WAV ファイルです。</li><li>PC の Chrome・Edge では <b>フォルダに保存</b> で、選んだフォルダに同じファイルを書き出し、次からは上書き保存できます。</li></ol>",
+    "help.body": "<ol><li><b>コードと伴奏</b> にコードを入力します（1 拍に 1 マス。空のマスは前のコードが続きます）。ベース・ピアノ・ドラムが自動で伴奏します。パートごとにパターンと音色を選び、ドラムのフィルは小節ごとに選べます。</li><li><b>伴奏を MIDI で書き出し</b> で、ベース・ピアノ・ドラムを標準 MIDI ファイル（テンポ・拍子・コード名のマーカー入り）に書き出し、DAW で開けます。<b>伴奏を音声トラックに</b>（またはパートの ⋯）で、伴奏を録音トラックの音声に変換できます。</li><li>1 音ずつ変えるときは、パートの <b>編集</b>（またはパートの行をダブルタップ）。<b>パターン全体</b> ならすべての小節に、<b>この小節だけ</b> ならその小節にだけ反映されます。</li><li>トラックの <b>R</b> を押して録音待機にします（初回はマイクの許可を求められます）。</li><li><b>●</b> で録音開始。「カウント」がオンなら 1 小節クリックが鳴ってから始まります。ほかのトラックの音がマイクに入らないよう、ヘッドホンを使ってください。</li><li><b>■</b> で停止。同じトラックにもう一度録ると、録った範囲だけ置き換わります。<b>元に戻す</b>で前のテイクに戻せます。</li><li>波形や上の目盛りを押す・なぞると再生位置が動きます。</li><li>作業内容はこのブラウザに自動で保存されます。消えないように残したいときや別の端末に移すときは <b>書き出し（.zip）</b>、続きをやるときは <b>読み込み…</b>。zip の中身は設定の <code>project.json</code> とトラックごとの WAV ファイルです。</li><li>PC の Chrome・Edge では <b>フォルダに保存</b> で、選んだフォルダに同じファイルを書き出し、次からは上書き保存できます。</li></ol>",
     "privacy.title": "プライバシー",
     "privacy.body": "<p>録音と処理はすべてお使いの端末の中で行います。録音した音をサーバーに送ることはありません。</p><p>再読み込みしても続けられるよう、プロジェクト（設定と音声）をこのブラウザの保存領域（IndexedDB）に保存します。「新規」で消去できます。書き出したファイルは、あなたが選んだ場所にだけ保存されます。</p>",
     "about.title": "このアプリについて",
@@ -1179,6 +1181,7 @@ async function mixdown() {
   const tail = events.length ? songLen() + 2 : 0;
   const len = Math.max(tail, ...state.tracks.filter((x) => x.buffer && audibleGain(x) > 0).map((x) => x.buffer.duration));
   if (!len) { toast(t("msg.nothing")); return; }
+  toast(t("msg.rendering"), 60000);
   const oc = new OfflineAudioContext(2, Math.ceil(len * sr) + 1, sr);
   const comp = oc.createDynamicsCompressor();
   comp.threshold.value = -6; comp.ratio.value = 4; comp.attack.value = 0.003; comp.release.value = 0.15;
@@ -1201,6 +1204,105 @@ async function mixdown() {
   }
   const out = await oc.startRendering();
   await saveFile(new Blob([encodeWav(out, false)], { type: "audio/wav" }), `${projectBase()}-mix-${stamp()}.wav`);
+}
+
+// ---------------------------------------------------------------- backing -> audio track
+// Renders the given parts offline. One part: dry (volume/pan go to the new track's own controls).
+// Several parts: mixed with their volume, pan, mute and solo, into one stereo track.
+async function bounceBacking(names) {
+  if (transport.recording) return;
+  const S = state.song;
+  const events = getEvents().filter((e) => names.includes(e.part));
+  const parts = names.length === 1 ? names : names.filter((n) => audibleGain(S.parts[n]) > 0);
+  const used = events.filter((e) => parts.includes(e.part));
+  if (!S.enabled || !used.length) { toast(t("msg.noBacking")); return; }
+  if (state.tracks.length >= MAX_TRACKS) { toast(t("msg.maxTracks", { n: MAX_TRACKS })); return; }
+  if (transport.playing) pause();
+  ensureCtx();
+  toast(t("msg.rendering"), 60000);
+  const sr = ctx.sampleRate, len = songLen() + 2;
+  const oc = new OfflineAudioContext(2, Math.ceil(len * sr), sr);
+  const buses = {};
+  for (const n of parts) {
+    const g = oc.createGain(), p = oc.createStereoPanner();
+    g.gain.value = names.length === 1 ? 1 : audibleGain(S.parts[n]);
+    p.pan.value = names.length === 1 ? 0 : S.parts[n].pan;
+    g.connect(p); p.connect(oc.destination); buses[n] = g;
+  }
+  for (const e of used) playEvent(oc, buses[e.part], e, e.time + 0.001);
+  const buf = await oc.startRendering();
+  const one = names.length === 1 ? S.parts[names[0]] : null;
+  const tr = newTrack(state.tracks.length + 1);
+  const nm = names.length === 1 ? partName(names[0]) : t("tk.backing");
+  Object.assign(tr, { name: t("tk.bounced", { name: nm }).slice(0, 40), buffer: buf, volume: one ? one.volume : 1, pan: one ? one.pan : 0 });
+  state.tracks.push(tr);
+  buildTrackNodes(tr);
+  for (const n of parts) S.parts[n].mute = true;
+  updateAllMix();
+  markAudioDirty(tr);
+  renderAll();
+  toast(t("msg.bounced", { name: nm }), 4000);
+}
+
+// ---------------------------------------------------------------- backing -> Standard MIDI File
+// Type 1, 480 ticks per quarter note. Track 0: tempo, time signature, chord names as markers; then bass (ch 1),
+// piano (ch 2) and drums (ch 10, General MIDI drum map). Notes are on the grid (swing kept, no humanize).
+const GM_PROGRAM = { bass: { finger: 33, pick: 34, synth: 38 }, piano: { grand: 0, ep: 4, organ: 16, strings: 48, clav: 7 } };
+const GM_DRUM = { K: 36, S: 38, X: 37, H: 42, O: 46, P: 44, T1: 50, T2: 47, T3: 43, C: 49, R: 51 };
+function vlq(n) {
+  const out = [n & 0x7f];
+  while ((n >>= 7)) out.unshift((n & 0x7f) | 0x80);
+  return out;
+}
+function midiTrack(events) {
+  // events: [{tick, bytes}] ; sorted so that note-offs come before note-ons at the same tick
+  events.sort((a, b) => a.tick - b.tick || a.order - b.order);
+  const data = [];
+  let last = 0;
+  for (const e of events) { data.push(...vlq(e.tick - last), ...e.bytes); last = e.tick; }
+  data.push(0, 0xff, 0x2f, 0);
+  const head = [0x4d, 0x54, 0x72, 0x6b, (data.length >>> 24) & 255, (data.length >>> 16) & 255, (data.length >>> 8) & 255, data.length & 255];
+  return head.concat(data);
+}
+const metaText = (type, str) => { const b = [...new TextEncoder().encode(str)]; return [0xff, type, ...vlq(b.length), ...b]; };
+function buildMidi() {
+  const S = state.song, B = state.beats, PPQ = 480, k = PPQ / TPB;
+  const usPerQ = Math.round(60000000 / state.bpm);
+  const tracks = [];
+  const conductor = [
+    { tick: 0, order: 0, bytes: metaText(0x03, state.name || "MiniMTR") },
+    { tick: 0, order: 0, bytes: [0xff, 0x51, 3, (usPerQ >> 16) & 255, (usPerQ >> 8) & 255, usPerQ & 255] },
+    { tick: 0, order: 0, bytes: [0xff, 0x58, 4, B, 2, 24, 8] },
+  ];
+  for (const r of analysis().regions) conductor.push({ tick: r.start * TPB * k, order: 1, bytes: metaText(0x06, r.name) });
+  tracks.push(midiTrack(conductor));
+  PARTS.forEach((name, pi) => {
+    const P = S.parts[name], ch = name === "drums" ? 9 : pi;
+    const ev = [
+      { tick: 0, order: 0, bytes: metaText(0x03, partName(name)) },
+      { tick: 0, order: 0, bytes: [0xb0 | ch, 7, Math.round(Math.min(1, P.volume) * 127)] },
+      { tick: 0, order: 0, bytes: [0xb0 | ch, 10, Math.round((P.pan + 1) * 63.5)] },
+    ];
+    if (name !== "drums") ev.push({ tick: 0, order: 0, bytes: [0xc0 | ch, GM_PROGRAM[name][P.tone] || 0] });
+    for (let bar = 0; bar < S.bars; bar++) for (const n of renderBar(name, bar)) {
+      let tk = bar * B * TPB + n.t;
+      let on = tk * k;
+      if (S.swing && n.t % TPB === 6) on += Math.round(S.swing * 2 * k);
+      const note = name === "drums" ? GM_DRUM[n.i] : n.midi;
+      if (note == null) continue;
+      const dur = name === "drums" ? PPQ / 8 : Math.max(1, Math.round(n.d * k) - 10);
+      const vel = Math.max(1, Math.min(127, Math.round(n.v * 127)));
+      ev.push({ tick: Math.round(on), order: 2, bytes: [0x90 | ch, note, vel] });
+      ev.push({ tick: Math.round(on + dur), order: 1, bytes: [0x80 | ch, note, 0] });
+    }
+    tracks.push(midiTrack(ev));
+  });
+  const header = [0x4d, 0x54, 0x68, 0x64, 0, 0, 0, 6, 0, 1, 0, tracks.length, (PPQ >> 8) & 255, PPQ & 255];
+  return new Uint8Array(header.concat(...tracks));
+}
+async function exportMidi() {
+  if (!state.song.enabled || !getEvents().length) { toast(t("msg.noBacking")); return; }
+  await saveFile(new Blob([buildMidi()], { type: "audio/midi" }), `${projectBase()}-backing-${stamp()}.mid`);
 }
 
 // Folder save (File System Access API: Chrome / Edge on computers)
@@ -1518,7 +1620,7 @@ function updateTransportUi() {
   $("#recBtn").classList.toggle("on", transport.recording);
   $("#playIcon").setAttribute("d", transport.playing ? "M8 5v14M16 5v14" : "M7 4l13 8-13 8z");
   const busy = transport.recording;
-  ["#exportBtn", "#importBtn", "#folderSaveBtn", "#folderOpenBtn", "#mixBtn", "#newBtn", "#addTrackBtn", "#homeBtn"].forEach((s) => ($(s).disabled = busy));
+  ["#exportBtn", "#importBtn", "#folderSaveBtn", "#folderOpenBtn", "#mixBtn", "#midiBtn", "#bounceAllBtn", "#newBtn", "#addTrackBtn", "#homeBtn"].forEach((s) => ($(s).disabled = busy));
   $("#undoBtn").disabled = busy || !undoInfo;
 }
 let resizeT;
@@ -1597,6 +1699,8 @@ $("#audioFile").addEventListener("change", async (e) => {
   } catch (err) { console.warn(err); toast(t("msg.decodeFail")); }
 });
 $("#mixBtn").addEventListener("click", mixdown);
+$("#midiBtn").addEventListener("click", exportMidi);
+$("#bounceAllBtn").addEventListener("click", () => bounceBacking(PARTS.slice()));
 const newBtn = $("#newBtn"); newBtn.dataset.confirmKey = "pj.confirmNew";
 twoTap(newBtn, "pj.new", async () => {
   if (transport.playing) stopAll();
@@ -2412,6 +2516,7 @@ function renderPartRow(name) {
   const item = (key) => { const b = document.createElement("button"); b.setAttribute("role", "menuitem"); b.textContent = t(key); menu.appendChild(b); return b; };
   item("part.resetPattern").dataset.k = "resetPattern";
   item("part.clearEdits").dataset.k = "clearEdits";
+  item("part.bounce").dataset.k = "bounce";
   if (name === "drums") {
     item("part.fills4").dataset.k = "fills4";
     item("part.clearFills").dataset.k = "clearFills";
@@ -2425,6 +2530,7 @@ function renderPartRow(name) {
     const k = b.dataset.k;
     const run = () => {
       closeMenus();
+      if (k === "bounce") { bounceBacking([name]); return; }
       const S = state.song, P = S.parts[name];
       pushSongHistory();
       if (k === "resetPattern") { P.custom = null; if (name === "drums") S.parts.drums.fillCustom = {}; }
