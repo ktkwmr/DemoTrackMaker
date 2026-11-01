@@ -3,7 +3,7 @@
 ブラウザでデモ音源を作るアプリ（HTML 1 ファイル）。コード譜から自動で伴奏を作り、歌や楽器を重ねて録音する。プロジェクトをローカルに書き出して続きから再開できる。公開 URL（予定）: https://ktkwmr.com/demotrackmaker/
 
 位置づけ: 「デモ音源・練習用の伴奏・アレンジの下書き」の道具として紹介する。一般的な MTR・DAW の代わりとはうたわない（細かい編集・ミックスは WAV・MIDI に書き出して DAW で）。
-2026-11 に MiniMTR から改名（スラッグも minimtr → demotrackmaker）。旧名の自動保存・zip の引き継ぎはしない（公開前のため）。GitHub のリポジトリ名 `ktkwmr/MiniMTR` の変更は 👤 の作業。
+2026-11 に MiniMTR から改名（スラッグも minimtr → demotrackmaker）。旧名の自動保存・zip の引き継ぎはしない（公開前のため）。GitHub のリポジトリも `ktkwmr/MiniMTR` から `ktkwmr/DemoTrackMaker` に改名済み（旧 URL は GitHub が転送する）。
 
 ## 状態
 - 試作（プロト）。アプリ本体 `public/demotrackmaker/index.html` だけを作った段階で、共通部分（§2〜§12 の大半）はまだ。
