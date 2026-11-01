@@ -187,6 +187,10 @@
   .fx-top { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 10px; font-size: 13px; color: var(--muted); }
   .fx-top select, #fxDlg select { padding: 5px 6px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); }
   .fx-note { font-size: 12px; margin: 4px 0 0; }
+  #nameDlg { width: min(460px, calc(100vw - 32px)); }
+  .name-row { display: flex; align-items: center; gap: 6px; }
+  .name-row input { flex: 1; min-width: 0; padding: 8px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); font-size: 15px; }
+  #nameExt { color: var(--muted); font-variant-numeric: tabular-nums; }
   /* Note editor */
   dialog.wide { width: min(980px, calc(100vw - 16px)); max-width: none; padding: 14px; }
   .ed-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin-bottom: 8px; }
@@ -358,6 +362,12 @@
   </fieldset>
   <div class="acts"><button data-close data-i18n="dlg.close">Close</button></div>
 </dialog>
+<dialog id="nameDlg" tabindex="-1" aria-labelledby="nameTitle">
+  <h2 id="nameTitle" data-i18n="name.title">File name</h2>
+  <div class="name-row"><input id="nameInput" type="text" maxlength="60" spellcheck="false" autocomplete="off" data-i18n-attr="aria-label:name.title" /><span id="nameExt">.zip</span></div>
+  <p class="fx-note" data-i18n="name.hint">The file goes to your browser's download folder.</p>
+  <div class="acts"><button data-close data-i18n="dlg.cancel">Cancel</button><button id="nameOk" data-i18n="name.ok">Export</button></div>
+</dialog>
 <dialog id="chordTextDlg" tabindex="-1" aria-labelledby="ctTitle">
   <h2 id="ctTitle" data-i18n="song.textTitle">Chords as text</h2>
   <p data-i18n="song.textHelp"></p>
@@ -395,7 +405,7 @@
 const I18N = {
   en: {
     "menu.settings": "Settings", "menu.help": "How to use",
-    "song.title": "Chords & backing", "fx.title": "Effects: {name}", "fx.open": "Effects for {name}", "fx.preset": "Preset", "fx.custom": "(custom)", "fx.dyn": "Compressor / drive", "fx.sends": "Reverb / delay (amount sent)", "fx.shared": "Shared by all tracks", "fx.revLen": "Reverb length", "fx.dlyNote": "Delay time", "fx.dlyFb": "Delay repeats", "fx.note": "The delay follows the tempo. Double-click a slider to reset it.", "fx.low": "Low (120 Hz)", "fx.mid": "Mid", "fx.mf": "Mid frequency", "fx.high": "High (8 kHz)", "fx.comp": "Compressor", "fx.drive": "Drive (distortion)", "fx.rev": "Reverb", "fx.dly": "Delay", "view.label": "View", "view.out": "Zoom out", "view.in": "Zoom in", "view.fit": "Whole song", "view.hint": "Pinch or Ctrl + wheel to zoom, drag to scroll, tap to move the playhead", "song.moved": "Moved bar {from} to position {to}.", "song.grip": "Move bar {n} (drag, long-press, or arrow keys)", "song.variation": "Variation", "song.reseed": "Another take", "song.reseeded": "Picked a different set of variations.", "song.ending": "Ending", "ed.varNote": "Automatic variations are not shown here; they are added on top of the pattern.", "ed.varBar": "Shows what plays, including automatic variations.", "song.bounce": "Backing → audio track", "part.bounce": "Render this part to an audio track", "msg.bounced": "Rendered “{name}” to an audio track and muted the original part.", "msg.noBacking": "The backing is off or has no notes.", "tk.bounced": "{name} (rendered)", "tk.backing": "Backing", "song.on": "Backing on", "song.bars": "Bars", "song.barsLess": "Remove a bar", "song.barsMore": "Add a bar",
+    "song.title": "Chords & backing", "name.title": "File name", "name.ok": "Export", "name.hint": "The file goes to your browser's download folder.", "fx.title": "Effects: {name}", "fx.open": "Effects for {name}", "fx.preset": "Preset", "fx.custom": "(custom)", "fx.dyn": "Compressor / drive", "fx.sends": "Reverb / delay (amount sent)", "fx.shared": "Shared by all tracks", "fx.revLen": "Reverb length", "fx.dlyNote": "Delay time", "fx.dlyFb": "Delay repeats", "fx.note": "The delay follows the tempo. Double-click a slider to reset it.", "fx.low": "Low (120 Hz)", "fx.mid": "Mid", "fx.mf": "Mid frequency", "fx.high": "High (8 kHz)", "fx.comp": "Compressor", "fx.drive": "Drive (distortion)", "fx.rev": "Reverb", "fx.dly": "Delay", "view.label": "View", "view.out": "Zoom out", "view.in": "Zoom in", "view.fit": "Whole song", "view.hint": "Pinch or Ctrl + wheel to zoom, drag to scroll, tap to move the playhead", "song.moved": "Moved bar {from} to position {to}.", "song.grip": "Move bar {n} (drag, long-press, or arrow keys)", "song.variation": "Variation", "song.reseed": "Another take", "song.reseeded": "Picked a different set of variations.", "song.ending": "Ending", "ed.varNote": "Automatic variations are not shown here; they are added on top of the pattern.", "ed.varBar": "Shows what plays, including automatic variations.", "song.bounce": "Backing → audio track", "part.bounce": "Render this part to an audio track", "msg.bounced": "Rendered “{name}” to an audio track and muted the original part.", "msg.noBacking": "The backing is off or has no notes.", "tk.bounced": "{name} (rendered)", "tk.backing": "Backing", "song.on": "Backing on", "song.bars": "Bars", "song.barsLess": "Remove a bar", "song.barsMore": "Add a bar",
     "song.swing": "Swing", "song.humanize": "Feel", "song.text": "Type as text…", "song.undo": "Undo edit", "song.chords": "Chords",
     "song.noFill": "No fill", "song.fillOf": "Drum fill in bar {n}", "song.chordAt": "Chord, bar {bar} beat {beat}", "song.editBar": "Edit", "song.editBarN": "Edit notes in bar {n}",
     "song.badChord": "Unknown chord name (examples: C, Am7, F#m7b5, G7sus4, C/E)", "song.textTitle": "Chords as text", "song.apply": "Apply", "song.textEmpty": "No bars found. Write bars like | C | G |",
@@ -432,7 +442,7 @@ const I18N = {
     "lat.body": "What you record reaches the browser a little later than what you hear. MiniMTR moves each new take earlier by this amount so it lines up with the other tracks. If takes sound late, increase it; if early, decrease it.",
     "lat.label": "Offset (ms)", "lat.auto": "Auto", "lat.info": "Auto estimate on this device: {ms} ms (output {out} ms + input {inp} ms + processing {proc} ms)",
     "help.title": "How to use",
-    "help.body": "<ol><li>Type chords in <b>Chords &amp; backing</b> (one box per beat; an empty box keeps the previous chord). Bass, piano and drums play along automatically. Pick a pattern and a sound for each part, and choose a drum fill for any bar.</li><li><b>Backing as MIDI</b> saves bass, piano and drums as a standard MIDI file (with tempo, time signature and chord names as markers) to open in a DAW. <b>Backing → audio track</b> (or ⋯ on a part) renders the backing into a recorded track, so you can edit or export it like any take.</li><li><b>Variation</b> makes the band play like people do: bass runs into the next chord, the piano anticipates chord changes and adds colour notes, the drums add crashes, open hi-hats, ghost notes and short lead-ins at the end of 4- and 8-bar phrases. <b>Another take</b> picks a different set; set Variation to 0 for the plain pattern. <b>Ending</b> stops the band on the first beat of the last bar.</li><li>To change single notes, press <b>Edit</b> on a part (or double-tap its lane). Choose <b>Whole pattern</b> to change every bar, or <b>This bar only</b>.</li><li>Press <b>R</b> on a track to arm it (the browser asks for the microphone the first time).</li><li>Press <b>●</b> to record. With Count-in on, one bar of clicks plays first. Use headphones so other tracks do not leak into the microphone.</li><li>Press <b>■</b> to stop. Recording again on the same track replaces only the recorded range. <b>Undo</b> brings back the previous take.</li><li><b>FX</b> on each track and part opens its effects: EQ, compressor, drive, and how much goes to the shared reverb and tempo-synced delay. Presets (vocal, acoustic, crunch guitar …) are a starting point.</li><li>Each part has a <b>Sound</b> menu: 8 bass sounds (finger, pick, slap, muted, upright, synth, analog synth, 808) and 6 drum kits (standard, rock, brushes, 808, 909, lo-fi). Drums also have clap, tambourine, shaker and cowbell.</li><li>Tap the timeline to move the playhead (■ always goes back to the start). Pinch, Ctrl + wheel or − / + to zoom, drag or scroll sideways to move along; during playback the view follows the playhead. Drag a bar in the chord chart (long-press on a touch screen, or ⠿ and the arrow keys) to move it.</li><li>Your work is saved in this browser automatically. To keep it safe or move it to another device, use <b>Export project (.zip)</b> and later <b>Open project…</b>. The zip contains <code>project.json</code> (settings) and one WAV file per track.</li></ol>",
+    "help.body": "<ol><li>Type chords in <b>Chords &amp; backing</b> (one box per beat; an empty box keeps the previous chord). Bass, piano and drums play along automatically. Pick a pattern and a sound for each part, and choose a drum fill for any bar.</li><li><b>Backing as MIDI</b> saves bass, piano and drums as a standard MIDI file (with tempo, time signature and chord names as markers) to open in a DAW. <b>Backing → audio track</b> (or ⋯ on a part) renders the backing into a recorded track, so you can edit or export it like any take.</li><li><b>Variation</b> makes the band play like people do: bass runs into the next chord, the piano anticipates chord changes and adds colour notes, the drums add crashes, open hi-hats, ghost notes and short lead-ins at the end of 4- and 8-bar phrases. <b>Another take</b> picks a different set; set Variation to 0 for the plain pattern. <b>Ending</b> stops the band on the first beat of the last bar.</li><li>To change single notes, press <b>Edit</b> on a part (or double-tap its lane). Choose <b>Whole pattern</b> to change every bar, or <b>This bar only</b>.</li><li>Press <b>R</b> on a track to arm it (the browser asks for the microphone the first time).</li><li>Press <b>●</b> to record. With Count-in on, one bar of clicks plays first. Use headphones so other tracks do not leak into the microphone.</li><li>Press <b>■</b> to stop. Recording again on the same track replaces only the recorded range. <b>Undo</b> brings back the previous take.</li><li><b>FX</b> on each track and part opens its effects: EQ, compressor, drive, and how much goes to the shared reverb and tempo-synced delay. Presets (vocal, acoustic, crunch guitar …) are a starting point.</li><li>Each part has a <b>Sound</b> menu: 8 bass sounds (finger, pick, slap, muted, upright, synth, analog synth, 808) and 6 drum kits (standard, rock, brushes, 808, 909, lo-fi). Drums also have clap, tambourine, shaker and cowbell.</li><li>Tap the timeline to move the playhead (■ always goes back to the start). Pinch, Ctrl + wheel or − / + to zoom, drag or scroll sideways to move along; during playback the view follows the playhead. Drag a bar in the chord chart (long-press on a touch screen, or ⠿ and the arrow keys) to move it.</li><li>Your work is saved in this browser automatically. To keep it safe or move it to another device, use <b>Export project (.zip)</b> and later <b>Open project…</b>. When exporting you choose the file name (the project name by default); in Chrome / Edge on a computer you also choose the folder. The zip contains <code>project.json</code> (settings) and one WAV file per track.</li></ol>",
     "privacy.title": "Privacy",
     "privacy.body": "<p>Audio is recorded and processed only on your device. Nothing you record is sent to any server.</p><p>Your project (settings and audio) is kept in this browser's storage (IndexedDB) so you can continue after reloading. “Clear all” deletes it. Exported files are saved only where you choose.</p>",
     "about.title": "About this app",
@@ -442,7 +452,7 @@ const I18N = {
   },
   ja: {
     "menu.settings": "設定", "menu.help": "使い方",
-    "song.title": "コードと伴奏", "fx.title": "エフェクト: {name}", "fx.open": "{name}のエフェクト", "fx.preset": "プリセット", "fx.custom": "（調整済み）", "fx.dyn": "コンプ・歪み", "fx.sends": "リバーブ・ディレイ（送る量）", "fx.shared": "全トラック共通", "fx.revLen": "リバーブの長さ", "fx.dlyNote": "ディレイの間隔", "fx.dlyFb": "ディレイの繰り返し", "fx.note": "ディレイの間隔はテンポに合わせます。つまみをダブルクリックすると元に戻ります。", "fx.low": "低音（120 Hz）", "fx.mid": "中音", "fx.mf": "中音の周波数", "fx.high": "高音（8 kHz）", "fx.comp": "コンプレッサー", "fx.drive": "歪み（ドライブ）", "fx.rev": "リバーブ", "fx.dly": "ディレイ", "view.label": "表示", "view.out": "縮小", "view.in": "拡大", "view.fit": "全体", "view.hint": "ピンチ・Ctrl＋ホイールで拡大縮小、ドラッグで左右に移動、タップで再生位置", "song.moved": "{from} 小節目を {to} 番目に移動しました。", "song.grip": "{n} 小節目を移動（ドラッグ・長押し・矢印キー）", "song.variation": "バリエーション", "song.reseed": "別の案", "song.reseeded": "バリエーションの組み合わせを変えました。", "song.ending": "エンディング", "ed.varNote": "自動のバリエーションはここには出ません（パターンの上に足されます）。", "ed.varBar": "自動のバリエーションも含めて、実際に鳴る音を表示しています。", "song.bounce": "伴奏を音声トラックに", "part.bounce": "このパートを音声トラックに書き出す", "msg.bounced": "「{name}」を音声トラックに書き出し、元のパートはミュートしました。", "msg.noBacking": "伴奏がオフか、音がありません。", "tk.bounced": "{name}（書き出し）", "tk.backing": "伴奏", "song.on": "伴奏オン", "song.bars": "小節", "song.barsLess": "小節を減らす", "song.barsMore": "小節を増やす",
+    "song.title": "コードと伴奏", "name.title": "ファイル名", "name.ok": "書き出す", "name.hint": "ブラウザのダウンロード先に保存されます。", "fx.title": "エフェクト: {name}", "fx.open": "{name}のエフェクト", "fx.preset": "プリセット", "fx.custom": "（調整済み）", "fx.dyn": "コンプ・歪み", "fx.sends": "リバーブ・ディレイ（送る量）", "fx.shared": "全トラック共通", "fx.revLen": "リバーブの長さ", "fx.dlyNote": "ディレイの間隔", "fx.dlyFb": "ディレイの繰り返し", "fx.note": "ディレイの間隔はテンポに合わせます。つまみをダブルクリックすると元に戻ります。", "fx.low": "低音（120 Hz）", "fx.mid": "中音", "fx.mf": "中音の周波数", "fx.high": "高音（8 kHz）", "fx.comp": "コンプレッサー", "fx.drive": "歪み（ドライブ）", "fx.rev": "リバーブ", "fx.dly": "ディレイ", "view.label": "表示", "view.out": "縮小", "view.in": "拡大", "view.fit": "全体", "view.hint": "ピンチ・Ctrl＋ホイールで拡大縮小、ドラッグで左右に移動、タップで再生位置", "song.moved": "{from} 小節目を {to} 番目に移動しました。", "song.grip": "{n} 小節目を移動（ドラッグ・長押し・矢印キー）", "song.variation": "バリエーション", "song.reseed": "別の案", "song.reseeded": "バリエーションの組み合わせを変えました。", "song.ending": "エンディング", "ed.varNote": "自動のバリエーションはここには出ません（パターンの上に足されます）。", "ed.varBar": "自動のバリエーションも含めて、実際に鳴る音を表示しています。", "song.bounce": "伴奏を音声トラックに", "part.bounce": "このパートを音声トラックに書き出す", "msg.bounced": "「{name}」を音声トラックに書き出し、元のパートはミュートしました。", "msg.noBacking": "伴奏がオフか、音がありません。", "tk.bounced": "{name}（書き出し）", "tk.backing": "伴奏", "song.on": "伴奏オン", "song.bars": "小節", "song.barsLess": "小節を減らす", "song.barsMore": "小節を増やす",
     "song.swing": "ハネ", "song.humanize": "揺らぎ", "song.text": "テキストで入力…", "song.undo": "編集を戻す", "song.chords": "コード",
     "song.noFill": "フィルなし", "song.fillOf": "{n} 小節目のドラムのフィル", "song.chordAt": "{bar} 小節 {beat} 拍目のコード", "song.editBar": "編集", "song.editBarN": "{n} 小節目の音を編集",
     "song.badChord": "読めないコード名です（例: C, Am7, F#m7b5, G7sus4, C/E）", "song.textTitle": "テキストでコード入力", "song.apply": "反映", "song.textEmpty": "小節が見つかりません。| C | G | のように書いてください",
@@ -479,7 +489,7 @@ const I18N = {
     "lat.body": "録音した音は、聞こえている音より少し遅れてブラウザに届きます。新しく録った音をこの時間だけ前にずらして、ほかのトラックとそろえます。録った音が遅れて聞こえるなら増やし、早いなら減らしてください。",
     "lat.label": "補正（ミリ秒）", "lat.auto": "自動", "lat.info": "この端末での自動の推定値: {ms} ms（出力 {out} ms ＋ 入力 {inp} ms ＋ 処理 {proc} ms）",
     "help.title": "使い方",
-    "help.body": "<ol><li><b>コードと伴奏</b> にコードを入力します（1 拍に 1 マス。空のマスは前のコードが続きます）。ベース・ピアノ・ドラムが自動で伴奏します。パートごとにパターンと音色を選び、ドラムのフィルは小節ごとに選べます。</li><li><b>伴奏を MIDI で書き出し</b> で、ベース・ピアノ・ドラムを標準 MIDI ファイル（テンポ・拍子・コード名のマーカー入り）に書き出し、DAW で開けます。<b>伴奏を音声トラックに</b>（またはパートの ⋯）で、伴奏を録音トラックの音声に変換できます。</li><li><b>バリエーション</b> で、人が弾くような変化を自動で付けます。ベースは次のコードへ駆け上がり、ピアノはコードを先取りして和音に色を足し、ドラムは 4 小節・8 小節の区切りでクラッシュ・オープンハイハット・ゴーストノート・短いつなぎを入れます。<b>別の案</b> で組み合わせが変わり、0 にすると元のパターンのままです。<b>エンディング</b> がオンなら、最後の小節の 1 拍目で全員が止まります。</li><li>1 音ずつ変えるときは、パートの <b>編集</b>（またはパートの行をダブルタップ）。<b>パターン全体</b> ならすべての小節に、<b>この小節だけ</b> ならその小節にだけ反映されます。</li><li>トラックの <b>R</b> を押して録音待機にします（初回はマイクの許可を求められます）。</li><li><b>●</b> で録音開始。「カウント」がオンなら 1 小節クリックが鳴ってから始まります。ほかのトラックの音がマイクに入らないよう、ヘッドホンを使ってください。</li><li><b>■</b> で停止。同じトラックにもう一度録ると、録った範囲だけ置き換わります。<b>元に戻す</b>で前のテイクに戻せます。</li><li>トラックとパートの <b>FX</b> でエフェクト（EQ・コンプ・歪み、共通のリバーブとテンポに合わせたディレイへ送る量）を付けられます。プリセット（ボーカル・アコギ・エレキなど）から始めると簡単です。</li><li>パートごとに <b>音色</b> を選べます。ベースは 8 種類（指弾き・ピック・スラップ・ミュート・ウッドベース・シンセ・アナログシンセ・808）、ドラムは 6 セット（スタンダード・ロック・ブラシ・808・909・ローファイ）。ドラムにはクラップ・タンバリン・シェイカー・カウベルもあります。</li><li>タイムラインを押すと再生位置が動きます（■ はいつも先頭に戻ります）。ピンチ・Ctrl＋ホイール・− / + で拡大縮小、ドラッグや横スクロールで左右に移動し、再生中は再生位置に合わせて表示が送られます。コード譜の小節は、ドラッグ（タッチ画面では長押ししてから）か ⠿ と矢印キーで移動できます。</li><li>作業内容はこのブラウザに自動で保存されます。消えないように残したいときや別の端末に移すときは <b>書き出し（.zip）</b>、続きをやるときは <b>読み込み…</b>。zip の中身は設定の <code>project.json</code> とトラックごとの WAV ファイルです。</li></ol>",
+    "help.body": "<ol><li><b>コードと伴奏</b> にコードを入力します（1 拍に 1 マス。空のマスは前のコードが続きます）。ベース・ピアノ・ドラムが自動で伴奏します。パートごとにパターンと音色を選び、ドラムのフィルは小節ごとに選べます。</li><li><b>伴奏を MIDI で書き出し</b> で、ベース・ピアノ・ドラムを標準 MIDI ファイル（テンポ・拍子・コード名のマーカー入り）に書き出し、DAW で開けます。<b>伴奏を音声トラックに</b>（またはパートの ⋯）で、伴奏を録音トラックの音声に変換できます。</li><li><b>バリエーション</b> で、人が弾くような変化を自動で付けます。ベースは次のコードへ駆け上がり、ピアノはコードを先取りして和音に色を足し、ドラムは 4 小節・8 小節の区切りでクラッシュ・オープンハイハット・ゴーストノート・短いつなぎを入れます。<b>別の案</b> で組み合わせが変わり、0 にすると元のパターンのままです。<b>エンディング</b> がオンなら、最後の小節の 1 拍目で全員が止まります。</li><li>1 音ずつ変えるときは、パートの <b>編集</b>（またはパートの行をダブルタップ）。<b>パターン全体</b> ならすべての小節に、<b>この小節だけ</b> ならその小節にだけ反映されます。</li><li>トラックの <b>R</b> を押して録音待機にします（初回はマイクの許可を求められます）。</li><li><b>●</b> で録音開始。「カウント」がオンなら 1 小節クリックが鳴ってから始まります。ほかのトラックの音がマイクに入らないよう、ヘッドホンを使ってください。</li><li><b>■</b> で停止。同じトラックにもう一度録ると、録った範囲だけ置き換わります。<b>元に戻す</b>で前のテイクに戻せます。</li><li>トラックとパートの <b>FX</b> でエフェクト（EQ・コンプ・歪み、共通のリバーブとテンポに合わせたディレイへ送る量）を付けられます。プリセット（ボーカル・アコギ・エレキなど）から始めると簡単です。</li><li>パートごとに <b>音色</b> を選べます。ベースは 8 種類（指弾き・ピック・スラップ・ミュート・ウッドベース・シンセ・アナログシンセ・808）、ドラムは 6 セット（スタンダード・ロック・ブラシ・808・909・ローファイ）。ドラムにはクラップ・タンバリン・シェイカー・カウベルもあります。</li><li>タイムラインを押すと再生位置が動きます（■ はいつも先頭に戻ります）。ピンチ・Ctrl＋ホイール・− / + で拡大縮小、ドラッグや横スクロールで左右に移動し、再生中は再生位置に合わせて表示が送られます。コード譜の小節は、ドラッグ（タッチ画面では長押ししてから）か ⠿ と矢印キーで移動できます。</li><li>作業内容はこのブラウザに自動で保存されます。消えないように残したいときや別の端末に移すときは <b>書き出し（.zip）</b>、続きをやるときは <b>読み込み…</b>。書き出すときはファイル名を選べます（最初はプロジェクト名）。PC の Chrome・Edge では保存先のフォルダも選べます。zip の中身は設定の <code>project.json</code> とトラックごとの WAV ファイルです。</li></ol>",
     "privacy.title": "プライバシー",
     "privacy.body": "<p>録音と処理はすべてお使いの端末の中で行います。録音した音をサーバーに送ることはありません。</p><p>再読み込みしても続けられるよう、プロジェクト（設定と音声）をこのブラウザの保存領域（IndexedDB）に保存します。「すべてクリア」で消去できます。書き出したファイルは、あなたが選んだ場所にだけ保存されます。</p>",
     "about.title": "このアプリについて",
@@ -533,10 +543,6 @@ function fmtTime(sec) {
 }
 function uid() { return Math.random().toString(36).slice(2, 10); }
 function safeName(s) { return (s || "").replace(/[\\/:*?"<>|\u0000-\u001f]/g, "_").trim().slice(0, 60) || "untitled"; }
-function stamp() {
-  const d = new Date(), p = (n) => String(n).padStart(2, "0");
-  return `${d.getFullYear()}${p(d.getMonth() + 1)}${p(d.getDate())}-${p(d.getHours())}${p(d.getMinutes())}`;
-}
 // Two-tap confirm (confirm() does not work inside an Artifact, and is clumsy on phones)
 function twoTap(btn, labelKey, action) {
   btn.addEventListener("click", () => {
@@ -1208,10 +1214,60 @@ async function saveFile(blob, filename) {
   toast(t("msg.exported", { file: filename }));
 }
 function projectBase() { return safeName(state.name || t("pj.untitled")); }
+// Ask where / under which name to save, then build the file (makeBlob may take a while, e.g. rendering).
+// Chrome / Edge on a computer: the system "Save as" dialog (name and folder). Elsewhere: a name field in the page,
+// then the browser's normal download (or the claude.ai save prompt in the Artifact preview).
+const FILE_TYPES = { zip: ["application/zip", "MiniMTR project"], wav: ["audio/wav", "WAV audio"], mid: ["audio/midi", "MIDI"] };
+async function exportFile(base, ext, makeBlob) {
+  const [mime, desc] = FILE_TYPES[ext];
+  if (window.showSaveFilePicker && !window.claude) {
+    let handle = null;
+    try {
+      handle = await window.showSaveFilePicker({ suggestedName: base + "." + ext, types: [{ description: desc, accept: { [mime]: ["." + ext] } }] });
+    } catch (e) {
+      if (e && e.name === "AbortError") return; // cancelled
+      handle = null; // not allowed here (e.g. inside a frame): fall back to the name field
+    }
+    if (handle) {
+      try {
+        const blob = await makeBlob();
+        if (!blob) return;
+        const w = await handle.createWritable();
+        await w.write(blob); await w.close();
+        toast(t("msg.exported", { file: handle.name }));
+      } catch (e) { console.warn(e); toast(t("msg.saveFail")); }
+      return;
+    }
+  }
+  const name = await askFileName(base, ext);
+  if (!name) return;
+  const blob = await makeBlob();
+  if (blob) await saveFile(blob, name + "." + ext);
+}
+function askFileName(base, ext) {
+  return new Promise((resolve) => {
+    const dlg = $("#nameDlg"), inp = $("#nameInput");
+    inp.value = base;
+    $("#nameExt").textContent = "." + ext;
+    let result = null;
+    const ok = () => {
+      const v = safeName(inp.value.replace(new RegExp("\\." + ext + "$", "i"), ""));
+      if (!v) { inp.focus(); return; }
+      result = v; dlg.close();
+    };
+    const onKey = (e) => { if (e.key === "Enter") { e.preventDefault(); ok(); } };
+    const okBtn = $("#nameOk");
+    okBtn.onclick = ok;
+    inp.addEventListener("keydown", onKey);
+    dlg.addEventListener("close", () => { inp.removeEventListener("keydown", onKey); okBtn.onclick = null; resolve(result); }, { once: true });
+    lastOpener = document.activeElement;
+    dlg.showModal();
+    inp.focus(); inp.select();
+  });
+}
 async function exportProject() {
   materializePending();
-  const zip = makeZip(projectFiles());
-  await saveFile(zip, `${projectBase()}-${stamp()}.zip`);
+  await exportFile(projectBase(), "zip", async () => makeZip(projectFiles()));
 }
 async function importProjectFile(file) {
   try {
@@ -1233,6 +1289,7 @@ async function mixdown() {
   const tail = events.length ? songLen() + 1 + state.fx.revLen : 0;
   const len = Math.max(tail, ...state.tracks.filter((x) => x.buffer && audibleGain(x) > 0).map((x) => x.buffer.duration + state.fx.revLen));
   if (!len) { toast(t("msg.nothing")); return; }
+  await exportFile(projectBase() + "-mix", "wav", async () => {
   toast(t("msg.rendering"), 60000);
   const oc = new OfflineAudioContext(2, Math.ceil(len * sr) + 1, sr);
   const comp = oc.createDynamicsCompressor();
@@ -1242,7 +1299,8 @@ async function mixdown() {
   mixMaster.connect(comp); comp.connect(oc.destination);
   renderMix(oc, mixMaster, { tracks: true, parts: PARTS });
   const out = await oc.startRendering();
-  await saveFile(new Blob([encodeWav(out, false)], { type: "audio/wav" }), `${projectBase()}-mix-${stamp()}.wav`);
+  return new Blob([encodeWav(out, false)], { type: "audio/wav" });
+  });
 }
 
 // ---------------------------------------------------------------- backing -> audio track
@@ -1339,7 +1397,7 @@ function buildMidi() {
 }
 async function exportMidi() {
   if (!state.song.enabled || !getEvents().length) { toast(t("msg.noBacking")); return; }
-  await saveFile(new Blob([buildMidi()], { type: "audio/midi" }), `${projectBase()}-backing-${stamp()}.mid`);
+  await exportFile(projectBase() + "-backing", "mid", async () => new Blob([buildMidi()], { type: "audio/midi" }));
 }
 
 
@@ -1433,7 +1491,7 @@ function renderTrack(tr) {
   q(".m-export").addEventListener("click", () => {
     closeMenus(); materializePending();
     if (!tr.buffer) { toast(t("msg.nothing")); return; }
-    saveFile(new Blob([encodeWav(tr.buffer, true)], { type: "audio/wav" }), `${projectBase()}-${safeName(tr.name)}.wav`);
+    exportFile(projectBase() + "-" + safeName(tr.name), "wav", async () => new Blob([encodeWav(tr.buffer, true)], { type: "audio/wav" }));
   });
   const clearBtn = q(".m-clear"), delBtn = q(".m-delete");
   twoTap(clearBtn, "tk.clear", () => { closeMenus(); undoInfo = { trackId: tr.id, buffer: tr.buffer }; $("#undoBtn").disabled = !tr.buffer; tr.buffer = null; tr.rev++; markAudioDirty(tr); drawAll(); });
