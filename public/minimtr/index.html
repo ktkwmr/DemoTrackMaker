@@ -1,0 +1,1398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Multitrack Recorder in Your Browser – MiniMTR</title>
+<meta name="description" content="Record and overdub multiple audio tracks in your browser. Mix with volume, pan, mute and solo, then export the project (WAV + settings) to your computer and continue later. Free, no sign-up." />
+<meta name="theme-color" content="#ffffff" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-title" content="MiniMTR" />
+<link rel="manifest" href="manifest.json" />
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+<style>
+  :root {
+    --bg: #ffffff; --fg: #111111; --muted: #5f5f5f; --line: #d6d6d6; --soft: #f3f3f3;
+    --lane: #fafafa; --wave: #222222; --wave-dim: #b5b5b5; --rec: #d4002a; --accent: #111111;
+    --head-h: 52px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #121212; --fg: #f0f0f0; --muted: #a8a8a8; --line: #3a3a3a; --soft: #1f1f1f;
+    --lane: #181818; --wave: #e8e8e8; --wave-dim: #5c5c5c; --rec: #ff4d6a; --accent: #f0f0f0; color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #121212; --fg: #f0f0f0; --muted: #a8a8a8; --line: #3a3a3a; --soft: #1f1f1f;
+    --lane: #181818; --wave: #e8e8e8; --wave-dim: #5c5c5c; --rec: #ff4d6a; --accent: #f0f0f0; color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0; background: var(--bg); color: var(--fg);
+    font: 15px/1.5 system-ui, -apple-system, "Segoe UI", "Hiragino Sans", "Noto Sans JP", sans-serif;
+  }
+  button, input, select { font: inherit; color: inherit; }
+  button {
+    background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px;
+    cursor: pointer; min-height: 36px; transition: transform .08s, background .08s;
+  }
+  button:hover:not(:disabled) { background: var(--soft); }
+  button:disabled { opacity: .4; cursor: default; }
+  button.is-pressed:not(:disabled) { transform: scale(.94); background: var(--line); }
+  @media (prefers-reduced-motion: reduce) { button.is-pressed:not(:disabled) { transform: none; } }
+  button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .icon-btn { width: 40px; padding: 0; display: inline-grid; place-items: center; }
+  svg.i { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+  header.top {
+    position: sticky; top: 0; z-index: 20; background: var(--bg); border-bottom: 1px solid var(--line);
+    padding: calc(8px + env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) 8px max(12px, env(safe-area-inset-left));
+    display: flex; align-items: center; gap: 10px;
+  }
+  .brand { font-weight: 700; font-size: 17px; display: flex; align-items: center; gap: 8px; }
+  .brand svg { width: 22px; height: 22px; }
+  .spacer { flex: 1; }
+  #saveStatus { color: var(--muted); font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  main { padding: 12px max(12px, env(safe-area-inset-right)) 24px max(12px, env(safe-area-inset-left)); max-width: 1200px; margin: 0 auto; }
+
+  /* Transport */
+  .transport {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; padding: 10px 12px;
+    border: 1px solid var(--line); border-radius: 12px; background: var(--soft);
+  }
+  .tbtns { display: flex; gap: 6px; }
+  .tbtns button { width: 48px; height: 44px; padding: 0; display: grid; place-items: center; }
+  #recBtn svg.i { stroke: var(--rec); }
+  #recBtn.on { background: var(--rec); border-color: var(--rec); }
+  #recBtn.on svg.i { stroke: #fff; fill: #fff; }
+  #playBtn.on { background: var(--fg); color: var(--bg); }
+  .clock { font-variant-numeric: tabular-nums; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; line-height: 1.2; min-width: 110px; }
+  .clock .t { font-size: 22px; font-weight: 600; }
+  .clock .b { font-size: 12px; color: var(--muted); }
+  .tset { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+  .tset label { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--muted); }
+  .tset input[type=number] { width: 64px; padding: 5px 6px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); }
+  .tset select { padding: 5px 6px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); }
+  .toggle[aria-pressed="true"] { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+  .meter { width: 90px; height: 8px; border-radius: 4px; background: var(--line); overflow: hidden; }
+  .meter > i { display: block; height: 100%; width: 0; background: var(--fg); transition: width .05s; }
+  .meter.hot > i { background: var(--rec); }
+
+  /* Project bar */
+  .projbar { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 10px 0; }
+  .projbar .label { font-size: 13px; color: var(--muted); margin-right: 4px; }
+  .projbar input.pname { min-width: 0; width: 180px; padding: 6px 8px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); }
+  .projbar .grp { display: flex; flex-wrap: wrap; gap: 6px; }
+  .confirm { background: var(--rec) !important; color: #fff !important; border-color: var(--rec) !important; }
+
+  /* Tracks */
+  .ruler-row, .track { display: grid; grid-template-columns: 290px 1fr; gap: 0; }
+  .ruler-row .pad { border-bottom: 1px solid var(--line); }
+  .lane-wrap { position: relative; min-width: 0; }
+  canvas.ruler { display: block; width: 100%; height: 24px; border-bottom: 1px solid var(--line); cursor: pointer; touch-action: none; }
+  .tracks { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+  .track { border-bottom: 1px solid var(--line); }
+  .track:last-child { border-bottom: 0; }
+  .ctl { padding: 8px; border-right: 1px solid var(--line); display: grid; grid-template-columns: minmax(0, 1fr); gap: 6px; background: var(--bg); min-width: 0; }
+  .ctl .row { display: flex; align-items: center; gap: 4px; }
+  .ctl input.tname { flex: 1; width: 0; min-width: 0; padding: 4px 6px; border: 1px solid transparent; border-radius: 6px; background: transparent; font-weight: 600; }
+  .ctl input.tname:hover, .ctl input.tname:focus { border-color: var(--line); }
+  .ctl .sbtn { min-width: 32px; min-height: 30px; padding: 2px 6px; font-size: 13px; font-weight: 700; }
+  .sbtn.arm[aria-pressed="true"] { background: var(--rec); color: #fff; border-color: var(--rec); }
+  .sbtn.mute[aria-pressed="true"] { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+  .sbtn.solo[aria-pressed="true"] { background: #e8b400; color: #111; border-color: #e8b400; }
+  .ctl .sl { display: grid; grid-template-columns: 28px 1fr 34px; align-items: center; gap: 4px; font-size: 12px; color: var(--muted); }
+  .ctl .sl output { text-align: right; font-variant-numeric: tabular-nums; }
+  .ctl input[type=range] { width: 100%; accent-color: var(--fg); }
+  .lane { position: relative; background: var(--lane); cursor: pointer; touch-action: none; min-height: 108px; }
+  .lane canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  .lane .empty { position: absolute; inset: 0; display: grid; place-items: center; color: var(--muted); font-size: 13px; pointer-events: none; text-align: center; padding: 0 8px; }
+  .lane .empty[hidden] { display: none; }
+  .playhead { position: absolute; top: 0; bottom: 0; width: 2px; margin-left: -1px; background: var(--rec); pointer-events: none; z-index: 2; }
+  .menu-wrap { position: relative; }
+  .tmenu { position: absolute; right: 0; top: 100%; z-index: 15; background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 4px; min-width: 210px; box-shadow: 0 6px 24px rgba(0,0,0,.15); display: grid; }
+  .tmenu[hidden] { display: none; }
+  .tmenu button, .tmenu a { border: 0; text-align: left; border-radius: 6px; min-height: 36px; padding: 6px 10px; background: transparent; color: inherit; text-decoration: none; display: block; font-size: 14px; }
+  .tmenu button:hover, .tmenu a:hover, .tmenu button:focus, .tmenu a:focus { background: var(--soft); outline: none; }
+  .addrow { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+
+  /* Intro */
+  .intro { margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--fg); max-width: 760px; }
+  .intro h1 { font-size: 20px; margin: 0 0 8px; }
+  .intro p { margin: 0 0 10px; color: var(--muted); }
+
+  dialog { border: 1px solid var(--line); border-radius: 14px; background: var(--bg); color: var(--fg); padding: 20px; max-width: min(560px, calc(100vw - 32px)); }
+  dialog:focus { outline: none; }
+  dialog::backdrop { background: rgba(0,0,0,.4); }
+  dialog h2 { margin: 0 0 10px; font-size: 18px; }
+  dialog p, dialog li { color: var(--muted); }
+  dialog .acts { display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px; }
+  #toast { position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom)); transform: translateX(-50%); background: var(--fg); color: var(--bg); padding: 10px 16px; border-radius: 10px; font-size: 14px; z-index: 50; max-width: calc(100vw - 32px); opacity: 0; pointer-events: none; transition: opacity .2s; }
+  #toast.show { opacity: 1; }
+  .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  @media (max-width: 720px) {
+    .ruler-row, .track { grid-template-columns: 1fr; }
+    .ruler-row .pad { display: none; }
+    .ctl { border-right: 0; border-bottom: 1px solid var(--line); grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+    .ctl .row:first-child { grid-column: 1 / -1; }
+    .lane { min-height: 84px; }
+    .clock .t { font-size: 20px; }
+  }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brand">
+    <svg viewBox="0 0 24 24" class="i" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8v8M11 10v4M15 7v10M19 11v2" stroke-width="1.8"/></svg>
+    <span>MiniMTR</span>
+  </div>
+  <span id="saveStatus" aria-live="polite"></span>
+  <span class="spacer"></span>
+  <div class="menu-wrap">
+    <button id="settingsBtn" class="icon-btn" aria-haspopup="menu" aria-expanded="false" aria-controls="settingsMenu" data-i18n-attr="aria-label:menu.settings">
+      <svg viewBox="0 0 24 24" class="i" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    </button>
+    <div id="settingsMenu" class="tmenu" role="menu" hidden>
+      <button role="menuitem" data-open="helpDlg" data-i18n="menu.help">How to use</button>
+      <button role="menuitem" data-open="latDlg" data-i18n="menu.latency">Recording latency</button>
+      <button role="menuitem" data-open="privacyDlg" data-i18n="menu.privacy">Privacy</button>
+      <button role="menuitem" data-open="aboutDlg" data-i18n="menu.about">About this app</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="transport" aria-label="Transport">
+    <div class="tbtns">
+      <button id="homeBtn" data-i18n-attr="aria-label:tr.home"><svg viewBox="0 0 24 24" class="i" aria-hidden="true"><path d="M6 5v14M19 5 9 12l10 7z"/></svg></button>
+      <button id="playBtn" data-i18n-attr="aria-label:tr.play"><svg viewBox="0 0 24 24" class="i" aria-hidden="true"><path id="playIcon" d="M7 4l13 8-13 8z"/></svg></button>
+      <button id="stopBtn" data-i18n-attr="aria-label:tr.stop"><svg viewBox="0 0 24 24" class="i" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="1"/></svg></button>
+      <button id="recBtn" data-i18n-attr="aria-label:tr.rec"><svg viewBox="0 0 24 24" class="i" aria-hidden="true"><circle cx="12" cy="12" r="6"/></svg></button>
+    </div>
+    <div class="clock" aria-live="off"><div class="t" id="clockT">00:00.000</div><div class="b" id="clockB">1.1</div></div>
+    <div class="tset">
+      <label><span data-i18n="tr.bpm">BPM</span> <input id="bpm" type="number" min="30" max="300" step="1" value="120" /></label>
+      <label><span data-i18n="tr.beats">Beats</span>
+        <select id="beats"><option>2</option><option>3</option><option selected>4</option><option>5</option><option>6</option><option>7</option></select>
+      </label>
+      <button id="metroBtn" class="toggle" aria-pressed="false" data-i18n="tr.metro">Click</button>
+      <button id="countBtn" class="toggle" aria-pressed="true" data-i18n="tr.countin">Count-in</button>
+      <label><span data-i18n="tr.input">Input</span> <span class="meter" id="meter"><i></i></span></label>
+      <button id="undoBtn" disabled data-i18n="tr.undo">Undo</button>
+    </div>
+  </section>
+
+  <section class="projbar" aria-label="Project">
+    <span class="label" data-i18n="pj.label">Project</span>
+    <input id="pname" class="pname" type="text" maxlength="60" data-i18n-attr="aria-label:pj.name" />
+    <div class="grp">
+      <button id="exportBtn" data-i18n="pj.export">Export project (.zip)</button>
+      <button id="importBtn" data-i18n="pj.import">Open project…</button>
+      <button id="folderSaveBtn" hidden data-i18n="pj.folderSave">Save to folder</button>
+      <button id="folderOpenBtn" hidden data-i18n="pj.folderOpen">Open folder…</button>
+      <button id="mixBtn" data-i18n="pj.mix">Mixdown (WAV)</button>
+      <button id="newBtn" data-i18n="pj.new">New</button>
+    </div>
+    <input id="projectFile" type="file" accept=".zip,application/zip" hidden />
+    <input id="audioFile" type="file" accept="audio/*,.wav,.mp3,.m4a,.aac,.ogg,.flac" hidden />
+  </section>
+
+  <section class="tracks" aria-label="Tracks">
+    <div class="ruler-row"><div class="pad"></div><div class="lane-wrap"><canvas class="ruler" id="ruler"></canvas></div></div>
+    <div id="trackList"></div>
+  </section>
+  <div class="addrow">
+    <button id="addTrackBtn" data-i18n="tk.add">+ Add track</button>
+  </div>
+
+  <section class="intro">
+    <h1 data-i18n="intro.title">Multitrack recorder in your browser</h1>
+    <div data-i18n-html="intro.body"></div>
+  </section>
+</main>
+
+<dialog id="helpDlg" tabindex="-1" aria-labelledby="helpTitle">
+  <h2 id="helpTitle" data-i18n="help.title">How to use</h2>
+  <div data-i18n-html="help.body"></div>
+  <div class="acts"><button data-close data-i18n="dlg.close">Close</button></div>
+</dialog>
+<dialog id="latDlg" tabindex="-1" aria-labelledby="latTitle">
+  <h2 id="latTitle" data-i18n="lat.title">Recording latency</h2>
+  <p data-i18n="lat.body"></p>
+  <p><label><span data-i18n="lat.label">Offset (ms)</span> <input id="latMs" type="number" min="-500" max="1000" step="1" style="width:90px" /></label>
+    <button id="latAuto" data-i18n="lat.auto">Auto</button></p>
+  <p id="latInfo" style="font-size:13px"></p>
+  <div class="acts"><button data-close data-i18n="dlg.close">Close</button></div>
+</dialog>
+<dialog id="privacyDlg" tabindex="-1" aria-labelledby="privTitle">
+  <h2 id="privTitle" data-i18n="privacy.title">Privacy</h2>
+  <div data-i18n-html="privacy.body"></div>
+  <div class="acts"><button data-close data-i18n="dlg.close">Close</button></div>
+</dialog>
+<dialog id="aboutDlg" tabindex="-1" aria-labelledby="aboutTitle">
+  <h2 id="aboutTitle" data-i18n="about.title">About this app</h2>
+  <div data-i18n-html="about.body"></div>
+  <div class="acts"><button data-close data-i18n="dlg.close">Close</button></div>
+</dialog>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+"use strict";
+// ---------------------------------------------------------------- i18n
+const I18N = {
+  en: {
+    "menu.settings": "Settings", "menu.help": "How to use", "menu.latency": "Recording latency", "menu.privacy": "Privacy", "menu.about": "About this app",
+    "tr.home": "Go to start", "tr.play": "Play / pause", "tr.stop": "Stop", "tr.rec": "Record",
+    "tr.bpm": "BPM", "tr.beats": "Beats", "tr.metro": "Click", "tr.countin": "Count-in", "tr.input": "Input", "tr.undo": "Undo",
+    "pj.label": "Project", "pj.name": "Project name", "pj.export": "Export project (.zip)", "pj.import": "Open project…",
+    "pj.folderSave": "Save to folder", "pj.folderSaveTo": "Save to “{name}”", "pj.folderOpen": "Open folder…", "pj.mix": "Mixdown (WAV)", "pj.new": "New", "pj.confirmNew": "Tap again to clear",
+    "pj.untitled": "Untitled",
+    "tk.add": "+ Add track", "tk.track": "Track {n}", "tk.arm": "Arm for recording", "tk.mute": "Mute", "tk.solo": "Solo",
+    "tk.vol": "Vol", "tk.pan": "Pan", "tk.more": "Track menu", "tk.importAudio": "Import audio file…", "tk.exportWav": "Export this track (WAV)",
+    "tk.clear": "Clear audio", "tk.delete": "Delete track", "tk.confirm": "Tap again to confirm", "tk.empty": "Arm (R) and press ● to record, or import an audio file from ⋯",
+    "st.saved": "Saved in this browser {time}", "st.saving": "Saving…", "st.failed": "Could not save in this browser (storage full?) — export the project",
+    "msg.noMic": "Microphone is not available here. Allow microphone access, or import an audio file from the track menu (⋯).",
+    "msg.noArm": "Arm a track (R) first.", "msg.exported": "Exported {file}", "msg.loaded": "Opened “{name}”", "msg.badProject": "This file is not a MiniMTR project.",
+    "msg.decodeFail": "Could not read this audio file.", "msg.folderSaved": "Saved to folder “{name}”", "msg.folderNoSupport": "Saving to a folder is not available in this browser.",
+    "msg.folderDenied": "Folder access was not allowed.", "msg.maxTracks": "Up to {n} tracks.", "msg.nothing": "Nothing to export yet.", "msg.recDone": "Recorded {sec} s", "msg.saveFail": "Could not save the file.",
+    "dlg.close": "Close",
+    "lat.title": "Recording latency",
+    "lat.body": "What you record reaches the browser a little later than what you hear. MiniMTR moves each new take earlier by this amount so it lines up with the other tracks. If takes sound late, increase it; if early, decrease it.",
+    "lat.label": "Offset (ms)", "lat.auto": "Auto", "lat.info": "Auto estimate on this device: {ms} ms (output {out} ms + input {inp} ms + processing {proc} ms)",
+    "help.title": "How to use",
+    "help.body": "<ol><li>Press <b>R</b> on a track to arm it (the browser asks for the microphone the first time).</li><li>Press <b>●</b> to record. With Count-in on, one bar of clicks plays first. Use headphones so other tracks do not leak into the microphone.</li><li>Press <b>■</b> to stop. Recording again on the same track replaces only the recorded range. <b>Undo</b> brings back the previous take.</li><li>Tap or drag on the waveform or the ruler to move the playhead.</li><li>Your work is saved in this browser automatically. To keep it safe or move it to another device, use <b>Export project (.zip)</b> and later <b>Open project…</b>. The zip contains <code>project.json</code> (settings) and one WAV file per track.</li><li>In Chrome / Edge on a computer, <b>Save to folder</b> writes the same files into a folder you choose, and saves over it the next time.</li></ol>",
+    "privacy.title": "Privacy",
+    "privacy.body": "<p>Audio is recorded and processed only on your device. Nothing you record is sent to any server.</p><p>Your project (settings and audio) is kept in this browser's storage (IndexedDB) so you can continue after reloading. “New” clears it. Exported files are saved only where you choose.</p>",
+    "about.title": "About this app",
+    "about.body": "<p><b>MiniMTR</b> — a simple multitrack recorder that runs entirely in your browser.</p><p>Prototype. Made by ktkwmr. Recording timing depends on the device; adjust it in ⚙ → Recording latency.</p>",
+    "intro.title": "Multitrack recorder in your browser",
+    "intro.body": "<p>MiniMTR lets you record several takes on top of each other — guitar, then vocals, then a harmony — right in the browser. Each track has volume, pan, mute and solo, and a click track with count-in keeps you in time.</p><p>Your project is saved automatically in the browser, and you can export everything (a WAV per track plus a settings file) as one zip to continue on another day or another device. A stereo mixdown WAV is one click away.</p><p>Free, no sign-up, and your recordings never leave your device.</p>"
+  },
+  ja: {
+    "menu.settings": "設定", "menu.help": "使い方", "menu.latency": "録音のずれ補正", "menu.privacy": "プライバシー", "menu.about": "このアプリについて",
+    "tr.home": "先頭へ", "tr.play": "再生／一時停止", "tr.stop": "停止", "tr.rec": "録音",
+    "tr.bpm": "BPM", "tr.beats": "拍子", "tr.metro": "クリック", "tr.countin": "カウント", "tr.input": "入力", "tr.undo": "元に戻す",
+    "pj.label": "プロジェクト", "pj.name": "プロジェクト名", "pj.export": "書き出し（.zip）", "pj.import": "読み込み…",
+    "pj.folderSave": "フォルダに保存", "pj.folderSaveTo": "「{name}」に保存", "pj.folderOpen": "フォルダから開く…", "pj.mix": "ミックスダウン（WAV）", "pj.new": "新規", "pj.confirmNew": "もう一度押すと消去",
+    "pj.untitled": "無題",
+    "tk.add": "＋ トラックを追加", "tk.track": "トラック {n}", "tk.arm": "録音待機", "tk.mute": "ミュート", "tk.solo": "ソロ",
+    "tk.vol": "音量", "tk.pan": "定位", "tk.more": "トラックのメニュー", "tk.importAudio": "音声ファイルを読み込む…", "tk.exportWav": "このトラックを書き出す（WAV）",
+    "tk.clear": "音声を消去", "tk.delete": "トラックを削除", "tk.confirm": "もう一度押すと実行", "tk.empty": "R で録音待機にして ● で録音、または ⋯ から音声ファイルを読み込み",
+    "st.saved": "このブラウザに保存済み {time}", "st.saving": "保存中…", "st.failed": "ブラウザに保存できません（容量不足？）。プロジェクトを書き出してください",
+    "msg.noMic": "ここではマイクが使えません。マイクを許可するか、トラックのメニュー（⋯）から音声ファイルを読み込んでください。",
+    "msg.noArm": "先にトラックを録音待機（R）にしてください。", "msg.exported": "{file} を書き出しました", "msg.loaded": "「{name}」を開きました", "msg.badProject": "MiniMTR のプロジェクトではありません。",
+    "msg.decodeFail": "この音声ファイルは読み込めません。", "msg.folderSaved": "フォルダ「{name}」に保存しました", "msg.folderNoSupport": "このブラウザではフォルダに保存できません。",
+    "msg.folderDenied": "フォルダへのアクセスが許可されませんでした。", "msg.maxTracks": "トラックは {n} 本までです。", "msg.nothing": "書き出す音声がまだありません。", "msg.recDone": "{sec} 秒録音しました", "msg.saveFail": "ファイルを保存できませんでした。",
+    "dlg.close": "閉じる",
+    "lat.title": "録音のずれ補正",
+    "lat.body": "録音した音は、聞こえている音より少し遅れてブラウザに届きます。新しく録った音をこの時間だけ前にずらして、ほかのトラックとそろえます。録った音が遅れて聞こえるなら増やし、早いなら減らしてください。",
+    "lat.label": "補正（ミリ秒）", "lat.auto": "自動", "lat.info": "この端末での自動の推定値: {ms} ms（出力 {out} ms ＋ 入力 {inp} ms ＋ 処理 {proc} ms）",
+    "help.title": "使い方",
+    "help.body": "<ol><li>トラックの <b>R</b> を押して録音待機にします（初回はマイクの許可を求められます）。</li><li><b>●</b> で録音開始。「カウント」がオンなら 1 小節クリックが鳴ってから始まります。ほかのトラックの音がマイクに入らないよう、ヘッドホンを使ってください。</li><li><b>■</b> で停止。同じトラックにもう一度録ると、録った範囲だけ置き換わります。<b>元に戻す</b>で前のテイクに戻せます。</li><li>波形や上の目盛りを押す・なぞると再生位置が動きます。</li><li>作業内容はこのブラウザに自動で保存されます。消えないように残したいときや別の端末に移すときは <b>書き出し（.zip）</b>、続きをやるときは <b>読み込み…</b>。zip の中身は設定の <code>project.json</code> とトラックごとの WAV ファイルです。</li><li>PC の Chrome・Edge では <b>フォルダに保存</b> で、選んだフォルダに同じファイルを書き出し、次からは上書き保存できます。</li></ol>",
+    "privacy.title": "プライバシー",
+    "privacy.body": "<p>録音と処理はすべてお使いの端末の中で行います。録音した音をサーバーに送ることはありません。</p><p>再読み込みしても続けられるよう、プロジェクト（設定と音声）をこのブラウザの保存領域（IndexedDB）に保存します。「新規」で消去できます。書き出したファイルは、あなたが選んだ場所にだけ保存されます。</p>",
+    "about.title": "このアプリについて",
+    "about.body": "<p><b>MiniMTR</b> — ブラウザだけで動くシンプルなマルチトラックレコーダーです。</p><p>試作版。作者 ktkwmr。録音のタイミングは端末によって変わります。⚙ →「録音のずれ補正」で調整してください。</p>",
+    "intro.title": "ブラウザで使えるマルチトラックレコーダー（MTR）",
+    "intro.body": "<p>MiniMTR は、ギター、歌、ハモリと、音を重ねて録音できるブラウザのアプリです。トラックごとに音量・定位・ミュート・ソロがあり、カウント付きのクリックで拍に合わせて録れます。</p><p>プロジェクトはブラウザに自動で保存され、トラックごとの WAV と設定ファイルをまとめた zip に書き出せるので、別の日や別の端末で続きができます。2 ミックスの WAV もワンクリックで書き出せます。</p><p>無料・登録不要。録音した音が端末の外に出ることはありません。</p>"
+  }
+};
+function detectLang() {
+  const q = new URLSearchParams(location.search).get("lang");
+  if (q === "ja" || q === "en") return q;
+  const p = document.documentElement.dataset.pageLang;
+  if (p) return p;
+  return (navigator.language || "en").toLowerCase().startsWith("ja") ? "ja" : "en";
+}
+const LANG = detectLang();
+document.documentElement.lang = LANG;
+function t(key, vars) {
+  let s = (I18N[LANG] && I18N[LANG][key]) ?? I18N.en[key] ?? key;
+  if (vars) for (const k in vars) s = s.replaceAll("{" + k + "}", vars[k]);
+  return s;
+}
+function applyI18n(root = document) {
+  root.querySelectorAll("[data-i18n]").forEach((el) => (el.textContent = t(el.dataset.i18n)));
+  root.querySelectorAll("[data-i18n-html]").forEach((el) => (el.innerHTML = t(el.dataset.i18nHtml)));
+  root.querySelectorAll("[data-i18n-attr]").forEach((el) => {
+    for (const pair of el.dataset.i18nAttr.split(";")) {
+      const [attr, key] = pair.split(":");
+      el.setAttribute(attr, t(key));
+    }
+  });
+}
+
+// ---------------------------------------------------------------- helpers
+const $ = (s, r = document) => r.querySelector(s);
+const MAX_TRACKS = 8;
+const DB_NAME = "minimtr";
+const FORMAT = "minimtr-project";
+let toastTimer;
+function toast(msg, ms = 2600) {
+  const el = $("#toast");
+  el.textContent = msg;
+  el.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove("show"), ms);
+}
+function fmtTime(sec) {
+  const neg = sec < 0; sec = Math.abs(sec);
+  const m = Math.floor(sec / 60), s = Math.floor(sec % 60), ms = Math.floor((sec * 1000) % 1000);
+  return (neg ? "-" : "") + String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0") + "." + String(ms).padStart(3, "0");
+}
+function uid() { return Math.random().toString(36).slice(2, 10); }
+function safeName(s) { return (s || "").replace(/[\\/:*?"<>|\u0000-\u001f]/g, "_").trim().slice(0, 60) || "untitled"; }
+function stamp() {
+  const d = new Date(), p = (n) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}${p(d.getMonth() + 1)}${p(d.getDate())}-${p(d.getHours())}${p(d.getMinutes())}`;
+}
+// Two-tap confirm (confirm() does not work inside an Artifact, and is clumsy on phones)
+function twoTap(btn, labelKey, action) {
+  btn.addEventListener("click", () => {
+    if (btn.dataset.armed) {
+      delete btn.dataset.armed; btn.classList.remove("confirm"); btn.textContent = t(labelKey);
+      action();
+      return;
+    }
+    btn.dataset.armed = "1"; btn.classList.add("confirm"); btn.textContent = t(btn.dataset.confirmKey || "tk.confirm");
+    setTimeout(() => { if (btn.dataset.armed) { delete btn.dataset.armed; btn.classList.remove("confirm"); btn.textContent = t(labelKey); } }, 3000);
+  });
+}
+// Press feedback (WEBAPP_BASELINE 9-10)
+document.addEventListener("pointerdown", (e) => {
+  const b = e.target.closest("button:not([aria-pressed])");
+  if (!b || b.disabled) return;
+  b.classList.add("is-pressed");
+  const t0 = performance.now();
+  const up = () => { setTimeout(() => b.classList.remove("is-pressed"), Math.max(0, 150 - (performance.now() - t0))); window.removeEventListener("pointerup", up); window.removeEventListener("pointercancel", up); };
+  window.addEventListener("pointerup", up); window.addEventListener("pointercancel", up);
+});
+
+// ---------------------------------------------------------------- IndexedDB
+let dbPromise;
+function idb() {
+  return (dbPromise ||= new Promise((res, rej) => {
+    const r = indexedDB.open(DB_NAME, 1);
+    r.onupgradeneeded = () => { r.result.createObjectStore("kv"); r.result.createObjectStore("audio"); };
+    r.onsuccess = () => res(r.result);
+    r.onerror = () => rej(r.error);
+  }));
+}
+async function idbOp(store, mode, fn) {
+  const db = await idb();
+  return new Promise((res, rej) => {
+    const tx = db.transaction(store, mode);
+    const req = fn(tx.objectStore(store));
+    tx.oncomplete = () => res(req && req.result);
+    tx.onerror = () => rej(tx.error);
+    tx.onabort = () => rej(tx.error);
+  });
+}
+const kvGet = (k) => idbOp("kv", "readonly", (s) => s.get(k));
+const kvSet = (k, v) => idbOp("kv", "readwrite", (s) => s.put(v, k));
+const kvDel = (k) => idbOp("kv", "readwrite", (s) => s.delete(k));
+const audioGet = (k) => idbOp("audio", "readonly", (s) => s.get(k));
+const audioSet = (k, v) => idbOp("audio", "readwrite", (s) => s.put(v, k));
+const audioDel = (k) => idbOp("audio", "readwrite", (s) => s.delete(k));
+const audioClear = () => idbOp("audio", "readwrite", (s) => s.clear());
+
+// ---------------------------------------------------------------- state
+const state = {
+  name: "", bpm: 120, beats: 4, metronome: false, countIn: true, latencyMs: null, // null = auto
+  tracks: [],
+};
+function newTrack(n) {
+  return { id: uid(), name: t("tk.track", { n }), volume: 0.8, pan: 0, mute: false, solo: false, armed: false, buffer: null, rev: 0 };
+}
+let undoInfo = null; // { trackId, buffer }
+
+// ---------------------------------------------------------------- audio engine
+let ctx = null, master = null;
+function ensureCtx() {
+  if (!ctx) {
+    ctx = new (window.AudioContext || window.webkitAudioContext)({ latencyHint: "interactive" });
+    master = ctx.createGain();
+    master.connect(ctx.destination);
+    for (const tr of state.tracks) buildTrackNodes(tr);
+  }
+  if (ctx.state === "suspended") ctx.resume();
+  return ctx;
+}
+function buildTrackNodes(tr) {
+  if (!ctx || tr.gain) return;
+  tr.gain = ctx.createGain();
+  tr.panner = ctx.createStereoPanner ? ctx.createStereoPanner() : null;
+  if (tr.panner) { tr.gain.connect(tr.panner); tr.panner.connect(master); } else tr.gain.connect(master);
+  updateMix(tr);
+}
+function audibleGain(tr) {
+  const anySolo = state.tracks.some((x) => x.solo);
+  if (tr.mute) return 0;
+  if (anySolo && !tr.solo) return 0;
+  return tr.volume;
+}
+function updateMix(tr) {
+  if (!tr.gain) return;
+  tr.gain.gain.setTargetAtTime(audibleGain(tr), ctx.currentTime, 0.01);
+  if (tr.panner) tr.panner.pan.setTargetAtTime(tr.pan, ctx.currentTime, 0.01);
+}
+function updateAllMix() { state.tracks.forEach(updateMix); }
+
+const transport = { playing: false, recording: false, startAt: 0, startPos: 0, pos: 0, sources: [], metroTimer: 0, nextBeat: 0 };
+function curPos() {
+  if (!transport.playing) return transport.pos;
+  return transport.startPos + (ctx.currentTime - transport.startAt);
+}
+function startSources() {
+  transport.sources = [];
+  for (const tr of state.tracks) {
+    if (!tr.buffer) continue;
+    if (transport.recording && tr.armed) continue; // don't play the track being recorded over
+    buildTrackNodes(tr);
+    const src = ctx.createBufferSource();
+    src.buffer = tr.buffer;
+    src.connect(tr.gain);
+    const off = transport.startPos;
+    if (off < tr.buffer.duration) {
+      if (off >= 0) src.start(transport.startAt, off);
+      else src.start(transport.startAt - off, 0);
+      transport.sources.push(src);
+    }
+  }
+}
+function stopSources() {
+  for (const s of transport.sources) { try { s.stop(); } catch {} s.disconnect(); }
+  transport.sources = [];
+}
+// Metronome: look-ahead scheduler
+function click(time, accent) {
+  const o = ctx.createOscillator(), g = ctx.createGain();
+  o.frequency.value = accent ? 1760 : 1100;
+  g.gain.setValueAtTime(0.0001, time);
+  g.gain.exponentialRampToValueAtTime(accent ? 0.5 : 0.3, time + 0.002);
+  g.gain.exponentialRampToValueAtTime(0.0001, time + 0.05);
+  o.connect(g); g.connect(ctx.destination);
+  o.start(time); o.stop(time + 0.06);
+}
+function scheduleMetro(countInUntil) {
+  const beat = 60 / state.bpm;
+  const ahead = 0.12;
+  while (true) {
+    const posOfBeat = transport.nextBeat * beat;
+    const time = transport.startAt + (posOfBeat - transport.startPos);
+    if (time > ctx.currentTime + ahead) break;
+    const inCount = posOfBeat < transport.startPos;
+    if ((state.metronome || (inCount && countInUntil)) && time >= ctx.currentTime - 0.01) {
+      const idx = ((transport.nextBeat % state.beats) + state.beats) % state.beats;
+      click(time, idx === 0);
+    }
+    transport.nextBeat++;
+  }
+}
+function startMetro(withCountIn) {
+  const beat = 60 / state.bpm;
+  transport.nextBeat = withCountIn ? Math.ceil(transport.startPos / beat - 1e-6) - state.beats : Math.ceil(transport.startPos / beat - 1e-6);
+  const tick = () => scheduleMetro(withCountIn);
+  tick();
+  transport.metroTimer = setInterval(tick, 25);
+}
+
+function play() {
+  if (transport.playing) return;
+  ensureCtx();
+  transport.startPos = Math.max(0, transport.pos);
+  transport.startAt = ctx.currentTime + 0.06;
+  transport.playing = true;
+  startSources();
+  startMetro(false);
+  updateTransportUi();
+  requestAnimationFrame(frame);
+}
+function pause() {
+  if (!transport.playing) return;
+  if (transport.recording) return stopRecording();
+  transport.pos = Math.max(0, curPos());
+  transport.playing = false;
+  stopSources();
+  clearInterval(transport.metroTimer);
+  updateTransportUi();
+  drawPlayheads();
+}
+function stopAll() {
+  if (transport.recording) { stopRecording(); return; }
+  if (transport.playing) pause();
+  else { transport.pos = 0; drawPlayheads(); updateClock(); }
+}
+function seek(sec) {
+  if (transport.recording) return;
+  const wasPlaying = transport.playing;
+  if (wasPlaying) pause();
+  transport.pos = Math.max(0, sec);
+  if (wasPlaying) play();
+  drawPlayheads(); updateClock();
+}
+
+// ---------------------------------------------------------------- recording
+let mic = null; // { stream, source, analyser, settings }
+async function ensureMic() {
+  if (mic) return mic;
+  ensureCtx();
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) throw new Error("nomic");
+  const stream = await navigator.mediaDevices.getUserMedia({
+    audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false, channelCount: 1 },
+  });
+  const source = ctx.createMediaStreamSource(stream);
+  const analyser = ctx.createAnalyser();
+  analyser.fftSize = 1024;
+  source.connect(analyser);
+  const track = stream.getAudioTracks()[0];
+  mic = { stream, source, analyser, settings: (track.getSettings && track.getSettings()) || {} };
+  requestAnimationFrame(meterLoop);
+  return mic;
+}
+function releaseMicIfUnused() {
+  if (!mic || state.tracks.some((x) => x.armed) || transport.recording) return;
+  mic.stream.getTracks().forEach((x) => x.stop());
+  mic.source.disconnect();
+  mic = null;
+  $("#meter > i").style.width = "0";
+}
+function meterLoop() {
+  if (!mic) return;
+  const buf = new Float32Array(mic.analyser.fftSize);
+  mic.analyser.getFloatTimeDomainData(buf);
+  let peak = 0;
+  for (let i = 0; i < buf.length; i++) peak = Math.max(peak, Math.abs(buf[i]));
+  const m = $("#meter");
+  m.firstElementChild.style.width = Math.min(100, peak * 100) + "%";
+  m.classList.toggle("hot", peak > 0.98);
+  requestAnimationFrame(meterLoop);
+}
+const PROC_SIZE = 2048;
+function latencyParts() {
+  const out = ctx ? ((ctx.outputLatency || 0) + (ctx.baseLatency || 0)) * 1000 : 0;
+  const inp = mic && mic.settings.latency ? mic.settings.latency * 1000 : 10;
+  const proc = ctx ? (PROC_SIZE / ctx.sampleRate) * 1000 : 0;
+  return { out: Math.round(out), inp: Math.round(inp), proc: Math.round(proc), total: Math.round(out + inp + proc) };
+}
+function latencySec() {
+  return (state.latencyMs == null ? latencyParts().total : state.latencyMs) / 1000;
+}
+let rec = null; // { node, chunks, firstTime, track }
+async function startRecording() {
+  const tr = state.tracks.find((x) => x.armed);
+  if (!tr) { toast(t("msg.noArm")); return; }
+  try { await ensureMic(); } catch (e) { toast(t("msg.noMic"), 4500); return; }
+  if (transport.playing) pause();
+  ensureCtx();
+  const node = ctx.createScriptProcessor(PROC_SIZE, 1, 1);
+  const sink = ctx.createGain(); sink.gain.value = 0;
+  const chunks = [];
+  rec = { node, sink, chunks, firstTime: null, track: tr };
+  node.onaudioprocess = (e) => {
+    if (!rec) return;
+    // Start time of this input block on the AudioContext clock (ScriptProcessor adds ~one block of delay)
+    if (rec.firstTime == null) rec.firstTime = e.playbackTime - (2 * PROC_SIZE) / ctx.sampleRate;
+    chunks.push(new Float32Array(e.inputBuffer.getChannelData(0)));
+  };
+  mic.source.connect(node); node.connect(sink); sink.connect(ctx.destination);
+
+  const beat = 60 / state.bpm;
+  const countIn = state.countIn ? state.beats * beat : 0;
+  transport.startPos = Math.max(0, transport.pos);
+  transport.startAt = ctx.currentTime + 0.1 + countIn;
+  transport.recording = true;
+  transport.playing = true;
+  rec.recStartPos = transport.startPos;
+  startSources();
+  startMetro(state.countIn);
+  updateTransportUi();
+  requestAnimationFrame(frame);
+}
+function stopRecording() {
+  if (!rec) return;
+  const r = rec; rec = null;
+  const stopTime = ctx.currentTime;
+  r.node.onaudioprocess = null;
+  try { mic.source.disconnect(r.node); } catch {}
+  r.node.disconnect(); r.sink.disconnect();
+  transport.pos = Math.max(0, curPos());
+  transport.playing = false; transport.recording = false;
+  stopSources(); clearInterval(transport.metroTimer);
+  updateTransportUi();
+
+  if (r.firstTime == null || !r.chunks.length) { drawAll(); return; }
+  const total = r.chunks.reduce((a, c) => a + c.length, 0);
+  const all = new Float32Array(total);
+  let o = 0; for (const c of r.chunks) { all.set(c, o); o += c.length; }
+  const sr = ctx.sampleRate;
+  // Sample i was captured at firstTime + i/sr. Position on the timeline = startPos + (time - startAt) - latency.
+  const shift = latencySec();
+  const posOfSample0 = transport.startPos + (r.firstTime - transport.startAt) - shift;
+  const endPos = transport.startPos + (stopTime - transport.startAt);
+  let from = Math.ceil((r.recStartPos - posOfSample0) * sr);
+  let to = Math.floor((endPos - posOfSample0) * sr);
+  from = Math.max(0, from); to = Math.min(all.length, to);
+  if (to - from < sr * 0.05) { drawAll(); return; }
+  const take = all.subarray(from, to);
+  const at = posOfSample0 + from / sr;
+  undoInfo = { trackId: r.track.id, buffer: r.track.buffer };
+  r.track.buffer = mergeInto(r.track.buffer, take, sr, at);
+  r.track.rev++;
+  markAudioDirty(r.track);
+  $("#undoBtn").disabled = false;
+  toast(t("msg.recDone", { sec: (take.length / sr).toFixed(1) }));
+  drawAll();
+}
+// Write mono samples into a track buffer at a position (punch-in), keeping the rest
+function mergeInto(old, data, sr, atSec) {
+  const at = Math.max(0, Math.round(atSec * sr));
+  if (old && old.sampleRate !== sr) old = resampleSync(old, sr);
+  const oldLen = old ? old.length : 0;
+  const ch = old ? old.numberOfChannels : 1;
+  const len = Math.max(oldLen, at + data.length);
+  const nb = ctx.createBuffer(ch, len, sr);
+  for (let c = 0; c < ch; c++) {
+    const dst = nb.getChannelData(c);
+    if (old) dst.set(old.getChannelData(c));
+    dst.set(data, at);
+  }
+  return nb;
+}
+// Linear-interpolation resample (used only if a restored buffer came from a device with another sample rate)
+function resampleSync(buf, sr) {
+  const ratio = buf.sampleRate / sr;
+  const len = Math.floor(buf.length / ratio);
+  const nb = ctx.createBuffer(buf.numberOfChannels, len, sr);
+  for (let c = 0; c < buf.numberOfChannels; c++) {
+    const s = buf.getChannelData(c), d = nb.getChannelData(c);
+    for (let i = 0; i < len; i++) {
+      const x = i * ratio, i0 = Math.floor(x), f = x - i0;
+      d[i] = (s[i0] || 0) * (1 - f) + (s[i0 + 1] || 0) * f;
+    }
+  }
+  return nb;
+}
+function undo() {
+  if (!undoInfo) return;
+  const tr = state.tracks.find((x) => x.id === undoInfo.trackId);
+  if (tr) { tr.buffer = undoInfo.buffer; tr.rev++; markAudioDirty(tr); }
+  undoInfo = null;
+  $("#undoBtn").disabled = true;
+  drawAll();
+}
+
+// ---------------------------------------------------------------- WAV
+function encodeWav(buffer, float = false) {
+  const ch = buffer.numberOfChannels, sr = buffer.sampleRate, len = buffer.length;
+  const bps = float ? 4 : 2;
+  const dataLen = len * ch * bps;
+  const ab = new ArrayBuffer(44 + dataLen);
+  const v = new DataView(ab);
+  const w = (o, s) => { for (let i = 0; i < s.length; i++) v.setUint8(o + i, s.charCodeAt(i)); };
+  w(0, "RIFF"); v.setUint32(4, 36 + dataLen, true); w(8, "WAVE");
+  w(12, "fmt "); v.setUint32(16, 16, true); v.setUint16(20, float ? 3 : 1, true); v.setUint16(22, ch, true);
+  v.setUint32(24, sr, true); v.setUint32(28, sr * ch * bps, true); v.setUint16(32, ch * bps, true); v.setUint16(34, bps * 8, true);
+  w(36, "data"); v.setUint32(40, dataLen, true);
+  const chans = []; for (let c = 0; c < ch; c++) chans.push(buffer.getChannelData(c));
+  let o = 44;
+  for (let i = 0; i < len; i++) {
+    for (let c = 0; c < ch; c++) {
+      const s = chans[c][i];
+      if (float) { v.setFloat32(o, s, true); o += 4; }
+      else { const x = Math.max(-1, Math.min(1, s)); v.setInt16(o, x < 0 ? x * 0x8000 : x * 0x7fff, true); o += 2; }
+    }
+  }
+  return new Uint8Array(ab);
+}
+// Parse PCM 16/24/32-bit int and 32-bit float WAV (our own files) without decodeAudioData, so no resampling happens
+function parseWav(u8) {
+  const v = new DataView(u8.buffer, u8.byteOffset, u8.byteLength);
+  const str = (o, n) => String.fromCharCode(...u8.subarray(o, o + n));
+  if (str(0, 4) !== "RIFF" || str(8, 4) !== "WAVE") return null;
+  let o = 12, fmt = null;
+  while (o + 8 <= u8.length) {
+    const id = str(o, 4), size = v.getUint32(o + 4, true), body = o + 8;
+    if (id === "fmt ") {
+      let tag = v.getUint16(body, true);
+      if (tag === 0xfffe && size >= 26) tag = v.getUint16(body + 24, true);
+      fmt = { tag, ch: v.getUint16(body + 2, true), sr: v.getUint32(body + 4, true), bits: v.getUint16(body + 14, true) };
+    } else if (id === "data" && fmt) {
+      const { tag, ch, sr, bits } = fmt;
+      const bps = bits / 8;
+      const n = Math.floor(Math.min(size, u8.length - body) / (bps * ch));
+      const chans = Array.from({ length: ch }, () => new Float32Array(n));
+      let p = body;
+      for (let i = 0; i < n; i++) for (let c = 0; c < ch; c++) {
+        let s;
+        if (tag === 3 && bits === 32) s = v.getFloat32(p, true);
+        else if (tag === 1 && bits === 16) s = v.getInt16(p, true) / 32768;
+        else if (tag === 1 && bits === 24) { const x = (v.getUint8(p) | (v.getUint8(p + 1) << 8) | (v.getInt8(p + 2) << 16)); s = x / 8388608; }
+        else if (tag === 1 && bits === 32) s = v.getInt32(p, true) / 2147483648;
+        else return null;
+        chans[c][i] = s; p += bps;
+      }
+      return { sr, chans };
+    }
+    o = body + size + (size & 1);
+  }
+  return null;
+}
+function chansToBuffer(sr, chans) {
+  ensureCtx();
+  const b = ctx.createBuffer(chans.length, Math.max(1, chans[0].length), sr);
+  chans.forEach((d, c) => b.copyToChannel ? b.copyToChannel(d, c) : b.getChannelData(c).set(d));
+  return b;
+}
+async function decodeAudioFile(u8) {
+  const parsed = parseWav(u8);
+  if (parsed) return chansToBuffer(parsed.sr, parsed.chans);
+  ensureCtx();
+  const ab = u8.buffer.slice(u8.byteOffset, u8.byteOffset + u8.byteLength);
+  return await new Promise((res, rej) => ctx.decodeAudioData(ab, res, rej));
+}
+
+// ---------------------------------------------------------------- ZIP (store; reads store and deflate)
+const CRC_TABLE = (() => { const tb = new Uint32Array(256); for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1; tb[n] = c >>> 0; } return tb; })();
+function crc32(u8) { let c = 0xffffffff; for (let i = 0; i < u8.length; i++) c = CRC_TABLE[(c ^ u8[i]) & 0xff] ^ (c >>> 8); return (c ^ 0xffffffff) >>> 0; }
+function makeZip(files) {
+  const enc = new TextEncoder();
+  const parts = [], central = [];
+  let offset = 0;
+  const d = new Date();
+  const dosTime = (d.getHours() << 11) | (d.getMinutes() << 5) | (d.getSeconds() >> 1);
+  const dosDate = ((d.getFullYear() - 1980) << 9) | ((d.getMonth() + 1) << 5) | d.getDate();
+  for (const f of files) {
+    const name = enc.encode(f.name), data = f.data, crc = crc32(data);
+    const lh = new DataView(new ArrayBuffer(30));
+    lh.setUint32(0, 0x04034b50, true); lh.setUint16(4, 20, true); lh.setUint16(6, 0x0800, true); lh.setUint16(8, 0, true);
+    lh.setUint16(10, dosTime, true); lh.setUint16(12, dosDate, true); lh.setUint32(14, crc, true);
+    lh.setUint32(18, data.length, true); lh.setUint32(22, data.length, true); lh.setUint16(26, name.length, true); lh.setUint16(28, 0, true);
+    parts.push(new Uint8Array(lh.buffer), name, data);
+    const ch = new DataView(new ArrayBuffer(46));
+    ch.setUint32(0, 0x02014b50, true); ch.setUint16(4, 20, true); ch.setUint16(6, 20, true); ch.setUint16(8, 0x0800, true); ch.setUint16(10, 0, true);
+    ch.setUint16(12, dosTime, true); ch.setUint16(14, dosDate, true); ch.setUint32(16, crc, true);
+    ch.setUint32(20, data.length, true); ch.setUint32(24, data.length, true); ch.setUint16(28, name.length, true);
+    ch.setUint32(42, offset, true);
+    central.push(new Uint8Array(ch.buffer), name);
+    offset += 30 + name.length + data.length;
+  }
+  const cdSize = central.reduce((a, p) => a + p.length, 0);
+  const end = new DataView(new ArrayBuffer(22));
+  end.setUint32(0, 0x06054b50, true); end.setUint16(8, files.length, true); end.setUint16(10, files.length, true);
+  end.setUint32(12, cdSize, true); end.setUint32(16, offset, true);
+  return new Blob([...parts, ...central, new Uint8Array(end.buffer)], { type: "application/zip" });
+}
+async function readZip(u8) {
+  const v = new DataView(u8.buffer, u8.byteOffset, u8.byteLength);
+  let e = -1;
+  for (let i = u8.length - 22; i >= Math.max(0, u8.length - 65557); i--) if (v.getUint32(i, true) === 0x06054b50) { e = i; break; }
+  if (e < 0) throw new Error("zip");
+  const count = v.getUint16(e + 10, true);
+  let p = v.getUint32(e + 16, true);
+  const dec = new TextDecoder();
+  const out = {};
+  for (let k = 0; k < count; k++) {
+    if (v.getUint32(p, true) !== 0x02014b50) throw new Error("zip");
+    const method = v.getUint16(p + 10, true), csize = v.getUint32(p + 20, true);
+    const nlen = v.getUint16(p + 28, true), xlen = v.getUint16(p + 30, true), clen = v.getUint16(p + 32, true), lho = v.getUint32(p + 42, true);
+    const name = dec.decode(u8.subarray(p + 46, p + 46 + nlen));
+    const dataStart = lho + 30 + v.getUint16(lho + 26, true) + v.getUint16(lho + 28, true);
+    const raw = u8.subarray(dataStart, dataStart + csize);
+    if (method === 0) out[name] = raw;
+    else if (method === 8 && typeof DecompressionStream !== "undefined") {
+      const ds = new Blob([raw]).stream().pipeThrough(new DecompressionStream("deflate-raw"));
+      out[name] = new Uint8Array(await new Response(ds).arrayBuffer());
+    }
+    p += 46 + nlen + xlen + clen;
+  }
+  return out;
+}
+
+// ---------------------------------------------------------------- project (de)serialization
+function projectJson(fileFor) {
+  return {
+    format: FORMAT, version: 1, app: "MiniMTR", savedAt: new Date().toISOString(),
+    name: state.name, bpm: state.bpm, beatsPerBar: state.beats, metronome: state.metronome, countIn: state.countIn, latencyMs: state.latencyMs,
+    tracks: state.tracks.map((tr, i) => ({
+      name: tr.name, volume: tr.volume, pan: tr.pan, mute: tr.mute, solo: tr.solo,
+      file: tr.buffer ? fileFor(tr, i) : null,
+      sampleRate: tr.buffer ? tr.buffer.sampleRate : null,
+      channels: tr.buffer ? tr.buffer.numberOfChannels : null,
+      durationSec: tr.buffer ? +tr.buffer.duration.toFixed(3) : 0,
+    })),
+  };
+}
+const trackFile = (tr, i) => `tracks/${String(i + 1).padStart(2, "0")}-${safeName(tr.name)}.wav`;
+function projectFiles() {
+  const enc = new TextEncoder();
+  const files = [];
+  const json = projectJson(trackFile);
+  files.push({ name: "project.json", data: enc.encode(JSON.stringify(json, null, 2)) });
+  state.tracks.forEach((tr, i) => { if (tr.buffer) files.push({ name: trackFile(tr, i), data: encodeWav(tr.buffer, true) }); });
+  return files;
+}
+async function loadProject(json, getFile) {
+  if (!json || json.format !== FORMAT) throw new Error("format");
+  if (transport.playing) stopAll();
+  ensureCtx();
+  const tracks = [];
+  for (const [i, m] of (json.tracks || []).slice(0, MAX_TRACKS).entries()) {
+    const tr = newTrack(i + 1);
+    Object.assign(tr, {
+      name: String(m.name || tr.name).slice(0, 40),
+      volume: clamp(+m.volume, 0, 1.5, 0.8), pan: clamp(+m.pan, -1, 1, 0), mute: !!m.mute, solo: !!m.solo,
+    });
+    if (m.file) {
+      const u8 = await getFile(m.file);
+      if (u8) { try { tr.buffer = await decodeAudioFile(u8); } catch {} }
+    }
+    tracks.push(tr);
+  }
+  if (!tracks.length) tracks.push(newTrack(1));
+  for (const tr of state.tracks) { if (tr.gain) tr.gain.disconnect(); if (tr.panner) tr.panner.disconnect(); }
+  Object.assign(state, {
+    name: String(json.name || "").slice(0, 60), bpm: clamp(+json.bpm, 30, 300, 120), beats: clamp(+json.beatsPerBar, 2, 7, 4),
+    metronome: !!json.metronome, countIn: json.countIn !== false, latencyMs: json.latencyMs == null ? null : clamp(+json.latencyMs, -500, 1000, null),
+    tracks,
+  });
+  undoInfo = null; $("#undoBtn").disabled = true;
+  transport.pos = 0;
+  tracks.forEach(buildTrackNodes);
+  await audioClear();
+  tracks.forEach(markAudioDirty);
+  renderAll();
+  saveSoon();
+}
+function clamp(x, lo, hi, dflt) { return Number.isFinite(x) ? Math.min(hi, Math.max(lo, x)) : dflt; }
+
+// ---------------------------------------------------------------- autosave (IndexedDB)
+const dirtyAudio = new Set();
+let saveTimer = 0;
+function markAudioDirty(tr) { dirtyAudio.add(tr.id); saveSoon(); }
+function saveSoon() { clearTimeout(saveTimer); saveTimer = setTimeout(saveNow, 500); }
+async function saveNow() {
+  const st = $("#saveStatus");
+  st.textContent = t("st.saving");
+  try {
+    const meta = {
+      name: state.name, bpm: state.bpm, beats: state.beats, metronome: state.metronome, countIn: state.countIn, latencyMs: state.latencyMs,
+      tracks: state.tracks.map((tr) => ({ id: tr.id, name: tr.name, volume: tr.volume, pan: tr.pan, mute: tr.mute, solo: tr.solo, armed: false })),
+    };
+    for (const id of [...dirtyAudio]) {
+      const tr = state.tracks.find((x) => x.id === id);
+      dirtyAudio.delete(id);
+      if (tr && tr.buffer) {
+        const chans = []; for (let c = 0; c < tr.buffer.numberOfChannels; c++) chans.push(new Float32Array(tr.buffer.getChannelData(c)));
+        await audioSet(id, { sr: tr.buffer.sampleRate, chans });
+      } else await audioDel(id);
+    }
+    await kvSet("project", meta);
+    const d = new Date();
+    st.textContent = t("st.saved", { time: d.toLocaleTimeString(LANG === "ja" ? "ja-JP" : "en-US", { hour: "2-digit", minute: "2-digit" }) });
+  } catch (e) {
+    console.warn(e);
+    st.textContent = t("st.failed");
+  }
+}
+async function restore() {
+  try {
+    const meta = await kvGet("project");
+    if (!meta) return false;
+    Object.assign(state, {
+      name: meta.name || "", bpm: meta.bpm || 120, beats: meta.beats || 4, metronome: !!meta.metronome, countIn: meta.countIn !== false,
+      latencyMs: meta.latencyMs ?? null,
+      tracks: [],
+    });
+    for (const m of meta.tracks || []) {
+      const tr = Object.assign(newTrack(state.tracks.length + 1), m, { armed: false, buffer: null, rev: 0 });
+      const a = await audioGet(m.id);
+      if (a && a.chans && a.chans.length) {
+        tr.pending = a; // turned into an AudioBuffer by materializePending()
+      }
+      state.tracks.push(tr);
+    }
+    return state.tracks.length > 0;
+  } catch (e) { console.warn(e); return false; }
+}
+// new AudioBuffer() needs no AudioContext, so restoring does not start audio before a user gesture
+function materializePending() {
+  for (const tr of state.tracks) {
+    if (!tr.pending) continue;
+    const a = tr.pending; delete tr.pending;
+    try {
+      const b = new AudioBuffer({ numberOfChannels: a.chans.length, length: a.chans[0].length, sampleRate: a.sr });
+      a.chans.forEach((d, c) => b.copyToChannel(d, c));
+      tr.buffer = b;
+    } catch { tr.buffer = chansToBuffer(a.sr, a.chans); }
+    tr.rev++;
+  }
+}
+
+// ---------------------------------------------------------------- file output
+let claudeDownloads; // undefined = not checked, null = not available
+async function getClaudeDownloads() {
+  if (claudeDownloads !== undefined) return claudeDownloads;
+  claudeDownloads = null;
+  if (window.claude && window.claude.use) { try { claudeDownloads = await window.claude.use("downloads"); } catch {} }
+  return claudeDownloads;
+}
+async function saveFile(blob, filename) {
+  const dl = await getClaudeDownloads();
+  if (dl) {
+    // claude.ai Artifact: a[download] does not work, and .wav is not on the allowed list -> wrap it in a zip
+    if (!/\.(zip|json|txt)$/i.test(filename)) {
+      blob = makeZip([{ name: filename, data: new Uint8Array(await blob.arrayBuffer()) }]);
+      filename = filename.replace(/\.[^.]+$/, "") + ".zip";
+    }
+    try { await dl.save({ filename, data: blob }); toast(t("msg.exported", { file: filename })); }
+    catch (e) { if (e && e.code !== "declined") toast(t("msg.saveFail")); }
+    return;
+  }
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 10000);
+  toast(t("msg.exported", { file: filename }));
+}
+function projectBase() { return safeName(state.name || t("pj.untitled")); }
+async function exportProject() {
+  materializePending();
+  const zip = makeZip(projectFiles());
+  await saveFile(zip, `${projectBase()}-${stamp()}.zip`);
+}
+async function importProjectFile(file) {
+  try {
+    const u8 = new Uint8Array(await file.arrayBuffer());
+    const files = await readZip(u8);
+    // Accept a zip whose project.json is inside a single top folder too
+    const key = Object.keys(files).find((k) => k === "project.json" || k.endsWith("/project.json"));
+    if (!key) throw new Error("format");
+    const base = key.slice(0, -"project.json".length);
+    const json = JSON.parse(new TextDecoder().decode(files[key]));
+    await loadProject(json, async (name) => files[base + name] || null);
+    toast(t("msg.loaded", { name: state.name || t("pj.untitled") }));
+  } catch (e) { console.warn(e); toast(t("msg.badProject")); }
+}
+async function mixdown() {
+  materializePending();
+  const sr = ctx ? ctx.sampleRate : 48000;
+  const len = Math.max(0, ...state.tracks.filter((x) => x.buffer && audibleGain(x) > 0).map((x) => x.buffer.duration));
+  if (!len) { toast(t("msg.nothing")); return; }
+  const oc = new OfflineAudioContext(2, Math.ceil(len * sr) + 1, sr);
+  for (const tr of state.tracks) {
+    if (!tr.buffer || audibleGain(tr) === 0) continue;
+    const s = oc.createBufferSource(); s.buffer = tr.buffer;
+    const g = oc.createGain(); g.gain.value = audibleGain(tr);
+    const p = oc.createStereoPanner(); p.pan.value = tr.pan;
+    s.connect(g); g.connect(p); p.connect(oc.destination); s.start(0);
+  }
+  const out = await oc.startRendering();
+  await saveFile(new Blob([encodeWav(out, false)], { type: "audio/wav" }), `${projectBase()}-mix-${stamp()}.wav`);
+}
+
+// Folder save (File System Access API: Chrome / Edge on computers)
+let dirHandle = null;
+const fsSupported = "showDirectoryPicker" in window;
+async function verifyPerm(h) {
+  const opts = { mode: "readwrite" };
+  if ((await h.queryPermission(opts)) === "granted") return true;
+  return (await h.requestPermission(opts)) === "granted";
+}
+async function folderSave(pick) {
+  try {
+    materializePending();
+    if (!dirHandle || pick) dirHandle = await window.showDirectoryPicker({ id: "minimtr", mode: "readwrite" });
+    if (!(await verifyPerm(dirHandle))) { toast(t("msg.folderDenied")); return; }
+    const files = projectFiles();
+    const tracksDir = await dirHandle.getDirectoryHandle("tracks", { create: true });
+    const keep = new Set();
+    for (const f of files) {
+      const parts = f.name.split("/");
+      const dir = parts.length > 1 ? tracksDir : dirHandle;
+      const name = parts[parts.length - 1];
+      if (parts.length > 1) keep.add(name);
+      const fh = await dir.getFileHandle(name, { create: true });
+      const w = await fh.createWritable();
+      await w.write(f.data); await w.close();
+    }
+    // Remove old take files that this project no longer refers to
+    for await (const [name, h] of tracksDir.entries()) if (h.kind === "file" && name.endsWith(".wav") && !keep.has(name)) await tracksDir.removeEntry(name);
+    try { await kvSet("dirHandle", dirHandle); } catch {}
+    updateFolderUi();
+    toast(t("msg.folderSaved", { name: dirHandle.name }));
+  } catch (e) {
+    if (e && e.name === "AbortError") return;
+    console.warn(e);
+    toast(e && e.name === "SecurityError" ? t("msg.folderNoSupport") : t("msg.saveFail"));
+  }
+}
+async function folderOpen() {
+  try {
+    const h = await window.showDirectoryPicker({ id: "minimtr", mode: "readwrite" });
+    const fh = await h.getFileHandle("project.json");
+    const json = JSON.parse(await (await fh.getFile()).text());
+    await loadProject(json, async (name) => {
+      try {
+        let dir = h; const parts = name.split("/");
+        for (const p of parts.slice(0, -1)) dir = await dir.getDirectoryHandle(p);
+        const f = await (await dir.getFileHandle(parts[parts.length - 1])).getFile();
+        return new Uint8Array(await f.arrayBuffer());
+      } catch { return null; }
+    });
+    dirHandle = h;
+    try { await kvSet("dirHandle", h); } catch {}
+    updateFolderUi();
+    toast(t("msg.loaded", { name: state.name || h.name }));
+  } catch (e) {
+    if (e && e.name === "AbortError") return;
+    console.warn(e);
+    toast(e && e.name === "SecurityError" ? t("msg.folderNoSupport") : t("msg.badProject"));
+  }
+}
+function updateFolderUi() {
+  const b = $("#folderSaveBtn");
+  b.textContent = dirHandle ? t("pj.folderSaveTo", { name: dirHandle.name }) : t("pj.folderSave");
+}
+
+// ---------------------------------------------------------------- UI: tracks
+const trackList = $("#trackList");
+let pendingImportTrack = null;
+function renderAll() {
+  $("#pname").value = state.name;
+  $("#pname").placeholder = t("pj.untitled");
+  $("#bpm").value = state.bpm;
+  $("#beats").value = String(state.beats);
+  $("#metroBtn").setAttribute("aria-pressed", state.metronome);
+  $("#countBtn").setAttribute("aria-pressed", state.countIn);
+  trackList.innerHTML = "";
+  state.tracks.forEach((tr) => trackList.appendChild(renderTrack(tr)));
+  $("#addTrackBtn").disabled = state.tracks.length >= MAX_TRACKS;
+  requestAnimationFrame(drawAll);
+}
+function renderTrack(tr) {
+  const el = document.createElement("div");
+  el.className = "track"; el.dataset.id = tr.id;
+  el.innerHTML = `
+    <div class="ctl">
+      <div class="row">
+        <input class="tname" type="text" maxlength="40" />
+        <button class="sbtn arm" aria-pressed="false">R</button>
+        <button class="sbtn mute" aria-pressed="false">M</button>
+        <button class="sbtn solo" aria-pressed="false">S</button>
+        <div class="menu-wrap">
+          <button class="sbtn more" aria-haspopup="menu" aria-expanded="false">⋯</button>
+          <div class="tmenu" role="menu" hidden>
+            <button role="menuitem" class="m-import"></button>
+            <button role="menuitem" class="m-export"></button>
+            <button role="menuitem" class="m-clear"></button>
+            <button role="menuitem" class="m-delete"></button>
+          </div>
+        </div>
+      </div>
+      <label class="sl"><span></span><input class="vol" type="range" min="0" max="1.5" step="0.01" /><output></output></label>
+      <label class="sl"><span></span><input class="pan" type="range" min="-1" max="1" step="0.01" /><output></output></label>
+    </div>
+    <div class="lane-wrap"><div class="lane"><canvas></canvas><div class="empty"></div><div class="playhead"></div></div></div>`;
+  const q = (s) => el.querySelector(s);
+  const name = q(".tname"); name.value = tr.name; name.setAttribute("aria-label", t("tk.track", { n: state.tracks.indexOf(tr) + 1 }));
+  name.addEventListener("change", () => { tr.name = name.value.trim() || t("tk.track", { n: state.tracks.indexOf(tr) + 1 }); name.value = tr.name; saveSoon(); });
+  const arm = q(".arm"), mute = q(".mute"), solo = q(".solo");
+  arm.setAttribute("aria-label", t("tk.arm")); mute.setAttribute("aria-label", t("tk.mute")); solo.setAttribute("aria-label", t("tk.solo"));
+  arm.title = t("tk.arm"); mute.title = t("tk.mute"); solo.title = t("tk.solo");
+  const sync = () => { arm.setAttribute("aria-pressed", tr.armed); mute.setAttribute("aria-pressed", tr.mute); solo.setAttribute("aria-pressed", tr.solo); };
+  sync();
+  arm.addEventListener("click", async () => {
+    if (transport.recording) return;
+    const on = !tr.armed;
+    state.tracks.forEach((x) => (x.armed = false));
+    tr.armed = on;
+    document.querySelectorAll(".track .arm").forEach((b) => b.setAttribute("aria-pressed", "false"));
+    sync();
+    if (on) { try { await ensureMic(); } catch { toast(t("msg.noMic"), 4500); tr.armed = false; sync(); } }
+    else releaseMicIfUnused();
+  });
+  mute.addEventListener("click", () => { tr.mute = !tr.mute; sync(); updateAllMix(); drawAll(); saveSoon(); });
+  solo.addEventListener("click", () => { tr.solo = !tr.solo; sync(); updateAllMix(); drawAll(); saveSoon(); });
+  const [volL, panL] = el.querySelectorAll(".sl");
+  volL.querySelector("span").textContent = t("tk.vol"); panL.querySelector("span").textContent = t("tk.pan");
+  const vol = q(".vol"), pan = q(".pan");
+  vol.value = tr.volume; pan.value = tr.pan;
+  const showV = () => (volL.querySelector("output").textContent = Math.round(tr.volume * 100));
+  const showP = () => (panL.querySelector("output").textContent = tr.pan === 0 ? "C" : (tr.pan < 0 ? "L" : "R") + Math.round(Math.abs(tr.pan) * 100));
+  showV(); showP();
+  vol.setAttribute("aria-label", t("tk.vol")); pan.setAttribute("aria-label", t("tk.pan"));
+  vol.addEventListener("input", () => { tr.volume = +vol.value; showV(); updateMix(tr); saveSoon(); });
+  pan.addEventListener("input", () => { tr.pan = Math.abs(+pan.value) < 0.04 ? 0 : +pan.value; showP(); updateMix(tr); saveSoon(); });
+  pan.addEventListener("dblclick", () => { tr.pan = 0; pan.value = 0; showP(); updateMix(tr); saveSoon(); });
+  // menu
+  const more = q(".more"), menu = q(".tmenu");
+  more.setAttribute("aria-label", t("tk.more"));
+  q(".m-import").textContent = t("tk.importAudio");
+  q(".m-export").textContent = t("tk.exportWav");
+  q(".m-clear").textContent = t("tk.clear");
+  q(".m-delete").textContent = t("tk.delete");
+  setupMenu(more, menu);
+  q(".m-import").addEventListener("click", () => { closeMenus(); pendingImportTrack = tr; $("#audioFile").value = ""; $("#audioFile").click(); });
+  q(".m-export").addEventListener("click", () => {
+    closeMenus(); materializePending();
+    if (!tr.buffer) { toast(t("msg.nothing")); return; }
+    saveFile(new Blob([encodeWav(tr.buffer, true)], { type: "audio/wav" }), `${projectBase()}-${safeName(tr.name)}.wav`);
+  });
+  const clearBtn = q(".m-clear"), delBtn = q(".m-delete");
+  twoTap(clearBtn, "tk.clear", () => { closeMenus(); undoInfo = { trackId: tr.id, buffer: tr.buffer }; $("#undoBtn").disabled = !tr.buffer; tr.buffer = null; tr.rev++; markAudioDirty(tr); drawAll(); });
+  twoTap(delBtn, "tk.delete", () => {
+    closeMenus();
+    if (tr.gain) tr.gain.disconnect(); if (tr.panner) tr.panner.disconnect();
+    state.tracks = state.tracks.filter((x) => x !== tr);
+    if (!state.tracks.length) state.tracks.push(newTrack(1));
+    audioDel(tr.id).catch(() => {});
+    if (undoInfo && undoInfo.trackId === tr.id) { undoInfo = null; $("#undoBtn").disabled = true; }
+    releaseMicIfUnused(); updateAllMix(); renderAll(); saveSoon();
+  });
+  // seek on lane
+  const lane = q(".lane");
+  attachSeek(lane);
+  q(".empty").textContent = t("tk.empty");
+  return el;
+}
+function attachSeek(target) {
+  const toSec = (e) => { const r = target.getBoundingClientRect(); return ((e.clientX - r.left) / r.width) * timelineLen(); };
+  target.addEventListener("pointerdown", (e) => {
+    if (transport.recording || e.button > 0) return;
+    target.setPointerCapture(e.pointerId);
+    seek(toSec(e));
+    const move = (ev) => seek(toSec(ev));
+    const up = () => { target.removeEventListener("pointermove", move); target.removeEventListener("pointerup", up); target.removeEventListener("pointercancel", up); };
+    target.addEventListener("pointermove", move); target.addEventListener("pointerup", up); target.addEventListener("pointercancel", up);
+  });
+}
+// menus
+function closeMenus(except) {
+  document.querySelectorAll(".tmenu").forEach((m) => { if (m !== except) { m.hidden = true; const b = m.previousElementSibling; if (b) b.setAttribute("aria-expanded", "false"); } });
+}
+function setupMenu(btn, menu) {
+  btn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const open = menu.hidden;
+    closeMenus(menu);
+    menu.hidden = !open; btn.setAttribute("aria-expanded", open);
+    if (open) menu.querySelector("[role=menuitem]").focus();
+  });
+  menu.addEventListener("keydown", (e) => {
+    const items = [...menu.querySelectorAll("[role=menuitem]")];
+    const i = items.indexOf(document.activeElement);
+    if (e.key === "ArrowDown") { e.preventDefault(); items[(i + 1) % items.length].focus(); }
+    else if (e.key === "ArrowUp") { e.preventDefault(); items[(i - 1 + items.length) % items.length].focus(); }
+    else if (e.key === "Escape") { closeMenus(); btn.focus(); }
+  });
+}
+document.addEventListener("click", (e) => { if (!e.target.closest(".menu-wrap")) closeMenus(); });
+
+// ---------------------------------------------------------------- drawing
+const peakCache = new WeakMap();
+function timelineLen() {
+  let longest = 0;
+  for (const tr of state.tracks) if (tr.buffer) longest = Math.max(longest, tr.buffer.duration);
+  const bar = (60 / state.bpm) * state.beats;
+  const want = Math.max(30, longest + 4, curPos() + 4);
+  return Math.ceil(want / bar) * bar;
+}
+let drawnLen = 0;
+function cssVar(n) { return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+function drawAll() {
+  const L = timelineLen();
+  drawnLen = L;
+  drawRuler(L);
+  for (const tr of state.tracks) drawTrack(tr, L);
+  drawPlayheads();
+  updateClock();
+}
+function fitCanvas(c) {
+  const dpr = window.devicePixelRatio || 1;
+  const w = Math.max(1, Math.round(c.clientWidth * dpr)), h = Math.max(1, Math.round(c.clientHeight * dpr));
+  if (c.width !== w || c.height !== h) { c.width = w; c.height = h; }
+  return { w, h, dpr };
+}
+function drawRuler(L) {
+  const c = $("#ruler"); const { w, h, dpr } = fitCanvas(c); const g = c.getContext("2d");
+  g.clearRect(0, 0, w, h);
+  const bar = (60 / state.bpm) * state.beats;
+  const pxPerBar = (w / L) * bar;
+  const step = Math.max(1, Math.ceil((44 * dpr) / pxPerBar));
+  g.fillStyle = cssVar("--muted"); g.strokeStyle = cssVar("--line");
+  g.font = `${11 * dpr}px system-ui, sans-serif`; g.textBaseline = "middle";
+  for (let b = 0; b * bar <= L; b++) {
+    const x = Math.round((b * bar / L) * w) + 0.5;
+    g.beginPath(); g.moveTo(x, b % step === 0 ? h * 0.35 : h * 0.7); g.lineTo(x, h); g.stroke();
+    if (b % step === 0) g.fillText(String(b + 1), x + 3 * dpr, h * 0.4);
+  }
+}
+function drawTrack(tr, L) {
+  const el = trackList.querySelector(`.track[data-id="${tr.id}"]`);
+  if (!el) return;
+  const c = el.querySelector("canvas"); const { w, h, dpr } = fitCanvas(c); const g = c.getContext("2d");
+  el.querySelector(".empty").hidden = !!(tr.buffer || tr.pending);
+  g.clearRect(0, 0, w, h);
+  // bar grid
+  const bar = (60 / state.bpm) * state.beats;
+  g.strokeStyle = cssVar("--line"); g.lineWidth = 1;
+  for (let b = 1; b * bar < L; b++) { const x = Math.round((b * bar / L) * w) + 0.5; g.beginPath(); g.moveTo(x, 0); g.lineTo(x, h); g.stroke(); }
+  if (!tr.buffer) return;
+  const buf = tr.buffer;
+  const px = Math.max(1, Math.round((buf.duration / L) * w));
+  let pc = peakCache.get(buf);
+  if (!pc || pc.px !== px) {
+    const data = buf.getChannelData(0);
+    const data2 = buf.numberOfChannels > 1 ? buf.getChannelData(1) : null;
+    const per = buf.length / px;
+    const mins = new Float32Array(px), maxs = new Float32Array(px);
+    for (let i = 0; i < px; i++) {
+      const s = Math.floor(i * per), e = Math.min(buf.length, Math.floor((i + 1) * per));
+      let mn = 0, mx = 0;
+      const stride = Math.max(1, Math.floor((e - s) / 400));
+      for (let j = s; j < e; j += stride) { const v = data2 ? (data[j] + data2[j]) / 2 : data[j]; if (v < mn) mn = v; if (v > mx) mx = v; }
+      mins[i] = mn; maxs[i] = mx;
+    }
+    pc = { px, mins, maxs };
+    peakCache.set(buf, pc);
+  }
+  const mid = h / 2;
+  g.fillStyle = audibleGain(tr) > 0 ? cssVar("--wave") : cssVar("--wave-dim");
+  for (let i = 0; i < px; i++) {
+    const y1 = mid - pc.maxs[i] * mid * 0.95, y2 = mid - pc.mins[i] * mid * 0.95;
+    g.fillRect(i, y1, 1, Math.max(dpr, y2 - y1));
+  }
+}
+function drawPlayheads() {
+  const L = drawnLen || timelineLen();
+  const p = Math.max(0, curPos());
+  const pct = Math.min(100, (p / L) * 100) + "%";
+  document.querySelectorAll(".playhead").forEach((ph) => (ph.style.left = pct));
+}
+function updateClock() {
+  const p = curPos();
+  $("#clockT").textContent = fmtTime(p);
+  const beat = 60 / state.bpm;
+  const b = Math.floor(p / beat);
+  const barN = Math.floor(b / state.beats) + 1, beatN = (((b % state.beats) + state.beats) % state.beats) + 1;
+  $("#clockB").textContent = (p < 0 ? "count " : "") + barN + "." + beatN;
+}
+function frame() {
+  if (!transport.playing) return;
+  if (curPos() > drawnLen - 1) drawAll();
+  else { drawPlayheads(); updateClock(); }
+  requestAnimationFrame(frame);
+}
+function updateTransportUi() {
+  $("#playBtn").classList.toggle("on", transport.playing && !transport.recording);
+  $("#recBtn").classList.toggle("on", transport.recording);
+  $("#playIcon").setAttribute("d", transport.playing ? "M8 5v14M16 5v14" : "M7 4l13 8-13 8z");
+  const busy = transport.recording;
+  ["#exportBtn", "#importBtn", "#folderSaveBtn", "#folderOpenBtn", "#mixBtn", "#newBtn", "#addTrackBtn", "#homeBtn"].forEach((s) => ($(s).disabled = busy));
+  $("#undoBtn").disabled = busy || !undoInfo;
+}
+let resizeT;
+window.addEventListener("resize", () => { clearTimeout(resizeT); resizeT = setTimeout(drawAll, 100); });
+matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change", drawAll);
+
+// ---------------------------------------------------------------- dialogs
+let lastOpener = null;
+function openDlg(id, opener) {
+  const d = document.getElementById(id);
+  lastOpener = opener;
+  closeMenus();
+  if (id === "latDlg") fillLatency();
+  d.showModal(); d.focus();
+}
+document.querySelectorAll("dialog").forEach((d) => {
+  d.addEventListener("close", () => { (lastOpener && lastOpener.offsetParent ? lastOpener : $("#settingsBtn")).focus(); });
+  d.querySelectorAll("[data-close]").forEach((b) => b.addEventListener("click", () => d.close()));
+  d.addEventListener("click", (e) => { if (e.target === d) d.close(); });
+});
+document.querySelectorAll("[data-open]").forEach((b) => b.addEventListener("click", () => openDlg(b.dataset.open, b)));
+setupMenu($("#settingsBtn"), $("#settingsMenu"));
+function fillLatency() {
+  const p = latencyParts();
+  $("#latMs").value = state.latencyMs == null ? p.total : state.latencyMs;
+  $("#latInfo").textContent = t("lat.info", { ms: p.total, out: p.out, inp: p.inp, proc: p.proc });
+}
+$("#latMs").addEventListener("change", () => { const v = clamp(+$("#latMs").value, -500, 1000, null); state.latencyMs = v; saveSoon(); });
+$("#latAuto").addEventListener("click", () => { state.latencyMs = null; fillLatency(); saveSoon(); });
+
+// ---------------------------------------------------------------- wiring
+$("#playBtn").addEventListener("click", () => (transport.playing ? pause() : play()));
+$("#stopBtn").addEventListener("click", stopAll);
+$("#homeBtn").addEventListener("click", () => seek(0));
+$("#recBtn").addEventListener("click", () => (transport.recording ? stopRecording() : startRecording()));
+$("#undoBtn").addEventListener("click", undo);
+$("#bpm").addEventListener("change", () => { state.bpm = clamp(+$("#bpm").value, 30, 300, 120); $("#bpm").value = state.bpm; drawAll(); saveSoon(); });
+$("#beats").addEventListener("change", () => { state.beats = +$("#beats").value; drawAll(); saveSoon(); });
+$("#metroBtn").addEventListener("click", () => { state.metronome = !state.metronome; $("#metroBtn").setAttribute("aria-pressed", state.metronome); saveSoon(); });
+$("#countBtn").addEventListener("click", () => { state.countIn = !state.countIn; $("#countBtn").setAttribute("aria-pressed", state.countIn); saveSoon(); });
+$("#pname").addEventListener("change", () => { state.name = $("#pname").value.trim(); saveSoon(); });
+$("#addTrackBtn").addEventListener("click", () => {
+  if (state.tracks.length >= MAX_TRACKS) { toast(t("msg.maxTracks", { n: MAX_TRACKS })); return; }
+  const tr = newTrack(state.tracks.length + 1);
+  state.tracks.push(tr); buildTrackNodes(tr);
+  renderAll(); saveSoon();
+});
+$("#exportBtn").addEventListener("click", exportProject);
+$("#importBtn").addEventListener("click", () => { $("#projectFile").value = ""; $("#projectFile").click(); });
+$("#projectFile").addEventListener("change", (e) => { const f = e.target.files[0]; if (f) importProjectFile(f); });
+$("#audioFile").addEventListener("change", async (e) => {
+  const f = e.target.files[0], tr = pendingImportTrack; pendingImportTrack = null;
+  if (!f || !tr) return;
+  try {
+    const buf = await decodeAudioFile(new Uint8Array(await f.arrayBuffer()));
+    undoInfo = { trackId: tr.id, buffer: tr.buffer }; $("#undoBtn").disabled = false;
+    tr.buffer = buf; tr.rev++;
+    if (/^(Track|トラック) \d+$/.test(tr.name)) tr.name = f.name.replace(/\.[^.]+$/, "").slice(0, 40);
+    markAudioDirty(tr); renderAll();
+  } catch (err) { console.warn(err); toast(t("msg.decodeFail")); }
+});
+$("#mixBtn").addEventListener("click", mixdown);
+const newBtn = $("#newBtn"); newBtn.dataset.confirmKey = "pj.confirmNew";
+twoTap(newBtn, "pj.new", async () => {
+  if (transport.playing) stopAll();
+  for (const tr of state.tracks) { if (tr.gain) tr.gain.disconnect(); if (tr.panner) tr.panner.disconnect(); }
+  Object.assign(state, { name: "", bpm: 120, beats: 4, metronome: false, countIn: true, latencyMs: state.latencyMs, tracks: [1, 2, 3, 4].map(newTrack) });
+  state.tracks.forEach(buildTrackNodes);
+  undoInfo = null; transport.pos = 0; dirHandle = null;
+  try { await audioClear(); await kvDel("dirHandle"); } catch {}
+  updateFolderUi(); releaseMicIfUnused(); renderAll(); saveSoon();
+});
+if (fsSupported) {
+  $("#folderSaveBtn").hidden = false; $("#folderOpenBtn").hidden = false;
+  $("#folderSaveBtn").addEventListener("click", (e) => folderSave(e.shiftKey));
+  $("#folderOpenBtn").addEventListener("click", folderOpen);
+}
+attachSeek($("#ruler"));
+// Keyboard: space = play/pause, R = record, Home = start
+document.addEventListener("keydown", (e) => {
+  if (e.target.closest("input, select, textarea, dialog[open]") || e.metaKey || e.ctrlKey || e.altKey) return;
+  if (e.code === "Space") { e.preventDefault(); transport.playing ? pause() : play(); }
+  else if (e.key === "r" || e.key === "R") { e.preventDefault(); transport.recording ? stopRecording() : startRecording(); }
+  else if (e.key === "Home") { e.preventDefault(); seek(0); }
+});
+
+// ---------------------------------------------------------------- start
+applyI18n();
+(async () => {
+  const ok = await restore();
+  if (!ok) state.tracks = [1, 2, 3, 4].map(newTrack);
+  materializePending();
+  if (fsSupported) { try { const h = await kvGet("dirHandle"); if (h) dirHandle = h; } catch {} updateFolderUi(); }
+  renderAll();
+  if (ok) $("#saveStatus").textContent = t("st.saved", { time: "" }).trim();
+})();
+</script>
+<script>
+  if ("serviceWorker" in navigator) window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
+</script>
+</body>
+</html>
