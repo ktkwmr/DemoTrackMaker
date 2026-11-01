@@ -293,7 +293,7 @@
       <label><span data-i18n="song.humanize">Feel</span> <input id="humanize" type="range" min="0" max="1" step="0.05" value="0.3" /></label>
       <label><span data-i18n="song.variation">Variation</span> <input id="variation" type="range" min="0" max="1" step="0.05" value="0.6" /></label>
       <button id="reseedBtn" data-i18n="song.reseed">Another take</button>
-      <button id="endingBtn" class="toggle" aria-pressed="true" data-i18n="song.ending">Ending</button>
+      <button id="endingBtn" class="toggle" aria-pressed="false" data-i18n="song.ending">Ending</button>
       <button id="chordTextBtn" data-i18n="song.text">Type as text…</button>
       <button class="songUndo" disabled data-i18n="song.undo">Undo edit</button>
       <button id="bounceAllBtn" data-i18n="song.bounce">Backing → audio track</button>
@@ -2497,7 +2497,7 @@ function defaultSong(enabled = true) {
   const prog = [["C"]]; // start with one bar: C on beat 1
   const base = { volume: 0.8, pan: 0, mute: false, solo: false, custom: null, overrides: {} };
   return {
-    enabled, bars: prog.length, swing: 0, humanize: 0.3, variation: 0.6, ending: true, seed: 0,
+    enabled, bars: prog.length, swing: 0, humanize: 0.3, variation: 0.6, ending: false, seed: 0,
     chords: prog.map((r) => Array.from({ length: state.beats }, (_, k) => r[k] || "")),
     parts: {
       bass: { ...base, preset: "eighth", tone: "finger", volume: 0.85, fx: defaultFx({ comp: 0.3 }) },
@@ -2512,7 +2512,7 @@ function normalizeSong(s) {
   const out = {
     enabled: s.enabled !== false, bars: Math.round(clamp(+s.bars, 1, MAX_BARS, 8)),
     swing: clamp(+s.swing, 0, 1, 0), humanize: clamp(+s.humanize, 0, 1, 0.3),
-    variation: clamp(+s.variation, 0, 1, 0.6), ending: s.ending !== false, seed: Math.round(clamp(+s.seed, 0, 1e6, 0)), chords: [], parts: {},
+    variation: clamp(+s.variation, 0, 1, 0.6), ending: s.ending === true, seed: Math.round(clamp(+s.seed, 0, 1e6, 0)), chords: [], parts: {},
   };
   for (let b = 0; b < out.bars; b++) {
     const row = Array.isArray(s.chords && s.chords[b]) ? s.chords[b] : [];
