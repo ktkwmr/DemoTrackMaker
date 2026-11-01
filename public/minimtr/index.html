@@ -94,7 +94,10 @@
   .ruler-row, .track { display: grid; grid-template-columns: 290px 1fr; gap: 0; }
   .ruler-row .pad { border-bottom: 1px solid var(--line); }
   .lane-wrap { position: relative; min-width: 0; }
-  canvas.ruler { display: block; width: 100%; height: 24px; border-bottom: 1px solid var(--line); cursor: pointer; touch-action: none; }
+  canvas.ruler { display: block; width: 100%; height: 24px; border-bottom: 1px solid var(--line); cursor: pointer; touch-action: pan-y; }
+  .zoombar { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; margin: 0 0 6px; font-size: 13px; color: var(--muted); }
+  .zoombar button { min-height: 32px; min-width: 36px; padding: 2px 10px; }
+  .zoombar .hint { font-size: 12px; }
   .tracks { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
   .track { border-bottom: 1px solid var(--line); }
   .track:last-child { border-bottom: 0; }
@@ -109,7 +112,8 @@
   .ctl .sl { display: grid; grid-template-columns: 28px 1fr 34px; align-items: center; gap: 4px; font-size: 12px; color: var(--muted); }
   .ctl .sl output { text-align: right; font-variant-numeric: tabular-nums; }
   .ctl input[type=range] { width: 100%; accent-color: var(--fg); }
-  .lane { position: relative; background: var(--lane); cursor: pointer; touch-action: none; min-height: 108px; }
+  .lane { position: relative; background: var(--lane); cursor: pointer; touch-action: pan-y; min-height: 108px; }
+  .lane.panning, canvas.ruler.panning { cursor: grabbing; }
   .lane canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
   .lane .empty { position: absolute; inset: 0; display: grid; place-items: center; color: var(--muted); font-size: 13px; pointer-events: none; text-align: center; padding: 0 8px; }
   .lane .empty[hidden] { display: none; }
@@ -148,6 +152,13 @@
   .chord-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(165px, 1fr)); gap: 8px; margin-top: 10px; }
   .cbar { border: 1px solid var(--line); border-radius: 8px; padding: 4px; background: var(--bg); min-width: 0; }
   .cbar.now { border-color: var(--fg); box-shadow: 0 0 0 1px var(--fg) inset; }
+  .cbar { cursor: grab; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+  .cbar input { cursor: text; -webkit-user-select: text; user-select: text; }
+  .cbar.dragging { position: relative; z-index: 6; opacity: .9; cursor: grabbing; box-shadow: 0 8px 24px rgba(0,0,0,.25); }
+  .cbar.drop-before { box-shadow: -4px 0 0 var(--fg); }
+  .cbar.drop-after { box-shadow: 4px 0 0 var(--fg); }
+  .cbar-grip { color: var(--muted); font-size: 14px; line-height: 1; padding: 2px 1px; border-radius: 4px; cursor: grab; }
+  .cbar-grip:focus-visible { outline: 2px solid var(--accent); }
   .cbar-h { display: flex; align-items: center; gap: 4px; margin-bottom: 4px; }
   .cbar-n { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; min-width: 18px; padding-left: 2px; }
   .cbar-h select { flex: 1; min-width: 0; font-size: 12px; padding: 2px 4px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--muted); }
@@ -219,7 +230,6 @@
 <main>
   <section class="transport" aria-label="Transport">
     <div class="tbtns">
-      <button id="homeBtn" data-i18n-attr="aria-label:tr.home"><svg viewBox="0 0 24 24" class="i" aria-hidden="true"><path d="M6 5v14M19 5 9 12l10 7z"/></svg></button>
       <button id="playBtn" data-i18n-attr="aria-label:tr.play"><svg viewBox="0 0 24 24" class="i" aria-hidden="true"><path id="playIcon" d="M7 4l13 8-13 8z"/></svg></button>
       <button id="stopBtn" data-i18n-attr="aria-label:tr.stop"><svg viewBox="0 0 24 24" class="i" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="1"/></svg></button>
       <button id="recBtn" data-i18n-attr="aria-label:tr.rec"><svg viewBox="0 0 24 24" class="i" aria-hidden="true"><circle cx="12" cy="12" r="6"/></svg></button>
@@ -231,7 +241,7 @@
         <select id="beats"><option value="4" selected>4/4</option><option value="3">3/4</option></select>
       </label>
       <button id="metroBtn" class="toggle" aria-pressed="false" data-i18n="tr.metro">Click</button>
-      <button id="countBtn" class="toggle" aria-pressed="true" data-i18n="tr.countin">Count-in</button>
+      <button id="countBtn" class="toggle" aria-pressed="true" data-i18n="tr.countin" data-i18n-attr="title:tr.countinHelp">Count-in</button>
       <label><span data-i18n="tr.input">Input</span> <span class="meter" id="meter"><i></i></span></label>
       <button id="undoBtn" disabled data-i18n="tr.undo">Undo</button>
     </div>
@@ -273,6 +283,13 @@
     </div>
   </section>
 
+  <div class="zoombar">
+    <span data-i18n="view.label">View</span>
+    <button id="zoomOut" data-i18n-attr="aria-label:view.out">−</button>
+    <button id="zoomIn" data-i18n-attr="aria-label:view.in">+</button>
+    <button id="zoomFit" data-i18n="view.fit">Whole song</button>
+    <span class="hint" data-i18n="view.hint">Pinch or Ctrl + wheel to zoom, drag to scroll, tap to move the playhead</span>
+  </div>
   <section class="tracks" aria-label="Tracks">
     <div class="ruler-row"><div class="pad"></div><div class="lane-wrap"><canvas class="ruler" id="ruler"></canvas></div></div>
     <div id="trackList"></div>
@@ -356,7 +373,7 @@
 const I18N = {
   en: {
     "menu.settings": "Settings", "menu.help": "How to use",
-    "song.title": "Chords & backing", "song.variation": "Variation", "song.reseed": "Another take", "song.reseeded": "Picked a different set of variations.", "song.ending": "Ending", "ed.varNote": "Automatic variations are not shown here; they are added on top of the pattern.", "ed.varBar": "Shows what plays, including automatic variations.", "song.bounce": "Backing → audio track", "part.bounce": "Render this part to an audio track", "msg.bounced": "Rendered “{name}” to an audio track and muted the original part.", "msg.noBacking": "The backing is off or has no notes.", "tk.bounced": "{name} (rendered)", "tk.backing": "Backing", "song.on": "Backing on", "song.bars": "Bars", "song.barsLess": "Remove a bar", "song.barsMore": "Add a bar",
+    "song.title": "Chords & backing", "view.label": "View", "view.out": "Zoom out", "view.in": "Zoom in", "view.fit": "Whole song", "view.hint": "Pinch or Ctrl + wheel to zoom, drag to scroll, tap to move the playhead", "song.moved": "Moved bar {from} to position {to}.", "song.grip": "Move bar {n} (drag, long-press, or arrow keys)", "song.variation": "Variation", "song.reseed": "Another take", "song.reseeded": "Picked a different set of variations.", "song.ending": "Ending", "ed.varNote": "Automatic variations are not shown here; they are added on top of the pattern.", "ed.varBar": "Shows what plays, including automatic variations.", "song.bounce": "Backing → audio track", "part.bounce": "Render this part to an audio track", "msg.bounced": "Rendered “{name}” to an audio track and muted the original part.", "msg.noBacking": "The backing is off or has no notes.", "tk.bounced": "{name} (rendered)", "tk.backing": "Backing", "song.on": "Backing on", "song.bars": "Bars", "song.barsLess": "Remove a bar", "song.barsMore": "Add a bar",
     "song.swing": "Swing", "song.humanize": "Feel", "song.text": "Type as text…", "song.undo": "Undo edit", "song.chords": "Chords",
     "song.noFill": "No fill", "song.fillOf": "Drum fill in bar {n}", "song.chordAt": "Chord, bar {bar} beat {beat}", "song.editBar": "Edit", "song.editBarN": "Edit notes in bar {n}",
     "song.badChord": "Unknown chord name (examples: C, Am7, F#m7b5, G7sus4, C/E)", "song.textTitle": "Chords as text", "song.apply": "Apply", "song.textEmpty": "No bars found. Write bars like | C | G |",
@@ -376,7 +393,7 @@ const I18N = {
     "ed.barOnly": "Editing this bar only. Other bars stay as they are, and these notes stay fixed even if you change the chord.", "ed.noOverrideYet": "(Your first change copies the current notes into this bar.)",
     "ed.hint": "Tap an empty cell to add a note, tap a note to select it.", "ed.auto": "(automatic)", "ed.autoCrash": "This crash is added automatically after a fill. Turn it off in the drum menu (⋯), or edit it with “This bar only”.", "menu.latency": "Recording latency", "menu.privacy": "Privacy", "menu.about": "About this app",
     "tr.home": "Go to start", "tr.play": "Play / pause", "tr.stop": "Stop", "tr.rec": "Record",
-    "tr.bpm": "BPM", "tr.beats": "Beats", "tr.metro": "Click", "tr.countin": "Count-in", "tr.input": "Input", "tr.undo": "Undo",
+    "tr.bpm": "BPM", "tr.beats": "Beats", "tr.metro": "Click", "tr.countin": "Count-in", "tr.countinHelp": "Play one bar of clicks before recording starts", "tr.input": "Input", "tr.undo": "Undo",
     "pj.label": "Project", "pj.name": "Project name", "pj.export": "Export project (.zip)", "pj.import": "Open project…",
     "pj.folderSave": "Save to folder", "pj.folderSaveTo": "Save to “{name}”", "pj.folderOpen": "Open folder…", "pj.mix": "Mixdown (WAV)", "pj.midi": "Backing as MIDI", "msg.rendering": "Rendering…", "pj.new": "New", "pj.confirmNew": "Tap again to clear",
     "pj.untitled": "Untitled",
@@ -393,7 +410,7 @@ const I18N = {
     "lat.body": "What you record reaches the browser a little later than what you hear. MiniMTR moves each new take earlier by this amount so it lines up with the other tracks. If takes sound late, increase it; if early, decrease it.",
     "lat.label": "Offset (ms)", "lat.auto": "Auto", "lat.info": "Auto estimate on this device: {ms} ms (output {out} ms + input {inp} ms + processing {proc} ms)",
     "help.title": "How to use",
-    "help.body": "<ol><li>Type chords in <b>Chords &amp; backing</b> (one box per beat; an empty box keeps the previous chord). Bass, piano and drums play along automatically. Pick a pattern and a sound for each part, and choose a drum fill for any bar.</li><li><b>Backing as MIDI</b> saves bass, piano and drums as a standard MIDI file (with tempo, time signature and chord names as markers) to open in a DAW. <b>Backing → audio track</b> (or ⋯ on a part) renders the backing into a recorded track, so you can edit or export it like any take.</li><li><b>Variation</b> makes the band play like people do: bass runs into the next chord, the piano anticipates chord changes and adds colour notes, the drums add crashes, open hi-hats, ghost notes and short lead-ins at the end of 4- and 8-bar phrases. <b>Another take</b> picks a different set; set Variation to 0 for the plain pattern. <b>Ending</b> stops the band on the first beat of the last bar.</li><li>To change single notes, press <b>Edit</b> on a part (or double-tap its lane). Choose <b>Whole pattern</b> to change every bar, or <b>This bar only</b>.</li><li>Press <b>R</b> on a track to arm it (the browser asks for the microphone the first time).</li><li>Press <b>●</b> to record. With Count-in on, one bar of clicks plays first. Use headphones so other tracks do not leak into the microphone.</li><li>Press <b>■</b> to stop. Recording again on the same track replaces only the recorded range. <b>Undo</b> brings back the previous take.</li><li>Tap or drag on the waveform or the ruler to move the playhead.</li><li>Your work is saved in this browser automatically. To keep it safe or move it to another device, use <b>Export project (.zip)</b> and later <b>Open project…</b>. The zip contains <code>project.json</code> (settings) and one WAV file per track.</li><li>In Chrome / Edge on a computer, <b>Save to folder</b> writes the same files into a folder you choose, and saves over it the next time.</li></ol>",
+    "help.body": "<ol><li>Type chords in <b>Chords &amp; backing</b> (one box per beat; an empty box keeps the previous chord). Bass, piano and drums play along automatically. Pick a pattern and a sound for each part, and choose a drum fill for any bar.</li><li><b>Backing as MIDI</b> saves bass, piano and drums as a standard MIDI file (with tempo, time signature and chord names as markers) to open in a DAW. <b>Backing → audio track</b> (or ⋯ on a part) renders the backing into a recorded track, so you can edit or export it like any take.</li><li><b>Variation</b> makes the band play like people do: bass runs into the next chord, the piano anticipates chord changes and adds colour notes, the drums add crashes, open hi-hats, ghost notes and short lead-ins at the end of 4- and 8-bar phrases. <b>Another take</b> picks a different set; set Variation to 0 for the plain pattern. <b>Ending</b> stops the band on the first beat of the last bar.</li><li>To change single notes, press <b>Edit</b> on a part (or double-tap its lane). Choose <b>Whole pattern</b> to change every bar, or <b>This bar only</b>.</li><li>Press <b>R</b> on a track to arm it (the browser asks for the microphone the first time).</li><li>Press <b>●</b> to record. With Count-in on, one bar of clicks plays first. Use headphones so other tracks do not leak into the microphone.</li><li>Press <b>■</b> to stop. Recording again on the same track replaces only the recorded range. <b>Undo</b> brings back the previous take.</li><li>Tap the timeline to move the playhead (■ always goes back to the start). Pinch, Ctrl + wheel or − / + to zoom, drag or scroll sideways to move along; during playback the view follows the playhead. Drag a bar in the chord chart (long-press on a touch screen, or ⠿ and the arrow keys) to move it.</li><li>Your work is saved in this browser automatically. To keep it safe or move it to another device, use <b>Export project (.zip)</b> and later <b>Open project…</b>. The zip contains <code>project.json</code> (settings) and one WAV file per track.</li><li>In Chrome / Edge on a computer, <b>Save to folder</b> writes the same files into a folder you choose, and saves over it the next time.</li></ol>",
     "privacy.title": "Privacy",
     "privacy.body": "<p>Audio is recorded and processed only on your device. Nothing you record is sent to any server.</p><p>Your project (settings and audio) is kept in this browser's storage (IndexedDB) so you can continue after reloading. “New” clears it. Exported files are saved only where you choose.</p>",
     "about.title": "About this app",
@@ -403,7 +420,7 @@ const I18N = {
   },
   ja: {
     "menu.settings": "設定", "menu.help": "使い方",
-    "song.title": "コードと伴奏", "song.variation": "バリエーション", "song.reseed": "別の案", "song.reseeded": "バリエーションの組み合わせを変えました。", "song.ending": "エンディング", "ed.varNote": "自動のバリエーションはここには出ません（パターンの上に足されます）。", "ed.varBar": "自動のバリエーションも含めて、実際に鳴る音を表示しています。", "song.bounce": "伴奏を音声トラックに", "part.bounce": "このパートを音声トラックに書き出す", "msg.bounced": "「{name}」を音声トラックに書き出し、元のパートはミュートしました。", "msg.noBacking": "伴奏がオフか、音がありません。", "tk.bounced": "{name}（書き出し）", "tk.backing": "伴奏", "song.on": "伴奏オン", "song.bars": "小節", "song.barsLess": "小節を減らす", "song.barsMore": "小節を増やす",
+    "song.title": "コードと伴奏", "view.label": "表示", "view.out": "縮小", "view.in": "拡大", "view.fit": "全体", "view.hint": "ピンチ・Ctrl＋ホイールで拡大縮小、ドラッグで左右に移動、タップで再生位置", "song.moved": "{from} 小節目を {to} 番目に移動しました。", "song.grip": "{n} 小節目を移動（ドラッグ・長押し・矢印キー）", "song.variation": "バリエーション", "song.reseed": "別の案", "song.reseeded": "バリエーションの組み合わせを変えました。", "song.ending": "エンディング", "ed.varNote": "自動のバリエーションはここには出ません（パターンの上に足されます）。", "ed.varBar": "自動のバリエーションも含めて、実際に鳴る音を表示しています。", "song.bounce": "伴奏を音声トラックに", "part.bounce": "このパートを音声トラックに書き出す", "msg.bounced": "「{name}」を音声トラックに書き出し、元のパートはミュートしました。", "msg.noBacking": "伴奏がオフか、音がありません。", "tk.bounced": "{name}（書き出し）", "tk.backing": "伴奏", "song.on": "伴奏オン", "song.bars": "小節", "song.barsLess": "小節を減らす", "song.barsMore": "小節を増やす",
     "song.swing": "ハネ", "song.humanize": "揺らぎ", "song.text": "テキストで入力…", "song.undo": "編集を戻す", "song.chords": "コード",
     "song.noFill": "フィルなし", "song.fillOf": "{n} 小節目のドラムのフィル", "song.chordAt": "{bar} 小節 {beat} 拍目のコード", "song.editBar": "編集", "song.editBarN": "{n} 小節目の音を編集",
     "song.badChord": "読めないコード名です（例: C, Am7, F#m7b5, G7sus4, C/E）", "song.textTitle": "テキストでコード入力", "song.apply": "反映", "song.textEmpty": "小節が見つかりません。| C | G | のように書いてください",
@@ -423,7 +440,7 @@ const I18N = {
     "ed.barOnly": "この小節だけを編集中: ほかの小節は変わりません。コードを変えても、この小節の音はこのままです。", "ed.noOverrideYet": "（最初の変更で、いまの音をこの小節にコピーします）",
     "ed.hint": "空いたマスを押すと音を追加、音を押すと選択します。", "ed.auto": "（自動）", "ed.autoCrash": "このクラッシュはフィルのあとに自動で入ります。ドラムのメニュー（⋯）で切るか、「この小節だけ」で編集してください。", "menu.latency": "録音のずれ補正", "menu.privacy": "プライバシー", "menu.about": "このアプリについて",
     "tr.home": "先頭へ", "tr.play": "再生／一時停止", "tr.stop": "停止", "tr.rec": "録音",
-    "tr.bpm": "BPM", "tr.beats": "拍子", "tr.metro": "クリック", "tr.countin": "カウント", "tr.input": "入力", "tr.undo": "元に戻す",
+    "tr.bpm": "BPM", "tr.beats": "拍子", "tr.metro": "クリック", "tr.countin": "録音前カウント", "tr.countinHelp": "録音を始める前に、クリックを 1 小節鳴らします", "tr.input": "入力", "tr.undo": "元に戻す",
     "pj.label": "プロジェクト", "pj.name": "プロジェクト名", "pj.export": "書き出し（.zip）", "pj.import": "読み込み…",
     "pj.folderSave": "フォルダに保存", "pj.folderSaveTo": "「{name}」に保存", "pj.folderOpen": "フォルダから開く…", "pj.mix": "ミックスダウン（WAV）", "pj.midi": "伴奏を MIDI で書き出し", "msg.rendering": "書き出し中…", "pj.new": "新規", "pj.confirmNew": "もう一度押すと消去",
     "pj.untitled": "無題",
@@ -440,7 +457,7 @@ const I18N = {
     "lat.body": "録音した音は、聞こえている音より少し遅れてブラウザに届きます。新しく録った音をこの時間だけ前にずらして、ほかのトラックとそろえます。録った音が遅れて聞こえるなら増やし、早いなら減らしてください。",
     "lat.label": "補正（ミリ秒）", "lat.auto": "自動", "lat.info": "この端末での自動の推定値: {ms} ms（出力 {out} ms ＋ 入力 {inp} ms ＋ 処理 {proc} ms）",
     "help.title": "使い方",
-    "help.body": "<ol><li><b>コードと伴奏</b> にコードを入力します（1 拍に 1 マス。空のマスは前のコードが続きます）。ベース・ピアノ・ドラムが自動で伴奏します。パートごとにパターンと音色を選び、ドラムのフィルは小節ごとに選べます。</li><li><b>伴奏を MIDI で書き出し</b> で、ベース・ピアノ・ドラムを標準 MIDI ファイル（テンポ・拍子・コード名のマーカー入り）に書き出し、DAW で開けます。<b>伴奏を音声トラックに</b>（またはパートの ⋯）で、伴奏を録音トラックの音声に変換できます。</li><li><b>バリエーション</b> で、人が弾くような変化を自動で付けます。ベースは次のコードへ駆け上がり、ピアノはコードを先取りして和音に色を足し、ドラムは 4 小節・8 小節の区切りでクラッシュ・オープンハイハット・ゴーストノート・短いつなぎを入れます。<b>別の案</b> で組み合わせが変わり、0 にすると元のパターンのままです。<b>エンディング</b> がオンなら、最後の小節の 1 拍目で全員が止まります。</li><li>1 音ずつ変えるときは、パートの <b>編集</b>（またはパートの行をダブルタップ）。<b>パターン全体</b> ならすべての小節に、<b>この小節だけ</b> ならその小節にだけ反映されます。</li><li>トラックの <b>R</b> を押して録音待機にします（初回はマイクの許可を求められます）。</li><li><b>●</b> で録音開始。「カウント」がオンなら 1 小節クリックが鳴ってから始まります。ほかのトラックの音がマイクに入らないよう、ヘッドホンを使ってください。</li><li><b>■</b> で停止。同じトラックにもう一度録ると、録った範囲だけ置き換わります。<b>元に戻す</b>で前のテイクに戻せます。</li><li>波形や上の目盛りを押す・なぞると再生位置が動きます。</li><li>作業内容はこのブラウザに自動で保存されます。消えないように残したいときや別の端末に移すときは <b>書き出し（.zip）</b>、続きをやるときは <b>読み込み…</b>。zip の中身は設定の <code>project.json</code> とトラックごとの WAV ファイルです。</li><li>PC の Chrome・Edge では <b>フォルダに保存</b> で、選んだフォルダに同じファイルを書き出し、次からは上書き保存できます。</li></ol>",
+    "help.body": "<ol><li><b>コードと伴奏</b> にコードを入力します（1 拍に 1 マス。空のマスは前のコードが続きます）。ベース・ピアノ・ドラムが自動で伴奏します。パートごとにパターンと音色を選び、ドラムのフィルは小節ごとに選べます。</li><li><b>伴奏を MIDI で書き出し</b> で、ベース・ピアノ・ドラムを標準 MIDI ファイル（テンポ・拍子・コード名のマーカー入り）に書き出し、DAW で開けます。<b>伴奏を音声トラックに</b>（またはパートの ⋯）で、伴奏を録音トラックの音声に変換できます。</li><li><b>バリエーション</b> で、人が弾くような変化を自動で付けます。ベースは次のコードへ駆け上がり、ピアノはコードを先取りして和音に色を足し、ドラムは 4 小節・8 小節の区切りでクラッシュ・オープンハイハット・ゴーストノート・短いつなぎを入れます。<b>別の案</b> で組み合わせが変わり、0 にすると元のパターンのままです。<b>エンディング</b> がオンなら、最後の小節の 1 拍目で全員が止まります。</li><li>1 音ずつ変えるときは、パートの <b>編集</b>（またはパートの行をダブルタップ）。<b>パターン全体</b> ならすべての小節に、<b>この小節だけ</b> ならその小節にだけ反映されます。</li><li>トラックの <b>R</b> を押して録音待機にします（初回はマイクの許可を求められます）。</li><li><b>●</b> で録音開始。「カウント」がオンなら 1 小節クリックが鳴ってから始まります。ほかのトラックの音がマイクに入らないよう、ヘッドホンを使ってください。</li><li><b>■</b> で停止。同じトラックにもう一度録ると、録った範囲だけ置き換わります。<b>元に戻す</b>で前のテイクに戻せます。</li><li>タイムラインを押すと再生位置が動きます（■ はいつも先頭に戻ります）。ピンチ・Ctrl＋ホイール・− / + で拡大縮小、ドラッグや横スクロールで左右に移動し、再生中は再生位置に合わせて表示が送られます。コード譜の小節は、ドラッグ（タッチ画面では長押ししてから）か ⠿ と矢印キーで移動できます。</li><li>作業内容はこのブラウザに自動で保存されます。消えないように残したいときや別の端末に移すときは <b>書き出し（.zip）</b>、続きをやるときは <b>読み込み…</b>。zip の中身は設定の <code>project.json</code> とトラックごとの WAV ファイルです。</li><li>PC の Chrome・Edge では <b>フォルダに保存</b> で、選んだフォルダに同じファイルを書き出し、次からは上書き保存できます。</li></ol>",
     "privacy.title": "プライバシー",
     "privacy.body": "<p>録音と処理はすべてお使いの端末の中で行います。録音した音をサーバーに送ることはありません。</p><p>再読み込みしても続けられるよう、プロジェクト（設定と音声）をこのブラウザの保存領域（IndexedDB）に保存します。「新規」で消去できます。書き出したファイルは、あなたが選んだ場所にだけ保存されます。</p>",
     "about.title": "このアプリについて",
@@ -712,10 +729,14 @@ function pause() {
   updateTransportUi();
   drawPlayheads();
 }
+// Stop always returns to the start (play/pause keeps the position)
 function stopAll() {
-  if (transport.recording) { stopRecording(); return; }
-  if (transport.playing) pause();
-  else { transport.pos = 0; drawPlayheads(); updateClock(); }
+  if (transport.recording) stopRecording();
+  else if (transport.playing) pause();
+  transport.pos = 0;
+  if (view.span) view.start = 0;
+  highlightBar(-1);
+  drawAll();
 }
 function seek(sec) {
   if (transport.recording) return;
@@ -1476,22 +1497,101 @@ function renderTrack(tr) {
   q(".empty").textContent = t("tk.empty");
   return el;
 }
-function attachSeek(target, onDouble) {
-  const toSec = (e) => { const r = target.getBoundingClientRect(); return ((e.clientX - r.left) / r.width) * timelineLen(); };
-  let lastTap = 0;
+// ---- timeline view: zoom and scroll. view.span = null shows the whole song.
+const view = { start: 0, span: null };
+const MIN_SPAN = 1.5;
+function viewRange() {
+  const L = timelineLen();
+  const span = view.span ? Math.max(MIN_SPAN, Math.min(view.span, L)) : L;
+  const start = Math.max(0, Math.min(view.start, L - span));
+  return { L, start, span };
+}
+function setView(start, span) {
+  const L = timelineLen();
+  span = Math.max(MIN_SPAN, Math.min(span, L));
+  if (span >= L - 1e-6) { view.span = null; view.start = 0; }
+  else { view.span = span; view.start = Math.max(0, Math.min(start, L - span)); }
+  requestDraw();
+}
+function zoomBy(factor, centerSec) {
+  const vr = viewRange();
+  const c = centerSec != null ? centerSec : Math.max(vr.start, Math.min(vr.start + vr.span, curPos()));
+  const span = vr.span * factor, ratio = (c - vr.start) / vr.span;
+  setView(c - ratio * span, span);
+}
+let drawQueued = false;
+function requestDraw() {
+  if (drawQueued) return;
+  drawQueued = true;
+  requestAnimationFrame(() => { drawQueued = false; drawAll(); });
+}
+let gestureActive = false;
+// Lanes: tap = move the playhead, drag = scroll, two fingers = zoom, double-tap = onDouble (open the editor)
+// Ruler (scrub = true): dragging moves the playhead instead of scrolling
+function attachSeek(target, onDouble, scrub) {
+  const pts = new Map();
+  let mode = null, sx = 0, sView = null, pinch = null, lastTap = 0;
+  const rect = () => target.getBoundingClientRect();
+  const secAt = (clientX) => { const r = rect(), vr = viewRange(); return vr.start + ((clientX - r.left) / r.width) * vr.span; };
   target.addEventListener("pointerdown", (e) => {
-    if (transport.recording || e.button > 0) return;
-    if (onDouble) {
-      const now = performance.now();
-      if (now - lastTap < 350) { lastTap = 0; onDouble(toSec(e)); return; }
-      lastTap = now;
+    if (e.button > 0) return;
+    pts.set(e.pointerId, e.clientX);
+    try { target.setPointerCapture(e.pointerId); } catch {}
+    if (pts.size === 2) {
+      const [a, b] = [...pts.values()];
+      pinch = { d: Math.max(20, Math.abs(a - b)), vr: viewRange(), mid: secAt((a + b) / 2) };
+      mode = "pinch"; gestureActive = true;
+      return;
     }
-    target.setPointerCapture(e.pointerId);
-    seek(toSec(e));
-    const move = (ev) => seek(toSec(ev));
-    const up = () => { target.removeEventListener("pointermove", move); target.removeEventListener("pointerup", up); target.removeEventListener("pointercancel", up); };
-    target.addEventListener("pointermove", move); target.addEventListener("pointerup", up); target.addEventListener("pointercancel", up);
+    if (pts.size === 1) { mode = "tap"; sx = e.clientX; sView = viewRange(); }
   });
+  target.addEventListener("pointermove", (e) => {
+    if (!pts.has(e.pointerId)) return;
+    pts.set(e.pointerId, e.clientX);
+    if (mode === "pinch" && pts.size >= 2) {
+      const [a, b] = [...pts.values()];
+      const span = pinch.vr.span * (pinch.d / Math.max(20, Math.abs(a - b)));
+      const r = rect(), midRatio = ((a + b) / 2 - r.left) / r.width;
+      setView(pinch.mid - midRatio * Math.max(MIN_SPAN, Math.min(span, pinch.vr.L)), span);
+      return;
+    }
+    if (mode === "tap" && Math.abs(e.clientX - sx) > 6) {
+      mode = scrub ? "scrub" : "pan";
+      gestureActive = true;
+      target.classList.add("panning");
+    }
+    if (mode === "pan") setView(sView.start - ((e.clientX - sx) / rect().width) * sView.span, sView.span);
+    else if (mode === "scrub") seek(secAt(e.clientX));
+  });
+  const end = (e) => {
+    if (!pts.has(e.pointerId)) return;
+    pts.delete(e.pointerId);
+    if (mode === "tap" && e.type === "pointerup" && !transport.recording) {
+      const sec = secAt(e.clientX), now = performance.now();
+      if (onDouble && now - lastTap < 350) { lastTap = 0; onDouble(sec); }
+      else { lastTap = now; seek(sec); }
+    }
+    if (!pts.size) { mode = null; gestureActive = false; target.classList.remove("panning"); }
+    else if (mode === "pinch") mode = "done";
+  };
+  target.addEventListener("pointerup", end);
+  target.addEventListener("pointercancel", end);
+  // Mouse wheel / trackpad: Ctrl + wheel (and trackpad pinch) zooms, horizontal scroll or Shift + wheel scrolls
+  target.addEventListener("wheel", (e) => {
+    const r = rect();
+    if (e.ctrlKey || e.metaKey) {
+      e.preventDefault();
+      zoomBy(Math.exp(Math.max(-60, Math.min(60, e.deltaY)) * 0.004), secAt(e.clientX));
+    } else if (Math.abs(e.deltaX) > Math.abs(e.deltaY) || e.shiftKey) {
+      e.preventDefault();
+      const vr = viewRange(), dx = e.shiftKey && !e.deltaX ? e.deltaY : e.deltaX;
+      setView(vr.start + (dx / r.width) * vr.span, vr.span);
+    }
+  }, { passive: false });
+  // Safari trackpad pinch
+  let gScale = 1;
+  target.addEventListener("gesturestart", (e) => { e.preventDefault(); gScale = 1; });
+  target.addEventListener("gesturechange", (e) => { e.preventDefault(); zoomBy(gScale / e.scale, secAt(e.clientX)); gScale = e.scale; });
 }
 // menus
 function closeMenus(except) {
@@ -1525,16 +1625,23 @@ function timelineLen() {
   return Math.ceil(want / bar) * bar;
 }
 let drawnLen = 0;
-function cssVar(n) { return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+const cssCache = new Map();
+function cssVar(n) {
+  if (!cssCache.has(n)) cssCache.set(n, getComputedStyle(document.documentElement).getPropertyValue(n).trim());
+  return cssCache.get(n);
+}
+const xAt = (vr, sec, w) => ((sec - vr.start) / vr.span) * w;
 function drawAll() {
-  const L = timelineLen();
-  drawnLen = L;
-  drawRuler(L);
-  drawChordRow(L);
-  PARTS.forEach((name) => drawPart(name, L));
-  for (const tr of state.tracks) drawTrack(tr, L);
+  cssCache.clear();
+  const vr = viewRange();
+  drawnLen = vr.L;
+  drawRuler(vr);
+  drawChordRow(vr);
+  PARTS.forEach((name) => drawPart(name, vr));
+  for (const tr of state.tracks) drawTrack(tr, vr);
   drawPlayheads();
   updateClock();
+  $("#zoomFit").disabled = !view.span;
 }
 function fitCanvas(c) {
   const dpr = window.devicePixelRatio || 1;
@@ -1542,61 +1649,83 @@ function fitCanvas(c) {
   if (c.width !== w || c.height !== h) { c.width = w; c.height = h; }
   return { w, h, dpr };
 }
-function drawRuler(L) {
+function drawRuler(vr) {
   const c = $("#ruler"); const { w, h, dpr } = fitCanvas(c); const g = c.getContext("2d");
   g.clearRect(0, 0, w, h);
-  const bar = (60 / state.bpm) * state.beats;
-  const pxPerBar = (w / L) * bar;
+  const bar = (60 / state.bpm) * state.beats, beat = 60 / state.bpm;
+  const pxPerBar = (w / vr.span) * bar;
   const step = Math.max(1, Math.ceil((44 * dpr) / pxPerBar));
   g.fillStyle = cssVar("--muted"); g.strokeStyle = cssVar("--line");
   g.font = `${11 * dpr}px system-ui, sans-serif`; g.textBaseline = "middle";
-  for (let b = 0; b * bar <= L; b++) {
-    const x = Math.round((b * bar / L) * w) + 0.5;
+  const b0 = Math.max(0, Math.floor(vr.start / bar)), b1 = Math.ceil((vr.start + vr.span) / bar);
+  for (let b = b0; b <= b1; b++) {
+    const x = Math.round(xAt(vr, b * bar, w)) + 0.5;
     g.beginPath(); g.moveTo(x, b % step === 0 ? h * 0.35 : h * 0.7); g.lineTo(x, h); g.stroke();
-    if (b % step === 0) g.fillText(String(b + 1), x + 3 * dpr, h * 0.4);
+    if (b === b0 && x < 0) {
+      // keep the current bar number visible at the left edge
+      if (xAt(vr, (b0 + 1) * bar, w) > 28 * dpr) g.fillText(String(b + 1), 3 * dpr, h * 0.4);
+    } else if (b % step === 0) g.fillText(String(b + 1), x + 3 * dpr, h * 0.4);
+    // beat ticks when zoomed in
+    if (pxPerBar / state.beats > 14 * dpr) for (let k = 1; k < state.beats; k++) {
+      const xb = Math.round(xAt(vr, b * bar + k * beat, w)) + 0.5;
+      g.beginPath(); g.moveTo(xb, h * 0.82); g.lineTo(xb, h); g.stroke();
+    }
   }
 }
-function drawTrack(tr, L) {
+// Waveform peaks at power-of-two resolutions (pixels per second), cached per buffer
+function peaksFor(buf, pps) {
+  let m = peakCache.get(buf);
+  if (!m) { m = new Map(); peakCache.set(buf, m); }
+  let pk = m.get(pps);
+  if (pk) return pk;
+  const n = Math.max(1, Math.ceil(buf.duration * pps));
+  const data = buf.getChannelData(0), data2 = buf.numberOfChannels > 1 ? buf.getChannelData(1) : null;
+  const per = buf.length / n, mins = new Float32Array(n), maxs = new Float32Array(n);
+  for (let i = 0; i < n; i++) {
+    const s0 = Math.floor(i * per), e0 = Math.min(buf.length, Math.floor((i + 1) * per));
+    let mn = 0, mx = 0;
+    const stride = Math.max(1, Math.floor((e0 - s0) / 300));
+    for (let j = s0; j < e0; j += stride) { const v = data2 ? (data[j] + data2[j]) / 2 : data[j]; if (v < mn) mn = v; if (v > mx) mx = v; }
+    mins[i] = mn; maxs[i] = mx;
+  }
+  pk = { n, pps, mins, maxs };
+  m.set(pps, pk);
+  return pk;
+}
+function drawTrack(tr, vr) {
   const el = trackList.querySelector(`.track[data-id="${tr.id}"]`);
   if (!el) return;
   const c = el.querySelector("canvas"); const { w, h, dpr } = fitCanvas(c); const g = c.getContext("2d");
   el.querySelector(".empty").hidden = !!(tr.buffer || tr.pending);
   g.clearRect(0, 0, w, h);
-  // bar grid
   const bar = (60 / state.bpm) * state.beats;
   g.strokeStyle = cssVar("--line"); g.lineWidth = 1;
-  for (let b = 1; b * bar < L; b++) { const x = Math.round((b * bar / L) * w) + 0.5; g.beginPath(); g.moveTo(x, 0); g.lineTo(x, h); g.stroke(); }
+  for (let b = Math.max(1, Math.floor(vr.start / bar)); b * bar < vr.start + vr.span; b++) { const x = Math.round(xAt(vr, b * bar, w)) + 0.5; g.beginPath(); g.moveTo(x, 0); g.lineTo(x, h); g.stroke(); }
   if (!tr.buffer) return;
   const buf = tr.buffer;
-  const px = Math.max(1, Math.round((buf.duration / L) * w));
-  let pc = peakCache.get(buf);
-  if (!pc || pc.px !== px) {
-    const data = buf.getChannelData(0);
-    const data2 = buf.numberOfChannels > 1 ? buf.getChannelData(1) : null;
-    const per = buf.length / px;
-    const mins = new Float32Array(px), maxs = new Float32Array(px);
-    for (let i = 0; i < px; i++) {
-      const s = Math.floor(i * per), e = Math.min(buf.length, Math.floor((i + 1) * per));
-      let mn = 0, mx = 0;
-      const stride = Math.max(1, Math.floor((e - s) / 400));
-      for (let j = s; j < e; j += stride) { const v = data2 ? (data[j] + data2[j]) / 2 : data[j]; if (v < mn) mn = v; if (v > mx) mx = v; }
-      mins[i] = mn; maxs[i] = mx;
-    }
-    pc = { px, mins, maxs };
-    peakCache.set(buf, pc);
-  }
+  const want = w / vr.span;
+  const pps = Math.min(16384, Math.max(1, 2 ** Math.ceil(Math.log2(want))));
+  const pk = peaksFor(buf, pps);
   const mid = h / 2;
   g.fillStyle = audibleGain(tr) > 0 ? cssVar("--wave") : cssVar("--wave-dim");
-  for (let i = 0; i < px; i++) {
-    const y1 = mid - pc.maxs[i] * mid * 0.95, y2 = mid - pc.mins[i] * mid * 0.95;
-    g.fillRect(i, y1, 1, Math.max(dpr, y2 - y1));
+  const xEnd = Math.min(w, Math.ceil(xAt(vr, buf.duration, w)));
+  for (let x = Math.max(0, Math.floor(xAt(vr, 0, w))); x < xEnd; x++) {
+    const s0 = vr.start + (x / w) * vr.span, s1 = vr.start + ((x + 1) / w) * vr.span;
+    let i0 = Math.floor(s0 * pps), i1 = Math.max(i0 + 1, Math.floor(s1 * pps));
+    if (i0 >= pk.n) break;
+    let mn = 0, mx = 0;
+    for (let i = i0; i < i1 && i < pk.n; i++) { if (pk.mins[i] < mn) mn = pk.mins[i]; if (pk.maxs[i] > mx) mx = pk.maxs[i]; }
+    const y1 = mid - mx * mid * 0.95, y2 = mid - mn * mid * 0.95;
+    g.fillRect(x, y1, 1, Math.max(dpr, y2 - y1));
   }
 }
 function drawPlayheads() {
-  const L = drawnLen || timelineLen();
+  const vr = viewRange();
   const p = Math.max(0, curPos());
-  const pct = Math.min(100, (p / L) * 100) + "%";
-  document.querySelectorAll(".playhead").forEach((ph) => (ph.style.left = pct));
+  const r = (p - vr.start) / vr.span;
+  const show = r >= 0 && r <= 1;
+  const pct = r * 100 + "%";
+  document.querySelectorAll(".playhead").forEach((ph) => { ph.hidden = !show; ph.style.left = pct; });
 }
 function updateClock() {
   const p = curPos();
@@ -1614,7 +1743,13 @@ function frame() {
     pause(); seek(Math.max(0, back)); highlightBar(-1); return;
   }
   highlightBar(state.song.enabled && p >= 0 && p < songLen() ? barAtSec(p) : -1);
-  if (curPos() > drawnLen - 1) drawAll();
+  // keep the playhead in view: page the timeline when it reaches the right edge
+  let redraw = !view.span && p > drawnLen - 1;
+  if (view.span && !gestureActive) {
+    const vr = viewRange();
+    if (p > vr.start + vr.span * 0.95 || p < vr.start) { view.start = Math.max(0, p - vr.span * 0.05); redraw = true; }
+  }
+  if (redraw) drawAll();
   else { drawPlayheads(); updateClock(); }
   requestAnimationFrame(frame);
 }
@@ -1623,7 +1758,7 @@ function updateTransportUi() {
   $("#recBtn").classList.toggle("on", transport.recording);
   $("#playIcon").setAttribute("d", transport.playing ? "M8 5v14M16 5v14" : "M7 4l13 8-13 8z");
   const busy = transport.recording;
-  ["#exportBtn", "#importBtn", "#folderSaveBtn", "#folderOpenBtn", "#mixBtn", "#midiBtn", "#bounceAllBtn", "#newBtn", "#addTrackBtn", "#homeBtn"].forEach((s) => ($(s).disabled = busy));
+  ["#exportBtn", "#importBtn", "#folderSaveBtn", "#folderOpenBtn", "#mixBtn", "#midiBtn", "#bounceAllBtn", "#newBtn", "#addTrackBtn"].forEach((s) => ($(s).disabled = busy));
   $("#undoBtn").disabled = busy || !undoInfo;
 }
 let resizeT;
@@ -1657,7 +1792,6 @@ $("#latAuto").addEventListener("click", () => { state.latencyMs = null; fillLate
 // ---------------------------------------------------------------- wiring
 $("#playBtn").addEventListener("click", () => (transport.playing ? pause() : play()));
 $("#stopBtn").addEventListener("click", stopAll);
-$("#homeBtn").addEventListener("click", () => seek(0));
 $("#recBtn").addEventListener("click", () => (transport.recording ? stopRecording() : startRecording()));
 $("#undoBtn").addEventListener("click", undo);
 $("#bpm").addEventListener("change", () => {
@@ -1722,7 +1856,10 @@ if (fsSupported) {
   $("#folderSaveBtn").addEventListener("click", (e) => folderSave(e.shiftKey));
   $("#folderOpenBtn").addEventListener("click", folderOpen);
 }
-attachSeek($("#ruler"));
+attachSeek($("#ruler"), null, true);
+$("#zoomIn").addEventListener("click", () => zoomBy(0.5));
+$("#zoomOut").addEventListener("click", () => zoomBy(2));
+$("#zoomFit").addEventListener("click", () => setView(0, Infinity));
 // Keyboard: space = play/pause, R = record, Home = start
 document.addEventListener("keydown", (e) => {
   if (e.target.closest("input, select, textarea, dialog[open]") || e.metaKey || e.ctrlKey || e.altKey) return;
@@ -2016,6 +2153,7 @@ function fitSongToBeats() {
 let analysisCache = null, eventsCache = null;
 function analysis() {
   if (analysisCache) return analysisCache;
+  renderCache.clear();
   const S = state.song, B = state.beats, n = S.bars * B;
   const regionAt = new Int32Array(n).fill(-1), regions = [];
   for (let b = 0; b < S.bars; b++) for (let k = 0; k < B; k++) {
@@ -2066,7 +2204,17 @@ function toSpec(name, bar, t, midi) {
   return withO({ semi: pc }, Math.floor(rel / 12));
 }
 // Notes of one bar: [{t, d, v, midi | i, src}]; src says where the note comes from (o: bar edit, p/g: pattern, f: fill, c: auto crash)
+const renderCache = new Map();
+// Cached for the timeline (the song is drawn on every scroll); cleared whenever the analysis is rebuilt
 function renderBar(name, bar, ignoreOverride) {
+  const A = analysis();
+  if (ignoreOverride) return renderBarRaw(name, bar, true);
+  const key = name + ":" + bar;
+  let r = renderCache.get(key);
+  if (!r) { r = renderBarRaw(name, bar, false); renderCache.set(key, r); }
+  return r;
+}
+function renderBarRaw(name, bar, ignoreOverride) {
   const A = analysis(), S = state.song, P = S.parts[name], B = state.beats, barT = B * TPB;
   if (!ignoreOverride && P.overrides[bar]) return P.overrides[bar].map((n, i) => ({ ...n, d: Math.min(n.d || 3, barT - n.t), src: "o:" + i })).filter((n) => n.t < barT);
   if (name === "drums") {
@@ -2540,7 +2688,7 @@ function renderChordGrid() {
   for (let b = 0; b < S.bars; b++) {
     const el = document.createElement("div");
     el.className = "cbar"; el.dataset.bar = b;
-    el.innerHTML = `<div class="cbar-h"><span class="cbar-n">${b + 1}</span><select class="fillSel"></select><button class="cbar-ed" type="button">${escHtml(t("song.editBar"))}</button></div><div class="cbeats" style="grid-template-columns: repeat(${B}, minmax(0, 1fr))"></div>`;
+    el.innerHTML = `<div class="cbar-h"><span class="cbar-grip" tabindex="0" role="button">⠿</span><span class="cbar-n">${b + 1}</span><select class="fillSel"></select><button class="cbar-ed" type="button">${escHtml(t("song.editBar"))}</button></div><div class="cbeats" style="grid-template-columns: repeat(${B}, minmax(0, 1fr))"></div>`;
     const sel = el.querySelector(".fillSel");
     sel.innerHTML = fillOpts;
     sel.value = S.parts.drums.fills[b] || "";
@@ -2553,6 +2701,20 @@ function renderChordGrid() {
       sel.classList.toggle("on", !!sel.value);
       songChanged();
     });
+    const grip = el.querySelector(".cbar-grip");
+    grip.setAttribute("aria-label", t("song.grip", { n: b + 1 }));
+    grip.addEventListener("keydown", (e) => {
+      const d = e.key === "ArrowLeft" || e.key === "ArrowUp" ? -1 : e.key === "ArrowRight" || e.key === "ArrowDown" ? 1 : 0;
+      if (!d) return;
+      e.preventDefault();
+      const to = b + d;
+      if (to < 0 || to >= state.song.bars) return;
+      moveBar(b, to);
+      const g2 = document.querySelector(`.cbar[data-bar="${to}"] .cbar-grip`);
+      if (g2) g2.focus();
+    });
+    el.addEventListener("pointerdown", (e) => startBarDrag(e, el, b));
+    el.addEventListener("contextmenu", (e) => { if (!e.target.closest("input")) e.preventDefault(); });
     const edb = el.querySelector(".cbar-ed");
     edb.setAttribute("aria-label", t("song.editBarN", { n: b + 1 }));
     edb.addEventListener("click", () => openEditor(lastEditPart, b, edb));
@@ -2585,6 +2747,89 @@ function renderChordGrid() {
     grid.appendChild(el);
   }
   updateSongUndo();
+}
+// ---- moving a bar in the chord chart: mouse drag, or long-press then drag on touch screens
+let barDrag = null;
+document.addEventListener("touchmove", (e) => { if (barDrag && barDrag.active) e.preventDefault(); }, { passive: false });
+function startBarDrag(e, el, from) {
+  if (e.button > 0 || e.target.closest("input, select, button:not(.cbar-grip)") || barDrag) return;
+  const touch = e.pointerType !== "mouse";
+  const d = (barDrag = { el, from, sx: e.clientX, sy: e.clientY, active: false, target: null, timer: 0, id: e.pointerId });
+  const activate = () => {
+    d.active = true;
+    el.classList.add("dragging");
+    try { el.setPointerCapture(d.id); } catch {}
+    if (navigator.vibrate) try { navigator.vibrate(12); } catch {}
+  };
+  if (touch) d.timer = setTimeout(activate, 380);
+  const clearMarks = () => document.querySelectorAll(".cbar.drop-before, .cbar.drop-after").forEach((c) => c.classList.remove("drop-before", "drop-after"));
+  const move = (ev) => {
+    if (ev.pointerId !== d.id) return;
+    const dx = ev.clientX - d.sx, dy = ev.clientY - d.sy;
+    if (!d.active) {
+      if (Math.hypot(dx, dy) > (touch ? 10 : 5)) { if (touch) finish(false); else activate(); }
+      if (!d.active) return;
+    }
+    ev.preventDefault();
+    el.style.transform = `translate(${dx}px, ${dy}px)`;
+    clearMarks();
+    d.target = null;
+    for (const c of document.querySelectorAll(".cbar")) {
+      if (c === el) continue;
+      const r = c.getBoundingClientRect();
+      if (ev.clientX >= r.left && ev.clientX <= r.right && ev.clientY >= r.top && ev.clientY <= r.bottom) {
+        const after = ev.clientX > r.left + r.width / 2;
+        c.classList.add(after ? "drop-after" : "drop-before");
+        d.target = +c.dataset.bar + (after ? 1 : 0);
+      }
+    }
+    // scroll the page when dragging near the top or bottom edge
+    if (ev.clientY < 50) window.scrollBy(0, -12); else if (ev.clientY > innerHeight - 50) window.scrollBy(0, 12);
+  };
+  const finish = (drop) => {
+    clearTimeout(d.timer);
+    el.removeEventListener("pointermove", move);
+    el.removeEventListener("pointerup", up);
+    el.removeEventListener("pointercancel", cancel);
+    el.classList.remove("dragging");
+    el.style.transform = "";
+    clearMarks();
+    barDrag = null;
+    if (drop && d.active && d.target != null) {
+      let to = d.target;
+      if (to > d.from) to--;
+      if (to !== d.from) moveBar(d.from, to);
+    }
+  };
+  const up = (ev) => { if (ev.pointerId === d.id) finish(true); };
+  const cancel = (ev) => { if (ev.pointerId === d.id) finish(false); };
+  el.addEventListener("pointermove", move);
+  el.addEventListener("pointerup", up);
+  el.addEventListener("pointercancel", cancel);
+}
+// Move bar `from` so that it ends up at index `to`; chords, fills and single-bar edits move with it.
+// Bars that relied on "keep the previous chord" get that chord written in first, so they sound the same afterwards.
+function moveBar(from, to) {
+  const S = state.song, n = S.bars, B = state.beats;
+  if (from === to || from < 0 || to < 0 || from >= n || to >= n) return;
+  pushSongHistory();
+  const A = analysis();
+  const pin = (bar) => {
+    if (bar < 0 || bar >= n || S.chords[bar][0]) return;
+    const ri = regionIdx(A, bar * B);
+    if (ri >= 0) S.chords[bar][0] = A.regions[ri].name;
+  };
+  const order = [...Array(n).keys()];
+  order.splice(from, 1);
+  order.splice(to, 0, from); // order[newIndex] = oldIndex
+  pin(from); pin(from + 1);
+  pin(order[to + 1]);
+  const remap = (obj) => { const out = {}; order.forEach((oldI, newI) => { if (obj[oldI] !== undefined) out[newI] = obj[oldI]; }); return out; };
+  S.chords = order.map((i) => S.chords[i]);
+  S.parts.drums.fills = remap(S.parts.drums.fills);
+  for (const name of PARTS) S.parts[name].overrides = remap(S.parts[name].overrides);
+  songChanged({ grid: true });
+  toast(t("song.moved", { from: from + 1, to: to + 1 }));
 }
 let nowBar = -1;
 function highlightBar(bar) {
@@ -2747,33 +2992,37 @@ const barSec = () => state.beats * (60 / state.bpm);
 const barAtSec = (sec) => Math.max(0, Math.min(state.song.bars - 1, Math.floor(sec / barSec() + 1e-9)));
 const barAtPos = () => barAtSec(Math.max(0, curPos()));
 
-function drawChordRow(L) {
+function drawChordRow(vr) {
   const el = trackList.querySelector(".track.chordrow");
   if (!el) return;
   const c = el.querySelector("canvas"), { w, h, dpr } = fitCanvas(c), g = c.getContext("2d");
   g.clearRect(0, 0, w, h);
   if (!state.song.enabled) return;
-  const A = analysis(), beat = 60 / state.bpm;
+  const A = analysis(), beat = 60 / state.bpm, bs = barSec();
   g.font = `600 ${12 * dpr}px system-ui, sans-serif`; g.textBaseline = "middle";
-  let lastX = -1e9;
   g.strokeStyle = cssVar("--line");
-  for (let b = 0; b <= state.song.bars; b++) { const x = Math.round(((b * barSec()) / L) * w) + 0.5; g.beginPath(); g.moveTo(x, 0); g.lineTo(x, h); g.stroke(); }
+  for (let b = Math.max(0, Math.floor(vr.start / bs)); b <= state.song.bars && b * bs <= vr.start + vr.span; b++) { const x = Math.round(xAt(vr, b * bs, w)) + 0.5; g.beginPath(); g.moveTo(x, 0); g.lineTo(x, h); g.stroke(); }
   g.fillStyle = cssVar("--fg");
-  for (const r of A.regions) {
-    const x = ((r.start * beat) / L) * w + 3 * dpr;
-    if (x < lastX) continue;
+  let lastX = -1e9;
+  A.regions.forEach((r, i) => {
+    const nx = A.regions[i + 1], endSec = (nx ? nx.start : state.song.bars * state.beats) * beat;
+    if (endSec <= vr.start || r.start * beat > vr.start + vr.span) return;
+    // the chord that started before the left edge stays labelled at the edge
+    const x = Math.max(xAt(vr, r.start * beat, w), 0) + 3 * dpr;
+    if (x < lastX) return;
     g.fillText(r.name, x, h / 2);
     lastX = x + g.measureText(r.name).width + 6 * dpr;
-  }
+  });
 }
-function drawPart(name, L) {
+function drawPart(name, vr) {
   const el = trackList.querySelector(`.track[data-part="${name}"]`);
   if (!el) return;
   const c = el.querySelector("canvas"), { w, h, dpr } = fitCanvas(c), g = c.getContext("2d");
   g.clearRect(0, 0, w, h);
   const S = state.song, P = S.parts[name], beat = 60 / state.bpm, bs = barSec();
-  const xOf = (sec) => (sec / L) * w;
-  for (let b = 0; b < S.bars; b++) {
+  const xOf = (sec) => xAt(vr, sec, w);
+  const bFrom = Math.max(0, Math.floor(vr.start / bs)), bTo = Math.min(S.bars, Math.ceil((vr.start + vr.span) / bs));
+  for (let b = bFrom; b < bTo; b++) {
     const x0 = xOf(b * bs), x1 = xOf((b + 1) * bs);
     if (name === "drums" && P.fills[b]) { g.fillStyle = cssVar("--fillbar"); g.fillRect(x0, 0, x1 - x0, h); }
     g.strokeStyle = cssVar("--line"); g.beginPath(); g.moveTo(Math.round(x0) + 0.5, 0); g.lineTo(Math.round(x0) + 0.5, h); g.stroke();
@@ -2783,15 +3032,15 @@ function drawPart(name, L) {
   g.fillStyle = audibleGain(P) > 0 ? cssVar("--wave") : cssVar("--wave-dim");
   if (name === "drums") {
     const rh = h / DRUM_ROWS.length;
-    for (let b = 0; b < S.bars; b++) for (const n of renderBar(name, b)) {
+    for (let b = bFrom; b < bTo; b++) for (const n of renderBar(name, b)) {
       const row = DRUM_ROWS.indexOf(n.i);
       const x = xOf(b * bs + (n.t / TPB) * beat);
       g.globalAlpha = 0.35 + 0.65 * n.v;
-      g.fillRect(x, row * rh + rh * 0.15, Math.max(2 * dpr, rh * 0.5), rh * 0.7);
+      g.fillRect(x, row * rh + rh * 0.15, Math.max(2 * dpr, Math.min(rh * 0.5, (w / vr.span) * beat * 0.2)), rh * 0.7);
     }
   } else {
     const [lo, hi] = PART_RANGE[name], rh = h / (hi - lo + 1);
-    for (let b = 0; b < S.bars; b++) for (const n of renderBar(name, b)) {
+    for (let b = bFrom; b < bTo; b++) for (const n of renderBar(name, b)) {
       const x = xOf(b * bs + (n.t / TPB) * beat), x2 = xOf(b * bs + ((n.t + n.d) / TPB) * beat);
       const y = (hi - Math.max(lo, Math.min(hi, n.midi))) * rh;
       g.globalAlpha = 0.35 + 0.65 * n.v;
