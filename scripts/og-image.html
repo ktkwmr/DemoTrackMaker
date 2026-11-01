@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<!-- Source of public/demotrackmaker/og-image.png (1200x630). Regenerate with:
+     node scripts/render-og-image.mjs -->
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<style>
+  html, body { margin: 0; width: 1200px; height: 630px; background: #fff; color: #000;
+    font-family: "Inter", "Segoe UI", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  .wrap { box-sizing: border-box; height: 100%; padding: 64px 80px; display: grid; grid-template-columns: 1fr 500px; gap: 56px; align-items: center; }
+  .brand { display: flex; align-items: center; gap: 24px; margin-bottom: 36px; }
+  .brand svg { width: 96px; height: 96px; flex: none; }
+  h1 { margin: 0; font-size: 62px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.05; }
+  p { margin: 0 0 40px; font-size: 32px; color: #525252; line-height: 1.4; }
+  .url { font-size: 26px; color: #737373; }
+  .panel { border: 2px solid #d4d4d4; border-radius: 20px; padding: 18px 22px; }
+  .chords { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 14px; }
+  .chords span { border: 2px solid #d4d4d4; border-radius: 10px; text-align: center; font-size: 26px; font-weight: 700; padding: 8px 0; }
+  .row { display: grid; grid-template-columns: 96px 1fr; align-items: center; gap: 12px; height: 70px; border-top: 2px solid #e5e5e5; }
+  .row b { font-size: 20px; }
+  .lane { position: relative; height: 44px; }
+  .lane i { position: absolute; height: 6px; border-radius: 3px; background: #000; }
+  .lane.d i { width: 8px; height: 8px; border-radius: 50%; }
+  .lane.v svg { width: 100%; height: 44px; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div>
+      <div class="brand">
+        <svg viewBox="0 0 28 28"><rect width="28" height="28" rx="7" fill="#000"/><g stroke="#fff" stroke-width="2" stroke-linecap="round" fill="none"><path d="M5 9h8M5 14h8M5 19h6"/><path d="M20.5 6v12.6"/><path d="M20.5 6c1.6.9 3 1.7 3.4 3.6"/></g><ellipse cx="18.1" cy="19" rx="2.7" ry="2.05" fill="#fff" transform="rotate(-20 18.1 19)"/></svg>
+        <h1>Demo Track<br />Maker</h1>
+      </div>
+      <p>Type chords, get bass, piano and drums, and record your song on top.</p>
+      <div class="url">ktkwmr.com/demotrackmaker</div>
+    </div>
+    <div class="panel">
+      <div class="chords"><span>C</span><span>Am</span><span>F</span><span>G</span></div>
+      <div class="row"><b>Bass</b><div class="lane">
+        <i style="left:0%;top:30px;width:10%"></i><i style="left:12%;top:30px;width:10%"></i><i style="left:25%;top:22px;width:10%"></i><i style="left:37%;top:22px;width:10%"></i>
+        <i style="left:50%;top:34px;width:10%"></i><i style="left:62%;top:34px;width:10%"></i><i style="left:75%;top:26px;width:10%"></i><i style="left:87%;top:18px;width:10%"></i></div></div>
+      <div class="row"><b>Piano</b><div class="lane">
+        <i style="left:0;top:6px;width:22%"></i><i style="left:0;top:16px;width:22%"></i><i style="left:0;top:26px;width:22%"></i>
+        <i style="left:25%;top:10px;width:22%"></i><i style="left:25%;top:20px;width:22%"></i><i style="left:25%;top:30px;width:22%"></i>
+        <i style="left:50%;top:4px;width:22%"></i><i style="left:50%;top:14px;width:22%"></i><i style="left:50%;top:24px;width:22%"></i>
+        <i style="left:75%;top:8px;width:22%"></i><i style="left:75%;top:18px;width:22%"></i><i style="left:75%;top:28px;width:22%"></i></div></div>
+      <div class="row"><b>Drums</b><div class="lane d">
+        <i style="left:0%;top:32px"></i><i style="left:12.5%;top:6px"></i><i style="left:25%;top:18px"></i><i style="left:37.5%;top:6px"></i><i style="left:50%;top:32px"></i><i style="left:62.5%;top:6px"></i><i style="left:75%;top:18px"></i><i style="left:87.5%;top:6px"></i>
+        <i style="left:6%;top:6px"></i><i style="left:31%;top:6px"></i><i style="left:56%;top:6px"></i><i style="left:81%;top:6px"></i></div></div>
+      <div class="row"><b>Vocal</b><div class="lane v"><svg viewBox="0 0 300 44" preserveAspectRatio="none"><path d="M0 22 L10 14 L14 30 L20 8 L26 36 L32 12 L40 30 L48 18 L56 26 L64 20 L74 24 L90 22 M110 22 L116 10 L122 34 L128 6 L136 38 L144 14 L152 30 L162 16 L170 28 L182 20 L196 22 M214 22 L220 12 L226 32 L234 8 L242 34 L250 16 L260 28 L270 18 L284 24 L300 22" stroke="#000" stroke-width="2.5" fill="none"/></svg></div></div>
+    </div>
+  </div>
+</body>
+</html>

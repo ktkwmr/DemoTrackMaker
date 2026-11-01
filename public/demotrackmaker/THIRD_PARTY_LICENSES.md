@@ -1,14 +1,34 @@
-# Third-party licenses / サードパーティライセンス
+# Third-Party Software Notices
 
-Demo Track Maker itself is MIT licensed (© ktkwmr). It uses the following library, loaded from a CDN only when needed.
-Demo Track Maker 本体は MIT ライセンスです（© ktkwmr）。次のライブラリを、必要なときだけ CDN から読み込んで使います。
+Demo Track Maker
 
-## lamejs 1.2.1
+This application uses the following third-party software.
+The app's own code (recording, the backing parts, the synthesized sounds, and the effects) is plain HTML, CSS, and JavaScript.
+lamejs is loaded unmodified, as a separate file from a CDN, only when a mixdown is saved as MP3.
 
-- Used for: converting the mixdown to MP3 (loaded only when MP3 is chosen) / ミックスダウンを MP3 に変換する（MP3 を選んだときだけ読み込む）
-- Loaded from: https://cdn.jsdelivr.net/npm/lamejs@1.2.1/lame.min.js (unmodified / 改変なし)
+------------------------------------------------------------------------
+
+### lamejs
+- Package: lamejs
+- Purpose: Pure JavaScript MP3 Encoder
+- License: LGPL-3.0
 - Source: https://github.com/zhuker/lamejs
-- License: LGPL-3.0 — https://www.gnu.org/licenses/lgpl-3.0.html
-- lamejs is a JavaScript port of LAME (https://lame.sourceforge.io/), also LGPL.
-  Because the library is loaded as a separate, unmodified file, you can replace it with your own build (change `LAME_URL` in `index.html`).
-  ライブラリは改変していない別ファイルとして読み込むので、利用者が自分でビルドしたものに差し替えられます（`index.html` の `LAME_URL`）。
+- Based on: LAME (https://lame.sourceforge.io/), LGPL
+- Full license text (LGPL-3.0): https://www.gnu.org/licenses/lgpl-3.0.html
+- Use: converts the mixdown to MP3 (loaded only when MP3 is chosen; unmodified; can be replaced via LAME_URL in index.html)
+- License text:
+
+    Can I use LAME in my commercial program?  
+
+    Yes, you can, under the restrictions of the LGPL.  The easiest
+    way to do this is to:
+
+    1. Link to LAME as separate jar (lame.min.js or lame.all.js)
+
+    2. Fully acknowledge that you are using LAME, and give a link
+       to our web site, lame.sourceforge.net
+
+    3. If you make modifications to LAME, you *must* release these
+       these modifications back to the LAME project, under the LGPL.
+
+<!-- New libraries are added above this line by scripts/update-third-party-licenses.mjs -->

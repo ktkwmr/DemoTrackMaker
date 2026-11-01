@@ -8,7 +8,7 @@ For song demos, practice / backing tracks and arrangement sketches — not a ful
 
 Planned URL / 公開予定: https://ktkwmr.com/demotrackmaker/
 
-**Status / 状態:** prototype / 試作
+**Status / 状態:** ready for release (articles waiting for review) / 公開準備済み（記事は確認待ち）
 
 ## Features / 機能
 - Record and overdub up to 8 tracks (punch-in replaces only the recorded range, one-step undo) / 最大 8 トラックの重ね録り（録った範囲だけ置き換え、1 回分の取り消し）
@@ -29,17 +29,41 @@ Planned URL / 公開予定: https://ktkwmr.com/demotrackmaker/
 - Recording latency compensation (⚙) / 録音のずれ補正
 
 ## Privacy / プライバシー
-Audio is processed only on your device. Nothing is sent to a server. Only when MP3 is chosen for a mixdown, the MP3 encoder (lamejs) is downloaded once from jsDelivr (cdn.jsdelivr.net). / 音声は端末内だけで処理し、サーバーには送りません。ミックスダウンで MP3 を選んだときだけ、MP3 変換の部品（lamejs）を jsDelivr から 1 回読み込みます。
+Audio is processed only on your device. Nothing is sent to a server. Page views are counted with Cloudflare Web Analytics (no cookies). Only when MP3 is chosen for a mixdown, the MP3 encoder (lamejs) is downloaded once from jsDelivr (cdn.jsdelivr.net). / 音声は端末内だけで処理し、サーバーには送りません。ページの閲覧数は Cloudflare Web Analytics（Cookie なし）で数えます。ミックスダウンで MP3 を選んだときだけ、MP3 変換の部品（lamejs）を jsDelivr から 1 回読み込みます。
+
+Full policy / 詳細: https://ktkwmr.com/demotrackmaker/privacy/
+
+## Structure / 構成
+```
+public/
+  _headers  404.html                 # security headers (CSP), not-found page
+  demotrackmaker/
+    index.html                       # the app (HTML/CSS/JS in one file, English + Japanese text) — edit this
+    ja/index.html                    # generated (Japanese page)
+    <article>/index.html, ja/<article>/index.html, sitemap.xml   # generated (guides, privacy, about)
+    sw.js  manifest.json  icons/  og-image.png  images/guide/  THIRD_PARTY_LICENSES.md
+scripts/
+  build-ja.mjs  build-pages.mjs  pages/*.mjs   # generators (articles are in scripts/pages/<slug>.mjs)
+  render-guide-images.mjs  render-icons.mjs  render-og-image.mjs  og-image.html  update-third-party-licenses.mjs  build-preview.mjs
+.github/workflows/                   # regenerate pages / third-party licenses on push to main
+```
+Generated files are not edited by hand: run `node scripts/build-ja.mjs` and `node scripts/build-pages.mjs` (`--check` to verify). They also run before `wrangler dev` / deploy and in GitHub Actions.
+生成ファイルは手で編集しません（上のスクリプトで作り直す。`wrangler dev`・デプロイ・GitHub Actions でも自動で走る）。
 
 ## Development / 開発
-Open via a local server (not `file://`; the microphone and Service Worker need `http://localhost` or HTTPS).
-`file://` ではなくローカルサーバーで開いてください。
+Open via a local server (not `file://`; the microphone, IndexedDB and the Service Worker need `http://localhost` or HTTPS).
+`file://` ではなくローカルサーバーで開いてください。古い画面が出るときは再読み込みしてください（Service Worker）。
 
 ```sh
 npx wrangler dev   # → http://localhost:8787/demotrackmaker/  (Windows PowerShell: npx.cmd wrangler dev)
 ```
 
+Screenshots, icons and the share image (Playwright): `node scripts/render-guide-images.mjs`, `node scripts/render-icons.mjs`, `node scripts/render-og-image.mjs`.
 Preview copy for a claude.ai Artifact: `node scripts/build-preview.mjs` → `.preview/index.html`
 
+## Deploy / デプロイ
+Cloudflare Workers static assets (Workers Builds): every push to `main` deploys. The Worker `demotrackmaker` only serves `ktkwmr.com/demotrackmaker*`; the domain root belongs to `ktkwmr/ktkwmr.com`.
+Cloudflare Workers の静的アセット。`main` への push で自動デプロイ。
+
 ## License
-MIT (to be added). Third-party: see `public/demotrackmaker/THIRD_PARTY_LICENSES.md` (lamejs, LGPL-3.0).
+MIT © 2026 ktkwmr (`LICENSE`). Third-party: `public/demotrackmaker/THIRD_PARTY_LICENSES.md` (lamejs, LGPL-3.0).

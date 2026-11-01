@@ -6,7 +6,7 @@
 2026-11 に MiniMTR から改名（スラッグも minimtr → demotrackmaker）。旧名の自動保存・zip の引き継ぎはしない（公開前のため）。GitHub のリポジトリも `ktkwmr/MiniMTR` から `ktkwmr/DemoTrackMaker` に改名済み（旧 URL は GitHub が転送する）。
 
 ## 状態
-- 試作（プロト）。アプリ本体 `public/demotrackmaker/index.html` だけを作った段階で、共通部分（§2〜§12 の大半）はまだ。
+- ベースラインの共通部分（日本語ページ・SEO・CSP・プライバシー・記事・CI）まで実装済み。各項目は docs/baseline-status.md。
 - 試作の Artifact: https://claude.ai/artifact/4nMf28C3KohMKsawGB1vNZ（`node scripts/build-preview.mjs` → `.preview/index.html` を公開）
 
 ## 共通ベースライン
@@ -16,10 +16,12 @@
 - どのアプリにも当てはまる新しい作業・設定・落とし穴が出てきたら、作業の最後に
   ベースラインへの追記案を出す（ユーザーが了承したらベースラインのリポジトリに PR）。
 
-## このアプリの値（仮。§0 の確認がまだ）
+## このアプリの値
 - アプリ名: Demo Track Maker / スラッグ: demotrackmaker / ドメイン: ktkwmr.com / 言語: en（既定）+ ja（/ja/）
 - 運営者: ktkwmr / 問い合わせ: GitHub Issues
-- Cloudflare Web Analytics token: 未設定
+- Cloudflare Web Analytics token: `5c53079cb9a64d819d1ca53e8533ca63`（ほかのアプリと同じサイト）
+- ホスティング: Cloudflare Workers 静的アセット。Worker `demotrackmaker` に Route `ktkwmr.com/demotrackmaker*` だけ（ベースライン §0 の A）。
+  ドメイン直下（トップページ・robots.txt・ルートの sitemap.xml・ルートの 404）は `ktkwmr/ktkwmr.com`。このアプリの sitemap は `/demotrackmaker/sitemap.xml`。
 
 ## データの持ち方（このアプリ独自）
 - 自動保存: IndexedDB `demotrackmaker`（store `kv` の `project` = 設定、store `audio` = トラック id → `{ sr, chans: Float32Array[] }`）。
@@ -45,6 +47,10 @@
 - 伴奏を音声トラックに: パート 1 つなら音量・定位をかけずに書き出し、新しいトラックの音量・定位に移す。全部なら音量・定位・ミュート・ソロを反映して 1 本に。書き出したパートはミュートする。
 
 ## ルール
-- 生成ファイル（public/demotrackmaker/ja/index.html など）は編集しない（生成スクリプトを入れたら）。
+- 手で編集するのはアプリ本体 `public/demotrackmaker/index.html`・`sw.js`・`manifest.json` と `scripts/`。生成ファイル（`public/demotrackmaker/ja/index.html`、記事・情報ページ `<slug>/` とその `ja/`、`public/demotrackmaker/sitemap.xml`）は編集せず、`node scripts/build-ja.mjs` と `node scripts/build-pages.mjs` で作り直す（`--check` で確認）。
+- 画面の文言は `index.html` の `I18N`（en / ja）に書き、要素には `data-i18n` / `data-i18n-html` / `data-i18n-attr` を付ける。`data-i18n-attr` の要素には英語の値の属性も書いておく（`build-ja.mjs` がその値を置き換える）。子要素を持つ要素に `data-i18n` は付けない。
+- 記事は `scripts/pages/<slug>.mjs`（`guide`・`make-a-demo`・`chord-symbols`・`backing-patterns`・`recording-tips`・`faq`）。パターン名・音色名・上限・コードの構成音は書き写さず `scripts/pages/app.mjs` がアプリから読む（見つからなければビルドが止まる）。記事を足したら `build-pages.mjs` の `PAGES` と、`index.html` の `intro.body` のガイド一覧（英日）、トップページ（ktkwmr/ktkwmr.com の `home.mjs`）にも足す。見た目を変えたら `node scripts/render-guide-images.mjs` で画面写真を撮り直す。
+- 記事を追加・変更したら、PR のプレビューで人間が内容を確認してからマージする（ベースライン §10-7。観点は `docs/article-review.md`）。
+- トップページ（https://ktkwmr.com/）のアプリ一覧に載せている（`ktkwmr/ktkwmr.com` の `scripts/pages/home.mjs` の `APPS`・`ICON`・`PREVIEW`、`robots.txt` の `Sitemap:` 行）。アプリ名・説明・アイコン・主な画面・記事を変えたら、そちらにも PR を出す（ベースライン §2-16）。
 - 外部ホストを足したら public/_headers の CSP と、プライバシーの説明（ポリシー・アプリ内・README）を同じ PR で直す。
 - 作業はブランチ → PR → Cloudflare のプレビュービルド確認 → squash マージ。
