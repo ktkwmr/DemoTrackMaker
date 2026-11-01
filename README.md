@@ -1,7 +1,12 @@
-# MiniMTR
+# Demo Track Maker
 
-A simple multitrack recorder that runs entirely in the browser (one HTML file).
-ブラウザだけで動く、シンプルなマルチトラックレコーダー（HTML 1 ファイル）。
+Make a demo of your song in the browser: type chords, get bass, piano and drums, then record vocals or instruments on top (one HTML file).
+For song demos, practice / backing tracks and arrangement sketches — not a full recording studio; export WAV or MIDI to a DAW for detailed work.
+
+ブラウザでデモ音源を作るアプリ（HTML 1 ファイル）。コードを入れるとベース・ピアノ・ドラムの伴奏ができ、その上に歌や楽器を重ねて録音できる。
+曲のアイデアのデモ、練習用の伴奏、アレンジの下書き向け。本格的な録音スタジオ（DAW）の代わりではなく、細かい作業は WAV・MIDI に書き出して DAW で行う。
+
+Planned URL / 公開予定: https://ktkwmr.com/demotrackmaker/
 
 **Status / 状態:** prototype / 試作
 
@@ -31,7 +36,7 @@ Open via a local server (not `file://`; the microphone and Service Worker need `
 `file://` ではなくローカルサーバーで開いてください。
 
 ```sh
-npx wrangler dev   # → http://localhost:8787/minimtr/  (Windows PowerShell: npx.cmd wrangler dev)
+npx wrangler dev   # → http://localhost:8787/demotrackmaker/  (Windows PowerShell: npx.cmd wrangler dev)
 ```
 
 Preview copy for a claude.ai Artifact: `node scripts/build-preview.mjs` → `.preview/index.html`

@@ -1,6 +1,6 @@
 // Fixed cache name: fetches are network first, so the cache only needs to hold the latest copy.
-// Older caches of this app (e.g. "minimtr-<build>") are removed on activate.
-const PREFIX = "minimtr-";
+// Older caches of this app (e.g. "demotrackmaker-<build>") are removed on activate.
+const PREFIX = "demotrackmaker-";
 const CACHE = PREFIX + "cache";
 const CORE = ["./", "index.html", "ja/", "manifest.json", "THIRD_PARTY_LICENSES.md"];
 // Libraries loaded from a CDN with a pinned version (WEBAPP_BASELINE.md §3-10): the content of such a URL

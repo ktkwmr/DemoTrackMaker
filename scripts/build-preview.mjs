@@ -14,8 +14,8 @@ import { readFile, writeFile, mkdir, copyFile } from "node:fs/promises";
 import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const SLUG = "minimtr";
-const NAME = "MiniMTR";
+const SLUG = "demotrackmaker";
+const NAME = "Demo Track Maker";
 // Files the page fetches or starts with a relative URL
 const FILES = [];
 

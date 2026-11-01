@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>Multitrack Recorder in Your Browser – MiniMTR</title>
-<meta name="description" content="Record and overdub multiple audio tracks in your browser. Mix with volume, pan, mute and solo, then export the project (WAV + settings) to your computer and continue later. Free, no sign-up." />
+<title>Make Demo Tracks with Automatic Backing – Demo Track Maker</title>
+<meta name="description" content="Type chords and get bass, piano and drums, then sing or play on top to make a demo of your song. Export WAV, MIDI or the whole project. Free, no sign-up, runs in your browser." />
 <meta name="theme-color" content="#ffffff" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
-<meta name="apple-mobile-web-app-title" content="MiniMTR" />
+<meta name="apple-mobile-web-app-title" content="Demo Track" />
 <link rel="manifest" href="manifest.json" />
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
 <style>
@@ -224,7 +224,7 @@
 <header class="top">
   <div class="brand">
     <svg viewBox="0 0 24 24" class="i" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8v8M11 10v4M15 7v10M19 11v2" stroke-width="1.8"/></svg>
-    <span>MiniMTR</span>
+    <span>Demo Track Maker</span>
   </div>
   <span id="saveStatus" aria-live="polite"></span>
   <span class="spacer"></span>
@@ -311,7 +311,7 @@
   </div>
 
   <section class="intro">
-    <h1 data-i18n="intro.title">Multitrack recorder in your browser</h1>
+    <h1 data-i18n="intro.title">Make a demo track: type chords, get a band, record on top</h1>
     <div data-i18n-html="intro.body"></div>
   </section>
 </main>
@@ -434,21 +434,21 @@ const I18N = {
     "tk.clear": "Clear audio", "tk.delete": "Delete track", "tk.confirm": "Tap again to confirm", "tk.empty": "Arm (R) and press ● to record, or import an audio file from ⋯",
     "st.saved": "Saved in this browser {time}", "st.saving": "Saving…", "st.failed": "Could not save in this browser (storage full?) — export the project",
     "msg.noMic": "Microphone is not available here. Allow microphone access, or import an audio file from the track menu (⋯).",
-    "msg.noArm": "Arm a track (R) first.", "msg.exported": "Exported {file}", "msg.loaded": "Opened “{name}”", "msg.badProject": "This file is not a MiniMTR project.",
+    "msg.noArm": "Arm a track (R) first.", "msg.exported": "Exported {file}", "msg.loaded": "Opened “{name}”", "msg.badProject": "This file is not a Demo Track Maker project.",
     "msg.decodeFail": "Could not read this audio file.",
     "msg.maxTracks": "Up to {n} tracks.", "msg.nothing": "Nothing to export yet.", "msg.recDone": "Recorded {sec} s", "msg.saveFail": "Could not save the file.",
     "dlg.close": "Close",
     "lat.title": "Recording latency",
-    "lat.body": "What you record reaches the browser a little later than what you hear. MiniMTR moves each new take earlier by this amount so it lines up with the other tracks. If takes sound late, increase it; if early, decrease it.",
+    "lat.body": "What you record reaches the browser a little later than what you hear. Demo Track Maker moves each new take earlier by this amount so it lines up with the other tracks. If takes sound late, increase it; if early, decrease it.",
     "lat.label": "Offset (ms)", "lat.auto": "Auto", "lat.info": "Auto estimate on this device: {ms} ms (output {out} ms + input {inp} ms + processing {proc} ms)",
     "help.title": "How to use",
     "help.body": "<ol><li>Type chords in <b>Chords &amp; backing</b> (one box per beat; an empty box keeps the previous chord). Bass, piano and drums play along automatically. Pick a pattern and a sound for each part, and choose a drum fill for any bar.</li><li><b>Backing as MIDI</b> saves bass, piano and drums as a standard MIDI file (with tempo, time signature and chord names as markers) to open in a DAW. <b>Backing → audio track</b> (or ⋯ on a part) renders the backing into a recorded track, so you can edit or export it like any take.</li><li><b>Variation</b> makes the band play like people do: bass runs into the next chord, the piano anticipates chord changes and adds colour notes, the drums add crashes, open hi-hats, ghost notes and short lead-ins at the end of 4- and 8-bar phrases. <b>Another take</b> picks a different set; set Variation to 0 for the plain pattern. <b>Ending</b> stops the band on the first beat of the last bar.</li><li>To change single notes, press <b>Edit</b> on a part (or double-tap its lane). Choose <b>Whole pattern</b> to change every bar, or <b>This bar only</b>.</li><li>Press <b>R</b> on a track to arm it (the browser asks for the microphone the first time).</li><li>Press <b>●</b> to record. With Count-in on, one bar of clicks plays first. Use headphones so other tracks do not leak into the microphone.</li><li>Press <b>■</b> to stop. Recording again on the same track replaces only the recorded range. <b>Undo</b> brings back the previous take.</li><li><b>FX</b> on each track and part opens its effects: EQ, compressor, drive, and how much goes to the shared reverb and tempo-synced delay. Presets (vocal, acoustic, crunch guitar …) are a starting point.</li><li>Each part has a <b>Sound</b> menu: 8 bass sounds (finger, pick, slap, muted, upright, synth, analog synth, 808) and 6 drum kits (standard, rock, brushes, 808, 909, lo-fi). Drums also have clap, tambourine, shaker and cowbell.</li><li>Tap the timeline to move the playhead (■ always goes back to the start). Pinch, Ctrl + wheel or − / + to zoom, drag or scroll sideways to move along; during playback the view follows the playhead. Drag a bar in the chord chart (long-press on a touch screen, or ⠿ and the arrow keys) to move it.</li><li>Your work is saved in this browser automatically. To keep it safe or move it to another device, use <b>Export project (.zip)</b> and later <b>Open project…</b>. When exporting you choose the file name (the project name by default); in Chrome / Edge on a computer you also choose the folder. The zip contains <code>project.json</code> (settings) and one WAV file per track.</li></ol>",
     "privacy.title": "Privacy",
     "privacy.body": "<p>Audio is recorded and processed only on your device. Nothing you record is sent to any server.</p><p>Your project (settings and audio) is kept in this browser's storage (IndexedDB) so you can continue after reloading. “Clear all” deletes it. Exported files are saved only where you choose.</p>",
     "about.title": "About this app",
-    "about.body": "<p><b>MiniMTR</b> — a simple multitrack recorder that runs entirely in your browser.</p><p>Prototype. Made by ktkwmr. Recording timing depends on the device; adjust it in ⚙ → Recording latency.</p>",
-    "intro.title": "Multitrack recorder in your browser",
-    "intro.body": "<p>MiniMTR lets you record several takes on top of each other — guitar, then vocals, then a harmony — right in the browser. Each track has volume, pan, mute and solo, and a click track with count-in keeps you in time.</p><p>Your project is saved automatically in the browser, and you can export everything (a WAV per track plus a settings file) as one zip to continue on another day or another device. A stereo mixdown WAV is one click away.</p><p>Free, no sign-up, and your recordings never leave your device.</p>"
+    "about.body": "<p><b>Demo Track Maker</b> — sketch a demo of your song in the browser: type the chords, get bass, piano and drums, then record your voice or instrument on top.</p><p>It is made for song demos, practice and backing tracks, and arrangement sketches — not as a full recording studio. For detailed editing and mixing, export WAV or MIDI to a DAW.</p><p>Prototype. Made by ktkwmr. Recording timing depends on the device; adjust it in ⚙ → Recording latency.</p>",
+    "intro.title": "Make a demo track: type chords, get a band, record on top",
+    "intro.body": "<p>Demo Track Maker turns a chord chart into a band — bass, piano and drums whose patterns vary from bar to bar like real players — so you can sing or play over it and record a demo of your song.</p><p>Use it to share a song idea, make a practice or backing track, or sketch an arrangement before you finish it in a DAW. Each part's sound, pattern and effects can be changed, and single notes can be edited.</p><p>Export the mix as WAV, the backing as MIDI, or the whole project as a zip to continue later on any device. Free, no sign-up, and your recordings never leave your device.</p>"
   },
   ja: {
     "menu.settings": "設定", "menu.help": "使い方",
@@ -481,7 +481,7 @@ const I18N = {
     "tk.clear": "音声を消去", "tk.delete": "トラックを削除", "tk.confirm": "もう一度押すと実行", "tk.empty": "R で録音待機にして ● で録音、または ⋯ から音声ファイルを読み込み",
     "st.saved": "このブラウザに保存済み {time}", "st.saving": "保存中…", "st.failed": "ブラウザに保存できません（容量不足？）。プロジェクトを書き出してください",
     "msg.noMic": "ここではマイクが使えません。マイクを許可するか、トラックのメニュー（⋯）から音声ファイルを読み込んでください。",
-    "msg.noArm": "先にトラックを録音待機（R）にしてください。", "msg.exported": "{file} を書き出しました", "msg.loaded": "「{name}」を開きました", "msg.badProject": "MiniMTR のプロジェクトではありません。",
+    "msg.noArm": "先にトラックを録音待機（R）にしてください。", "msg.exported": "{file} を書き出しました", "msg.loaded": "「{name}」を開きました", "msg.badProject": "Demo Track Maker のプロジェクトではありません。",
     "msg.decodeFail": "この音声ファイルは読み込めません。",
     "msg.maxTracks": "トラックは {n} 本までです。", "msg.nothing": "書き出す音声がまだありません。", "msg.recDone": "{sec} 秒録音しました", "msg.saveFail": "ファイルを保存できませんでした。",
     "dlg.close": "閉じる",
@@ -493,9 +493,9 @@ const I18N = {
     "privacy.title": "プライバシー",
     "privacy.body": "<p>録音と処理はすべてお使いの端末の中で行います。録音した音をサーバーに送ることはありません。</p><p>再読み込みしても続けられるよう、プロジェクト（設定と音声）をこのブラウザの保存領域（IndexedDB）に保存します。「すべてクリア」で消去できます。書き出したファイルは、あなたが選んだ場所にだけ保存されます。</p>",
     "about.title": "このアプリについて",
-    "about.body": "<p><b>MiniMTR</b> — ブラウザだけで動くシンプルなマルチトラックレコーダーです。</p><p>試作版。作者 ktkwmr。録音のタイミングは端末によって変わります。⚙ →「録音のずれ補正」で調整してください。</p>",
-    "intro.title": "ブラウザで使えるマルチトラックレコーダー（MTR）",
-    "intro.body": "<p>MiniMTR は、ギター、歌、ハモリと、音を重ねて録音できるブラウザのアプリです。トラックごとに音量・定位・ミュート・ソロがあり、カウント付きのクリックで拍に合わせて録れます。</p><p>プロジェクトはブラウザに自動で保存され、トラックごとの WAV と設定ファイルをまとめた zip に書き出せるので、別の日や別の端末で続きができます。2 ミックスの WAV もワンクリックで書き出せます。</p><p>無料・登録不要。録音した音が端末の外に出ることはありません。</p>"
+    "about.body": "<p><b>Demo Track Maker</b> — コードを入れると伴奏ができ、その上に歌や楽器を重ねて録れる、デモ音源づくりのためのブラウザのアプリです。</p><p>曲のアイデアを聞かせるデモ、練習用の伴奏、アレンジの下書きのための道具で、本格的な録音スタジオ（DAW）の代わりではありません。細かい編集やミックスは、WAV や MIDI に書き出して DAW で行ってください。</p><p>試作版。作者 ktkwmr。録音のタイミングは端末によって変わります。⚙ →「録音のずれ補正」で調整してください。</p>",
+    "intro.title": "デモ音源づくりに：コードを入れるだけで伴奏、歌や楽器を重ねて録音",
+    "intro.body": "<p>Demo Track Maker は、コード譜からベース・ピアノ・ドラムの伴奏を自動で作り、その上に歌やギターを重ねて録音できるブラウザのアプリです。伴奏は人が弾くように小節ごとに変化し、パートごとに音色・パターン・エフェクトを変えたり、1 音ずつ直したりできます。</p><p>曲のアイデアを人に聞かせるデモ、弾き語りや歌の練習用の伴奏、DAW で仕上げる前のアレンジの下書きに使えます。</p><p>2 ミックスは WAV、伴奏は MIDI、プロジェクト全体は zip で書き出せるので、続きは別の日や別の端末でもできます。無料・登録不要。録音した音が端末の外に出ることはありません。</p>"
   }
 };
 function detectLang() {
@@ -526,8 +526,8 @@ function applyI18n(root = document) {
 // ---------------------------------------------------------------- helpers
 const $ = (s, r = document) => r.querySelector(s);
 const MAX_TRACKS = 8;
-const DB_NAME = "minimtr";
-const FORMAT = "minimtr-project";
+const DB_NAME = "demotrackmaker";
+const FORMAT = "demotrackmaker-project";
 let toastTimer;
 function toast(msg, ms = 2600) {
   const el = $("#toast");
@@ -1057,7 +1057,7 @@ async function readZip(u8) {
 // ---------------------------------------------------------------- project (de)serialization
 function projectJson(fileFor) {
   return {
-    format: FORMAT, version: 3, app: "MiniMTR", savedAt: new Date().toISOString(),
+    format: FORMAT, version: 1, app: "Demo Track Maker", savedAt: new Date().toISOString(),
     name: state.name, bpm: state.bpm, beatsPerBar: state.beats, metronome: state.metronome, countIn: state.countIn, latencyMs: state.latencyMs,
     tracks: state.tracks.map((tr, i) => ({
       name: tr.name, volume: tr.volume, pan: tr.pan, mute: tr.mute, solo: tr.solo, fx: tr.fx,
@@ -1217,7 +1217,7 @@ function projectBase() { return safeName(state.name || t("pj.untitled")); }
 // Ask where / under which name to save, then build the file (makeBlob may take a while, e.g. rendering).
 // Chrome / Edge on a computer: the system "Save as" dialog (name and folder). Elsewhere: a name field in the page,
 // then the browser's normal download (or the claude.ai save prompt in the Artifact preview).
-const FILE_TYPES = { zip: ["application/zip", "MiniMTR project"], wav: ["audio/wav", "WAV audio"], mid: ["audio/midi", "MIDI"] };
+const FILE_TYPES = { zip: ["application/zip", "Demo Track Maker project"], wav: ["audio/wav", "WAV audio"], mid: ["audio/midi", "MIDI"] };
 async function exportFile(base, ext, makeBlob) {
   const [mime, desc] = FILE_TYPES[ext];
   if (window.showSaveFilePicker && !window.claude) {
@@ -1365,7 +1365,7 @@ function buildMidi() {
   const usPerQ = Math.round(60000000 / state.bpm);
   const tracks = [];
   const conductor = [
-    { tick: 0, order: 0, bytes: metaText(0x03, state.name || "MiniMTR") },
+    { tick: 0, order: 0, bytes: metaText(0x03, state.name || "Demo Track Maker") },
     { tick: 0, order: 0, bytes: [0xff, 0x51, 3, (usPerQ >> 16) & 255, (usPerQ >> 8) & 255, usPerQ & 255] },
     { tick: 0, order: 0, bytes: [0xff, 0x58, 4, B, 2, 24, 8] },
   ];
@@ -3760,7 +3760,6 @@ applyI18n();
   const ok = await restore();
   if (!ok) { state.tracks = [1, 2].map(newTrack); state.song = defaultSong(true); }
   materializePending();
-  try { await kvDel("dirHandle"); } catch {} // left over from the removed "save to folder"
   renderAll();
   if (ok) $("#saveStatus").textContent = t("st.saved", { time: "" }).trim();
 })();

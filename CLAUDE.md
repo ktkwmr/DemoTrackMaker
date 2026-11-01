@@ -1,9 +1,12 @@
-# MiniMTR
+# Demo Track Maker
 
-ブラウザだけで動く簡易マルチトラックレコーダー（HTML 1 ファイル）。録音・設定をローカルに書き出して、続きから再開できる。公開 URL（予定）: https://ktkwmr.com/minimtr/
+ブラウザでデモ音源を作るアプリ（HTML 1 ファイル）。コード譜から自動で伴奏を作り、歌や楽器を重ねて録音する。プロジェクトをローカルに書き出して続きから再開できる。公開 URL（予定）: https://ktkwmr.com/demotrackmaker/
+
+位置づけ: 「デモ音源・練習用の伴奏・アレンジの下書き」の道具として紹介する。一般的な MTR・DAW の代わりとはうたわない（細かい編集・ミックスは WAV・MIDI に書き出して DAW で）。
+2026-11 に MiniMTR から改名（スラッグも minimtr → demotrackmaker）。旧名の自動保存・zip の引き継ぎはしない（公開前のため）。GitHub のリポジトリ名 `ktkwmr/MiniMTR` の変更は 👤 の作業。
 
 ## 状態
-- 試作（プロト）。アプリ本体 `public/minimtr/index.html` だけを作った段階で、共通部分（§2〜§12 の大半）はまだ。
+- 試作（プロト）。アプリ本体 `public/demotrackmaker/index.html` だけを作った段階で、共通部分（§2〜§12 の大半）はまだ。
 - 試作の Artifact: https://claude.ai/artifact/4nMf28C3KohMKsawGB1vNZ（`node scripts/build-preview.mjs` → `.preview/index.html` を公開）
 
 ## 共通ベースライン
@@ -14,14 +17,14 @@
   ベースラインへの追記案を出す（ユーザーが了承したらベースラインのリポジトリに PR）。
 
 ## このアプリの値（仮。§0 の確認がまだ）
-- アプリ名: MiniMTR / スラッグ: minimtr / ドメイン: ktkwmr.com / 言語: en（既定）+ ja（/ja/）
+- アプリ名: Demo Track Maker / スラッグ: demotrackmaker / ドメイン: ktkwmr.com / 言語: en（既定）+ ja（/ja/）
 - 運営者: ktkwmr / 問い合わせ: GitHub Issues
 - Cloudflare Web Analytics token: 未設定
 
 ## データの持ち方（このアプリ独自）
-- 自動保存: IndexedDB `minimtr`（store `kv` の `project` = 設定、store `audio` = トラック id → `{ sr, chans: Float32Array[] }`）。
-- 書き出し: zip（無圧縮）に `project.json`（`format: "minimtr-project"`, `version: 3`）と `tracks/NN-<名前>.wav`（32bit float、劣化なし）。
-  フォーマットを変えるときは `version` を上げ、古い版も読めるようにする（version 1 = 伴奏なし。読むと伴奏は録音があればオフ。version 2 = エフェクトなし。読むとエフェクトは既定値）。
+- 自動保存: IndexedDB `demotrackmaker`（store `kv` の `project` = 設定、store `audio` = トラック id → `{ sr, chans: Float32Array[] }`）。
+- 書き出し: zip（無圧縮）に `project.json`（`format: "demotrackmaker-project"`, `version: 1`）と `tracks/NN-<名前>.wav`（32bit float、劣化なし）。
+  フォーマットを変えるときは `version` を上げ、古い版も読めるようにする（改名時に version 1 からやり直した。`song`・`fx` が無いファイルも既定値で読めるようにしてある）。
 - 伴奏（`state.song`、project.json の `song`）: `chords[小節][拍]`（空文字 = 前のコードが続く）、`parts.bass/piano/drums`
   （`preset`・`tone`（ドラムは音色セット）・`custom` = パターン全体の編集・`overrides[小節]` = その小節だけの編集・ドラムは `fills[小節]`・`fillCustom`・`crash`）。
   時間は 1 拍 = 12 tick。パターンの音の高さはコードからの相対（`deg` R/3/5/7/9、`semi`、`vi` = ピアノ右手の和音の何番目か、`rh` = 右手の音域で基本形の和音の音（分散和音用）、`ap` = 次のコードへの半音アプローチ）、
@@ -36,6 +39,6 @@
 - 伴奏を音声トラックに: パート 1 つなら音量・定位をかけずに書き出し、新しいトラックの音量・定位に移す。全部なら音量・定位・ミュート・ソロを反映して 1 本に。書き出したパートはミュートする。
 
 ## ルール
-- 生成ファイル（public/minimtr/ja/index.html など）は編集しない（生成スクリプトを入れたら）。
+- 生成ファイル（public/demotrackmaker/ja/index.html など）は編集しない（生成スクリプトを入れたら）。
 - 外部ホストを足したら public/_headers の CSP と、プライバシーの説明（ポリシー・アプリ内・README）を同じ PR で直す。
 - 作業はブランチ → PR → Cloudflare のプレビュービルド確認 → squash マージ。
