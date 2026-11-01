@@ -20,7 +20,6 @@ A simple multitrack recorder that runs entirely in the browser (one HTML file).
 - Render the backing (or one part) to an audio track / 伴奏（またはパート 1 つ）を音声トラックに書き出し
 - Auto-save in the browser (IndexedDB) / ブラウザに自動保存
 - **Export the project** as a zip (`project.json` + one 32-bit float WAV per track) and open it again later or on another device / **プロジェクトを zip に書き出し**、あとで・別の端末で読み込んで続きができる
-- Save to a folder (Chrome / Edge on a computer) / フォルダに保存（PC の Chrome・Edge）
 - Stereo mixdown WAV / ミックスダウン WAV
 - Recording latency compensation (⚙) / 録音のずれ補正
 

@@ -263,8 +263,6 @@
     <div class="grp">
       <button id="exportBtn" data-i18n="pj.export">Export project (.zip)</button>
       <button id="importBtn" data-i18n="pj.import">Open project…</button>
-      <button id="folderSaveBtn" hidden data-i18n="pj.folderSave">Save to folder</button>
-      <button id="folderOpenBtn" hidden data-i18n="pj.folderOpen">Open folder…</button>
       <button id="mixBtn" data-i18n="pj.mix">Mixdown (WAV)</button>
       <button id="midiBtn" data-i18n="pj.midi">Backing as MIDI</button>
       <button id="newBtn" data-i18n="pj.new">New</button>
@@ -419,7 +417,7 @@ const I18N = {
     "tr.home": "Go to start", "tr.play": "Play / pause", "tr.stop": "Stop", "tr.rec": "Record",
     "tr.bpm": "BPM", "tr.beats": "Beats", "tr.metro": "Click", "tr.countin": "Count-in", "tr.countinHelp": "Play one bar of clicks before recording starts", "tr.input": "Input", "tr.undo": "Undo",
     "pj.label": "Project", "pj.name": "Project name", "pj.export": "Export project (.zip)", "pj.import": "Open project…",
-    "pj.folderSave": "Save to folder", "pj.folderSaveTo": "Save to “{name}”", "pj.folderOpen": "Open folder…", "pj.mix": "Mixdown (WAV)", "pj.midi": "Backing as MIDI", "msg.rendering": "Rendering…", "pj.new": "New", "pj.confirmNew": "Tap again to clear",
+    "pj.mix": "Mixdown (WAV)", "pj.midi": "Backing as MIDI", "msg.rendering": "Rendering…", "pj.new": "New", "pj.confirmNew": "Tap again to clear",
     "pj.untitled": "Untitled",
     "tk.add": "+ Add track", "tk.track": "Track {n}", "tk.arm": "Arm for recording", "tk.mute": "Mute", "tk.solo": "Solo",
     "tk.vol": "Vol", "tk.pan": "Pan", "tk.more": "Track menu", "tk.importAudio": "Import audio file…", "tk.exportWav": "Export this track (WAV)",
@@ -427,14 +425,14 @@ const I18N = {
     "st.saved": "Saved in this browser {time}", "st.saving": "Saving…", "st.failed": "Could not save in this browser (storage full?) — export the project",
     "msg.noMic": "Microphone is not available here. Allow microphone access, or import an audio file from the track menu (⋯).",
     "msg.noArm": "Arm a track (R) first.", "msg.exported": "Exported {file}", "msg.loaded": "Opened “{name}”", "msg.badProject": "This file is not a MiniMTR project.",
-    "msg.decodeFail": "Could not read this audio file.", "msg.folderSaved": "Saved to folder “{name}”", "msg.folderNoSupport": "Saving to a folder is not available in this browser.",
-    "msg.folderDenied": "Folder access was not allowed.", "msg.maxTracks": "Up to {n} tracks.", "msg.nothing": "Nothing to export yet.", "msg.recDone": "Recorded {sec} s", "msg.saveFail": "Could not save the file.",
+    "msg.decodeFail": "Could not read this audio file.",
+    "msg.maxTracks": "Up to {n} tracks.", "msg.nothing": "Nothing to export yet.", "msg.recDone": "Recorded {sec} s", "msg.saveFail": "Could not save the file.",
     "dlg.close": "Close",
     "lat.title": "Recording latency",
     "lat.body": "What you record reaches the browser a little later than what you hear. MiniMTR moves each new take earlier by this amount so it lines up with the other tracks. If takes sound late, increase it; if early, decrease it.",
     "lat.label": "Offset (ms)", "lat.auto": "Auto", "lat.info": "Auto estimate on this device: {ms} ms (output {out} ms + input {inp} ms + processing {proc} ms)",
     "help.title": "How to use",
-    "help.body": "<ol><li>Type chords in <b>Chords &amp; backing</b> (one box per beat; an empty box keeps the previous chord). Bass, piano and drums play along automatically. Pick a pattern and a sound for each part, and choose a drum fill for any bar.</li><li><b>Backing as MIDI</b> saves bass, piano and drums as a standard MIDI file (with tempo, time signature and chord names as markers) to open in a DAW. <b>Backing → audio track</b> (or ⋯ on a part) renders the backing into a recorded track, so you can edit or export it like any take.</li><li><b>Variation</b> makes the band play like people do: bass runs into the next chord, the piano anticipates chord changes and adds colour notes, the drums add crashes, open hi-hats, ghost notes and short lead-ins at the end of 4- and 8-bar phrases. <b>Another take</b> picks a different set; set Variation to 0 for the plain pattern. <b>Ending</b> stops the band on the first beat of the last bar.</li><li>To change single notes, press <b>Edit</b> on a part (or double-tap its lane). Choose <b>Whole pattern</b> to change every bar, or <b>This bar only</b>.</li><li>Press <b>R</b> on a track to arm it (the browser asks for the microphone the first time).</li><li>Press <b>●</b> to record. With Count-in on, one bar of clicks plays first. Use headphones so other tracks do not leak into the microphone.</li><li>Press <b>■</b> to stop. Recording again on the same track replaces only the recorded range. <b>Undo</b> brings back the previous take.</li><li><b>FX</b> on each track and part opens its effects: EQ, compressor, drive, and how much goes to the shared reverb and tempo-synced delay. Presets (vocal, acoustic, crunch guitar …) are a starting point.</li><li>Each part has a <b>Sound</b> menu: 8 bass sounds (finger, pick, slap, muted, upright, synth, analog synth, 808) and 6 drum kits (standard, rock, brushes, 808, 909, lo-fi). Drums also have clap, tambourine, shaker and cowbell.</li><li>Tap the timeline to move the playhead (■ always goes back to the start). Pinch, Ctrl + wheel or − / + to zoom, drag or scroll sideways to move along; during playback the view follows the playhead. Drag a bar in the chord chart (long-press on a touch screen, or ⠿ and the arrow keys) to move it.</li><li>Your work is saved in this browser automatically. To keep it safe or move it to another device, use <b>Export project (.zip)</b> and later <b>Open project…</b>. The zip contains <code>project.json</code> (settings) and one WAV file per track.</li><li>In Chrome / Edge on a computer, <b>Save to folder</b> writes the same files into a folder you choose, and saves over it the next time.</li></ol>",
+    "help.body": "<ol><li>Type chords in <b>Chords &amp; backing</b> (one box per beat; an empty box keeps the previous chord). Bass, piano and drums play along automatically. Pick a pattern and a sound for each part, and choose a drum fill for any bar.</li><li><b>Backing as MIDI</b> saves bass, piano and drums as a standard MIDI file (with tempo, time signature and chord names as markers) to open in a DAW. <b>Backing → audio track</b> (or ⋯ on a part) renders the backing into a recorded track, so you can edit or export it like any take.</li><li><b>Variation</b> makes the band play like people do: bass runs into the next chord, the piano anticipates chord changes and adds colour notes, the drums add crashes, open hi-hats, ghost notes and short lead-ins at the end of 4- and 8-bar phrases. <b>Another take</b> picks a different set; set Variation to 0 for the plain pattern. <b>Ending</b> stops the band on the first beat of the last bar.</li><li>To change single notes, press <b>Edit</b> on a part (or double-tap its lane). Choose <b>Whole pattern</b> to change every bar, or <b>This bar only</b>.</li><li>Press <b>R</b> on a track to arm it (the browser asks for the microphone the first time).</li><li>Press <b>●</b> to record. With Count-in on, one bar of clicks plays first. Use headphones so other tracks do not leak into the microphone.</li><li>Press <b>■</b> to stop. Recording again on the same track replaces only the recorded range. <b>Undo</b> brings back the previous take.</li><li><b>FX</b> on each track and part opens its effects: EQ, compressor, drive, and how much goes to the shared reverb and tempo-synced delay. Presets (vocal, acoustic, crunch guitar …) are a starting point.</li><li>Each part has a <b>Sound</b> menu: 8 bass sounds (finger, pick, slap, muted, upright, synth, analog synth, 808) and 6 drum kits (standard, rock, brushes, 808, 909, lo-fi). Drums also have clap, tambourine, shaker and cowbell.</li><li>Tap the timeline to move the playhead (■ always goes back to the start). Pinch, Ctrl + wheel or − / + to zoom, drag or scroll sideways to move along; during playback the view follows the playhead. Drag a bar in the chord chart (long-press on a touch screen, or ⠿ and the arrow keys) to move it.</li><li>Your work is saved in this browser automatically. To keep it safe or move it to another device, use <b>Export project (.zip)</b> and later <b>Open project…</b>. The zip contains <code>project.json</code> (settings) and one WAV file per track.</li></ol>",
     "privacy.title": "Privacy",
     "privacy.body": "<p>Audio is recorded and processed only on your device. Nothing you record is sent to any server.</p><p>Your project (settings and audio) is kept in this browser's storage (IndexedDB) so you can continue after reloading. “New” clears it. Exported files are saved only where you choose.</p>",
     "about.title": "About this app",
@@ -466,7 +464,7 @@ const I18N = {
     "tr.home": "先頭へ", "tr.play": "再生／一時停止", "tr.stop": "停止", "tr.rec": "録音",
     "tr.bpm": "BPM", "tr.beats": "拍子", "tr.metro": "クリック", "tr.countin": "録音前カウント", "tr.countinHelp": "録音を始める前に、クリックを 1 小節鳴らします", "tr.input": "入力", "tr.undo": "元に戻す",
     "pj.label": "プロジェクト", "pj.name": "プロジェクト名", "pj.export": "書き出し（.zip）", "pj.import": "読み込み…",
-    "pj.folderSave": "フォルダに保存", "pj.folderSaveTo": "「{name}」に保存", "pj.folderOpen": "フォルダから開く…", "pj.mix": "ミックスダウン（WAV）", "pj.midi": "伴奏を MIDI で書き出し", "msg.rendering": "書き出し中…", "pj.new": "新規", "pj.confirmNew": "もう一度押すと消去",
+    "pj.mix": "ミックスダウン（WAV）", "pj.midi": "伴奏を MIDI で書き出し", "msg.rendering": "書き出し中…", "pj.new": "新規", "pj.confirmNew": "もう一度押すと消去",
     "pj.untitled": "無題",
     "tk.add": "＋ トラックを追加", "tk.track": "トラック {n}", "tk.arm": "録音待機", "tk.mute": "ミュート", "tk.solo": "ソロ",
     "tk.vol": "音量", "tk.pan": "定位", "tk.more": "トラックのメニュー", "tk.importAudio": "音声ファイルを読み込む…", "tk.exportWav": "このトラックを書き出す（WAV）",
@@ -474,14 +472,14 @@ const I18N = {
     "st.saved": "このブラウザに保存済み {time}", "st.saving": "保存中…", "st.failed": "ブラウザに保存できません（容量不足？）。プロジェクトを書き出してください",
     "msg.noMic": "ここではマイクが使えません。マイクを許可するか、トラックのメニュー（⋯）から音声ファイルを読み込んでください。",
     "msg.noArm": "先にトラックを録音待機（R）にしてください。", "msg.exported": "{file} を書き出しました", "msg.loaded": "「{name}」を開きました", "msg.badProject": "MiniMTR のプロジェクトではありません。",
-    "msg.decodeFail": "この音声ファイルは読み込めません。", "msg.folderSaved": "フォルダ「{name}」に保存しました", "msg.folderNoSupport": "このブラウザではフォルダに保存できません。",
-    "msg.folderDenied": "フォルダへのアクセスが許可されませんでした。", "msg.maxTracks": "トラックは {n} 本までです。", "msg.nothing": "書き出す音声がまだありません。", "msg.recDone": "{sec} 秒録音しました", "msg.saveFail": "ファイルを保存できませんでした。",
+    "msg.decodeFail": "この音声ファイルは読み込めません。",
+    "msg.maxTracks": "トラックは {n} 本までです。", "msg.nothing": "書き出す音声がまだありません。", "msg.recDone": "{sec} 秒録音しました", "msg.saveFail": "ファイルを保存できませんでした。",
     "dlg.close": "閉じる",
     "lat.title": "録音のずれ補正",
     "lat.body": "録音した音は、聞こえている音より少し遅れてブラウザに届きます。新しく録った音をこの時間だけ前にずらして、ほかのトラックとそろえます。録った音が遅れて聞こえるなら増やし、早いなら減らしてください。",
     "lat.label": "補正（ミリ秒）", "lat.auto": "自動", "lat.info": "この端末での自動の推定値: {ms} ms（出力 {out} ms ＋ 入力 {inp} ms ＋ 処理 {proc} ms）",
     "help.title": "使い方",
-    "help.body": "<ol><li><b>コードと伴奏</b> にコードを入力します（1 拍に 1 マス。空のマスは前のコードが続きます）。ベース・ピアノ・ドラムが自動で伴奏します。パートごとにパターンと音色を選び、ドラムのフィルは小節ごとに選べます。</li><li><b>伴奏を MIDI で書き出し</b> で、ベース・ピアノ・ドラムを標準 MIDI ファイル（テンポ・拍子・コード名のマーカー入り）に書き出し、DAW で開けます。<b>伴奏を音声トラックに</b>（またはパートの ⋯）で、伴奏を録音トラックの音声に変換できます。</li><li><b>バリエーション</b> で、人が弾くような変化を自動で付けます。ベースは次のコードへ駆け上がり、ピアノはコードを先取りして和音に色を足し、ドラムは 4 小節・8 小節の区切りでクラッシュ・オープンハイハット・ゴーストノート・短いつなぎを入れます。<b>別の案</b> で組み合わせが変わり、0 にすると元のパターンのままです。<b>エンディング</b> がオンなら、最後の小節の 1 拍目で全員が止まります。</li><li>1 音ずつ変えるときは、パートの <b>編集</b>（またはパートの行をダブルタップ）。<b>パターン全体</b> ならすべての小節に、<b>この小節だけ</b> ならその小節にだけ反映されます。</li><li>トラックの <b>R</b> を押して録音待機にします（初回はマイクの許可を求められます）。</li><li><b>●</b> で録音開始。「カウント」がオンなら 1 小節クリックが鳴ってから始まります。ほかのトラックの音がマイクに入らないよう、ヘッドホンを使ってください。</li><li><b>■</b> で停止。同じトラックにもう一度録ると、録った範囲だけ置き換わります。<b>元に戻す</b>で前のテイクに戻せます。</li><li>トラックとパートの <b>FX</b> でエフェクト（EQ・コンプ・歪み、共通のリバーブとテンポに合わせたディレイへ送る量）を付けられます。プリセット（ボーカル・アコギ・エレキなど）から始めると簡単です。</li><li>パートごとに <b>音色</b> を選べます。ベースは 8 種類（指弾き・ピック・スラップ・ミュート・ウッドベース・シンセ・アナログシンセ・808）、ドラムは 6 セット（スタンダード・ロック・ブラシ・808・909・ローファイ）。ドラムにはクラップ・タンバリン・シェイカー・カウベルもあります。</li><li>タイムラインを押すと再生位置が動きます（■ はいつも先頭に戻ります）。ピンチ・Ctrl＋ホイール・− / + で拡大縮小、ドラッグや横スクロールで左右に移動し、再生中は再生位置に合わせて表示が送られます。コード譜の小節は、ドラッグ（タッチ画面では長押ししてから）か ⠿ と矢印キーで移動できます。</li><li>作業内容はこのブラウザに自動で保存されます。消えないように残したいときや別の端末に移すときは <b>書き出し（.zip）</b>、続きをやるときは <b>読み込み…</b>。zip の中身は設定の <code>project.json</code> とトラックごとの WAV ファイルです。</li><li>PC の Chrome・Edge では <b>フォルダに保存</b> で、選んだフォルダに同じファイルを書き出し、次からは上書き保存できます。</li></ol>",
+    "help.body": "<ol><li><b>コードと伴奏</b> にコードを入力します（1 拍に 1 マス。空のマスは前のコードが続きます）。ベース・ピアノ・ドラムが自動で伴奏します。パートごとにパターンと音色を選び、ドラムのフィルは小節ごとに選べます。</li><li><b>伴奏を MIDI で書き出し</b> で、ベース・ピアノ・ドラムを標準 MIDI ファイル（テンポ・拍子・コード名のマーカー入り）に書き出し、DAW で開けます。<b>伴奏を音声トラックに</b>（またはパートの ⋯）で、伴奏を録音トラックの音声に変換できます。</li><li><b>バリエーション</b> で、人が弾くような変化を自動で付けます。ベースは次のコードへ駆け上がり、ピアノはコードを先取りして和音に色を足し、ドラムは 4 小節・8 小節の区切りでクラッシュ・オープンハイハット・ゴーストノート・短いつなぎを入れます。<b>別の案</b> で組み合わせが変わり、0 にすると元のパターンのままです。<b>エンディング</b> がオンなら、最後の小節の 1 拍目で全員が止まります。</li><li>1 音ずつ変えるときは、パートの <b>編集</b>（またはパートの行をダブルタップ）。<b>パターン全体</b> ならすべての小節に、<b>この小節だけ</b> ならその小節にだけ反映されます。</li><li>トラックの <b>R</b> を押して録音待機にします（初回はマイクの許可を求められます）。</li><li><b>●</b> で録音開始。「カウント」がオンなら 1 小節クリックが鳴ってから始まります。ほかのトラックの音がマイクに入らないよう、ヘッドホンを使ってください。</li><li><b>■</b> で停止。同じトラックにもう一度録ると、録った範囲だけ置き換わります。<b>元に戻す</b>で前のテイクに戻せます。</li><li>トラックとパートの <b>FX</b> でエフェクト（EQ・コンプ・歪み、共通のリバーブとテンポに合わせたディレイへ送る量）を付けられます。プリセット（ボーカル・アコギ・エレキなど）から始めると簡単です。</li><li>パートごとに <b>音色</b> を選べます。ベースは 8 種類（指弾き・ピック・スラップ・ミュート・ウッドベース・シンセ・アナログシンセ・808）、ドラムは 6 セット（スタンダード・ロック・ブラシ・808・909・ローファイ）。ドラムにはクラップ・タンバリン・シェイカー・カウベルもあります。</li><li>タイムラインを押すと再生位置が動きます（■ はいつも先頭に戻ります）。ピンチ・Ctrl＋ホイール・− / + で拡大縮小、ドラッグや横スクロールで左右に移動し、再生中は再生位置に合わせて表示が送られます。コード譜の小節は、ドラッグ（タッチ画面では長押ししてから）か ⠿ と矢印キーで移動できます。</li><li>作業内容はこのブラウザに自動で保存されます。消えないように残したいときや別の端末に移すときは <b>書き出し（.zip）</b>、続きをやるときは <b>読み込み…</b>。zip の中身は設定の <code>project.json</code> とトラックごとの WAV ファイルです。</li></ol>",
     "privacy.title": "プライバシー",
     "privacy.body": "<p>録音と処理はすべてお使いの端末の中で行います。録音した音をサーバーに送ることはありません。</p><p>再読み込みしても続けられるよう、プロジェクト（設定と音声）をこのブラウザの保存領域（IndexedDB）に保存します。「新規」で消去できます。書き出したファイルは、あなたが選んだ場所にだけ保存されます。</p>",
     "about.title": "このアプリについて",
@@ -1344,69 +1342,6 @@ async function exportMidi() {
   await saveFile(new Blob([buildMidi()], { type: "audio/midi" }), `${projectBase()}-backing-${stamp()}.mid`);
 }
 
-// Folder save (File System Access API: Chrome / Edge on computers)
-let dirHandle = null;
-const fsSupported = "showDirectoryPicker" in window;
-async function verifyPerm(h) {
-  const opts = { mode: "readwrite" };
-  if ((await h.queryPermission(opts)) === "granted") return true;
-  return (await h.requestPermission(opts)) === "granted";
-}
-async function folderSave(pick) {
-  try {
-    materializePending();
-    if (!dirHandle || pick) dirHandle = await window.showDirectoryPicker({ id: "minimtr", mode: "readwrite" });
-    if (!(await verifyPerm(dirHandle))) { toast(t("msg.folderDenied")); return; }
-    const files = projectFiles();
-    const tracksDir = await dirHandle.getDirectoryHandle("tracks", { create: true });
-    const keep = new Set();
-    for (const f of files) {
-      const parts = f.name.split("/");
-      const dir = parts.length > 1 ? tracksDir : dirHandle;
-      const name = parts[parts.length - 1];
-      if (parts.length > 1) keep.add(name);
-      const fh = await dir.getFileHandle(name, { create: true });
-      const w = await fh.createWritable();
-      await w.write(f.data); await w.close();
-    }
-    // Remove old take files that this project no longer refers to
-    for await (const [name, h] of tracksDir.entries()) if (h.kind === "file" && name.endsWith(".wav") && !keep.has(name)) await tracksDir.removeEntry(name);
-    try { await kvSet("dirHandle", dirHandle); } catch {}
-    updateFolderUi();
-    toast(t("msg.folderSaved", { name: dirHandle.name }));
-  } catch (e) {
-    if (e && e.name === "AbortError") return;
-    console.warn(e);
-    toast(e && e.name === "SecurityError" ? t("msg.folderNoSupport") : t("msg.saveFail"));
-  }
-}
-async function folderOpen() {
-  try {
-    const h = await window.showDirectoryPicker({ id: "minimtr", mode: "readwrite" });
-    const fh = await h.getFileHandle("project.json");
-    const json = JSON.parse(await (await fh.getFile()).text());
-    await loadProject(json, async (name) => {
-      try {
-        let dir = h; const parts = name.split("/");
-        for (const p of parts.slice(0, -1)) dir = await dir.getDirectoryHandle(p);
-        const f = await (await dir.getFileHandle(parts[parts.length - 1])).getFile();
-        return new Uint8Array(await f.arrayBuffer());
-      } catch { return null; }
-    });
-    dirHandle = h;
-    try { await kvSet("dirHandle", h); } catch {}
-    updateFolderUi();
-    toast(t("msg.loaded", { name: state.name || h.name }));
-  } catch (e) {
-    if (e && e.name === "AbortError") return;
-    console.warn(e);
-    toast(e && e.name === "SecurityError" ? t("msg.folderNoSupport") : t("msg.badProject"));
-  }
-}
-function updateFolderUi() {
-  const b = $("#folderSaveBtn");
-  b.textContent = dirHandle ? t("pj.folderSaveTo", { name: dirHandle.name }) : t("pj.folderSave");
-}
 
 // ---------------------------------------------------------------- UI: tracks
 const trackList = $("#trackList");
@@ -1778,7 +1713,7 @@ function updateTransportUi() {
   $("#recBtn").classList.toggle("on", transport.recording);
   $("#playIcon").setAttribute("d", transport.playing ? "M8 5v14M16 5v14" : "M7 4l13 8-13 8z");
   const busy = transport.recording;
-  ["#exportBtn", "#importBtn", "#folderSaveBtn", "#folderOpenBtn", "#mixBtn", "#midiBtn", "#bounceAllBtn", "#newBtn", "#addTrackBtn"].forEach((s) => ($(s).disabled = busy));
+  ["#exportBtn", "#importBtn", "#mixBtn", "#midiBtn", "#bounceAllBtn", "#newBtn", "#addTrackBtn"].forEach((s) => ($(s).disabled = busy));
   $("#undoBtn").disabled = busy || !undoInfo;
 }
 let resizeT;
@@ -1870,15 +1805,10 @@ twoTap(newBtn, "pj.new", async () => {
   songHistory.length = 0; analysisCache = null; eventsCache = null;
   updateAllMix();
   state.tracks.forEach(buildTrackNodes);
-  undoInfo = null; transport.pos = 0; dirHandle = null;
-  try { await audioClear(); await kvDel("dirHandle"); } catch {}
-  updateFolderUi(); releaseMicIfUnused(); renderAll(); saveSoon();
+  undoInfo = null; transport.pos = 0;
+  try { await audioClear(); } catch {}
+  releaseMicIfUnused(); renderAll(); saveSoon();
 });
-if (fsSupported) {
-  $("#folderSaveBtn").hidden = false; $("#folderOpenBtn").hidden = false;
-  $("#folderSaveBtn").addEventListener("click", (e) => folderSave(e.shiftKey));
-  $("#folderOpenBtn").addEventListener("click", folderOpen);
-}
 attachSeek($("#ruler"), null, true);
 $("#zoomIn").addEventListener("click", () => zoomBy(0.5));
 $("#zoomOut").addEventListener("click", () => zoomBy(2));
@@ -3772,7 +3702,7 @@ applyI18n();
   const ok = await restore();
   if (!ok) { state.tracks = [1, 2].map(newTrack); state.song = defaultSong(true); }
   materializePending();
-  if (fsSupported) { try { const h = await kvGet("dirHandle"); if (h) dirHandle = h; } catch {} updateFolderUi(); }
+  try { await kvDel("dirHandle"); } catch {} // left over from the removed "save to folder"
   renderAll();
   if (ok) $("#saveStatus").textContent = t("st.saved", { time: "" }).trim();
 })();

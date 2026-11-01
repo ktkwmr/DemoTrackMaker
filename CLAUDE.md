@@ -19,7 +19,7 @@
 - Cloudflare Web Analytics token: 未設定
 
 ## データの持ち方（このアプリ独自）
-- 自動保存: IndexedDB `minimtr`（store `kv` の `project` = 設定、store `audio` = トラック id → `{ sr, chans: Float32Array[] }`、`kv` の `dirHandle` = フォルダ保存先）。
+- 自動保存: IndexedDB `minimtr`（store `kv` の `project` = 設定、store `audio` = トラック id → `{ sr, chans: Float32Array[] }`）。
 - 書き出し: zip（無圧縮）に `project.json`（`format: "minimtr-project"`, `version: 3`）と `tracks/NN-<名前>.wav`（32bit float、劣化なし）。
   フォーマットを変えるときは `version` を上げ、古い版も読めるようにする（version 1 = 伴奏なし。読むと伴奏は録音があればオフ。version 2 = エフェクトなし。読むとエフェクトは既定値）。
 - 伴奏（`state.song`、project.json の `song`）: `chords[小節][拍]`（空文字 = 前のコードが続く）、`parts.bass/piano/drums`
@@ -29,7 +29,7 @@
   小節ごとに seed から決まる疑似乱数なので、再生・表示・MIDI・書き出しで同じ結果になる。パターン全体の編集画面はバリエーションを含まない元のパターン、「この小節だけ」は聞こえている音（バリエーション込み）をコピーする。音源はすべて Web Audio の合成（外部の音源ファイルなし）。拍子は 4/4 と 3/4 のみ。
 - エフェクト: トラックの `fx` と `song.parts.*.fx`（`low`/`mid`/`high` dB・`mf` Hz・`comp`/`drive`/`rev`/`dly` 0〜1）、共通の `fx`（`revLen` 秒・`dlyNote`・`dlyFb`）。
   チャンネルは input → EQ → 歪み → コンプ → 音量 → 定位、音量のあとから共通のリバーブ（合成したインパルス応答）とテンポ同期のディレイへ送る（`makeStrip`・`makeFxBus`）。ミックスダウンと書き出しも同じ構成（`renderMix`）。
-- フォルダに保存: File System Access API（PC の Chrome・Edge）。zip と同じ構成のファイルを直接書く。
+- 「フォルダに保存」は zip の書き出しと用途が重なるので削除した（どの端末でも使える zip に一本化）。
 - ミックスダウン: 16bit ステレオ WAV（OfflineAudioContext）。
 - 伴奏の MIDI: SMF type 1、480 PPQ。トラック 0 = テンポ・拍子・コード名（マーカー）、ベース ch1・ピアノ ch2・ドラム ch10（GM ドラムマップ、音色セットは GS/XG のドラムキット番号をプログラムチェンジで）。グリッドどおり（ハネは反映、揺らぎは入れない）。
 - 伴奏を音声トラックに: パート 1 つなら音量・定位をかけずに書き出し、新しいトラックの音量・定位に移す。全部なら音量・定位・ミュート・ソロを反映して 1 本に。書き出したパートはミュートする。
