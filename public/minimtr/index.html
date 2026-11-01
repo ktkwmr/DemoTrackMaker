@@ -2100,8 +2100,7 @@ function degIv(ch, deg) {
     case "R": return 0;
     case "3": return ch.third;
     case "5": return ch.fifth;
-    case "7": return ch.sev != null ? ch.sev : 12;
-    case "73": return ch.sev != null ? ch.sev : ch.third; // the 7th on 7th chords, otherwise the 3rd
+    case "7": return ch.sev != null ? ch.sev : 12; // triads: the octave
     case "9": return ch.ext.length ? ch.ext[0] : 14;
     default: return 0;
   }
@@ -2185,11 +2184,11 @@ const PIANO_PRESETS = [
   { id: "eighth", en: "8th-note chords (rock / pop)", ja: "8分刻み（ロック・ポップ）",
     p4: steps(0, 4, 0.5).flatMap((b) => RH(b, 0.42, b % 1 ? 0.5 : 0.68)).concat([N(0, 1, 0.65, "L:R"), N(1, 1, 0.55, "L:R+1"), N(2, 1, 0.65, "L:R"), N(3, 1, 0.55, "L:R+1")]),
     p3: steps(0, 3, 0.5).flatMap((b) => RH(b, 0.42, b % 1 ? 0.5 : 0.68)).concat([N(0, 1, 0.65, "L:R"), N(1, 1, 0.55, "L:R+1"), N(2, 1, 0.55, "L:R+1")]) },
-  // RH |1 3 5 3 8 3 5 3| in 8ths (|1 3 5 7 8 3 5 3| on 7th chords); LH root + 3rd in a 3-3-2 rhythm |3--33--3| over |1--11--1|
+  // RH |1 3 5 3 8 3 5 3| in 8ths (|1 3 5 3 7 3 5 3| on 7th chords: "7" falls back to the octave on triads); LH root + 3rd in a 3-3-2 rhythm |3--33--3| over |1--11--1|
   { id: "arp8", en: "8th-note arpeggio (pop)", ja: "8分アルペジオ（ポップ）",
-    p4: [...["H:R", "H:3", "H:5", "H:73", "H:R+1", "H:3", "H:5", "H:3"].map((sp, k) => N(k / 2, 0.5, k % 2 ? 0.5 : 0.62, sp)),
+    p4: [...["H:R", "H:3", "H:5", "H:3", "H:7", "H:3", "H:5", "H:3"].map((sp, k) => N(k / 2, 0.5, k % 2 ? 0.5 : 0.62, sp)),
       ...[[0, 1.45], [1.5, 0.45], [2, 1.45], [3.5, 0.45]].flatMap(([b, d], k) => [N(b, d, k % 2 ? 0.55 : 0.66, "L:R"), N(b, d, k % 2 ? 0.5 : 0.6, "L:3")])],
-    p3: [...["H:R", "H:3", "H:5", "H:73", "H:R+1", "H:3"].map((sp, k) => N(k / 2, 0.5, k % 2 ? 0.5 : 0.62, sp)),
+    p3: [...["H:R", "H:3", "H:5", "H:3", "H:7", "H:3"].map((sp, k) => N(k / 2, 0.5, k % 2 ? 0.5 : 0.62, sp)),
       ...[[0, 1.45], [1.5, 0.45], [2, 0.95]].flatMap(([b, d], k) => [N(b, d, k === 1 ? 0.55 : 0.66, "L:R"), N(b, d, k === 1 ? 0.5 : 0.6, "L:3")])] },
   { id: "quarter", en: "Quarter-note chords", ja: "4分刻み",
     p4: [0, 1, 2, 3].flatMap((b) => RH(b, 0.9, b ? 0.6 : 0.72)).concat([N(0, 1.9, 0.65, "L:R"), N(2, 1.9, 0.6, "L:R")]),
