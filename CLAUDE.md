@@ -20,8 +20,12 @@
 
 ## データの持ち方（このアプリ独自）
 - 自動保存: IndexedDB `minimtr`（store `kv` の `project` = 設定、store `audio` = トラック id → `{ sr, chans: Float32Array[] }`、`kv` の `dirHandle` = フォルダ保存先）。
-- 書き出し: zip（無圧縮）に `project.json`（`format: "minimtr-project"`, `version: 1`）と `tracks/NN-<名前>.wav`（32bit float、劣化なし）。
-  フォーマットを変えるときは `version` を上げ、古い版も読めるようにする。
+- 書き出し: zip（無圧縮）に `project.json`（`format: "minimtr-project"`, `version: 2`）と `tracks/NN-<名前>.wav`（32bit float、劣化なし）。
+  フォーマットを変えるときは `version` を上げ、古い版も読めるようにする（version 1 = 伴奏なし。読むと伴奏は録音があればオフ）。
+- 伴奏（`state.song`、project.json の `song`）: `chords[小節][拍]`（空文字 = 前のコードが続く）、`parts.bass/piano/drums`
+  （`preset`・`tone`・`custom` = パターン全体の編集・`overrides[小節]` = その小節だけの編集・ドラムは `fills[小節]`・`fillCustom`・`crash`）。
+  時間は 1 拍 = 12 tick。パターンの音の高さはコードからの相対（`deg` R/3/5/7/9、`semi`、`vi` = ピアノ右手の和音の何番目か、`ap` = 次のコードへの半音アプローチ）、
+  小節だけの編集は絶対音高（`midi`）。音源はすべて Web Audio の合成（外部の音源ファイルなし）。拍子は 4/4 と 3/4 のみ。
 - フォルダに保存: File System Access API（PC の Chrome・Edge）。zip と同じ構成のファイルを直接書く。
 - ミックスダウン: 16bit ステレオ WAV（OfflineAudioContext）。
 

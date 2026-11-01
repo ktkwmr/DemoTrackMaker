@@ -9,6 +9,9 @@ A simple multitrack recorder that runs entirely in the browser (one HTML file).
 - Record and overdub up to 8 tracks (punch-in replaces only the recorded range, one-step undo) / 最大 8 トラックの重ね録り（録った範囲だけ置き換え、1 回分の取り消し）
 - Volume, pan, mute, solo; click track with count-in / 音量・定位・ミュート・ソロ、カウント付きクリック
 - Import audio files into a track / 音声ファイルの読み込み
+- Chord chart (one box per beat, or type `| C | G | Am | F G |`) with automatic bass, piano and drums: several patterns per part (pop / rock first), piano sounds, drum fills per bar / コード譜（1 拍 1 マス、テキスト入力も可）から、ベース・ピアノ・ドラムを自動で伴奏。パートごとのパターン、ピアノの音色、小節ごとのドラムのフィル
+- Note-by-note editing for the whole pattern (chord-relative) or for one bar only / 1 音ずつの編集（パターン全体＝コードからの相対、またはその小節だけ）
+- 4/4 and 3/4 / 拍子は 4/4 と 3/4
 - Auto-save in the browser (IndexedDB) / ブラウザに自動保存
 - **Export the project** as a zip (`project.json` + one 32-bit float WAV per track) and open it again later or on another device / **プロジェクトを zip に書き出し**、あとで・別の端末で読み込んで続きができる
 - Save to a folder (Chrome / Edge on a computer) / フォルダに保存（PC の Chrome・Edge）
