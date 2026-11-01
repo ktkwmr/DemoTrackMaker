@@ -261,6 +261,9 @@
         <button id="barsMinus" class="sm" data-i18n-attr="aria-label:song.barsLess">−</button><output id="barsOut">8</output><button id="barsPlus" class="sm" data-i18n-attr="aria-label:song.barsMore">+</button></label>
       <label><span data-i18n="song.swing">Swing</span> <input id="swing" type="range" min="0" max="1" step="0.05" value="0" /></label>
       <label><span data-i18n="song.humanize">Feel</span> <input id="humanize" type="range" min="0" max="1" step="0.05" value="0.3" /></label>
+      <label><span data-i18n="song.variation">Variation</span> <input id="variation" type="range" min="0" max="1" step="0.05" value="0.6" /></label>
+      <button id="reseedBtn" data-i18n="song.reseed">Another take</button>
+      <button id="endingBtn" class="toggle" aria-pressed="true" data-i18n="song.ending">Ending</button>
       <button id="chordTextBtn" data-i18n="song.text">Type as text…</button>
       <button class="songUndo" disabled data-i18n="song.undo">Undo edit</button>
       <button id="bounceAllBtn" data-i18n="song.bounce">Backing → audio track</button>
@@ -353,7 +356,7 @@
 const I18N = {
   en: {
     "menu.settings": "Settings", "menu.help": "How to use",
-    "song.title": "Chords & backing", "song.bounce": "Backing → audio track", "part.bounce": "Render this part to an audio track", "msg.bounced": "Rendered “{name}” to an audio track and muted the original part.", "msg.noBacking": "The backing is off or has no notes.", "tk.bounced": "{name} (rendered)", "tk.backing": "Backing", "song.on": "Backing on", "song.bars": "Bars", "song.barsLess": "Remove a bar", "song.barsMore": "Add a bar",
+    "song.title": "Chords & backing", "song.variation": "Variation", "song.reseed": "Another take", "song.reseeded": "Picked a different set of variations.", "song.ending": "Ending", "ed.varNote": "Automatic variations are not shown here; they are added on top of the pattern.", "ed.varBar": "Shows what plays, including automatic variations.", "song.bounce": "Backing → audio track", "part.bounce": "Render this part to an audio track", "msg.bounced": "Rendered “{name}” to an audio track and muted the original part.", "msg.noBacking": "The backing is off or has no notes.", "tk.bounced": "{name} (rendered)", "tk.backing": "Backing", "song.on": "Backing on", "song.bars": "Bars", "song.barsLess": "Remove a bar", "song.barsMore": "Add a bar",
     "song.swing": "Swing", "song.humanize": "Feel", "song.text": "Type as text…", "song.undo": "Undo edit", "song.chords": "Chords",
     "song.noFill": "No fill", "song.fillOf": "Drum fill in bar {n}", "song.chordAt": "Chord, bar {bar} beat {beat}", "song.editBar": "Edit", "song.editBarN": "Edit notes in bar {n}",
     "song.badChord": "Unknown chord name (examples: C, Am7, F#m7b5, G7sus4, C/E)", "song.textTitle": "Chords as text", "song.apply": "Apply", "song.textEmpty": "No bars found. Write bars like | C | G |",
@@ -390,7 +393,7 @@ const I18N = {
     "lat.body": "What you record reaches the browser a little later than what you hear. MiniMTR moves each new take earlier by this amount so it lines up with the other tracks. If takes sound late, increase it; if early, decrease it.",
     "lat.label": "Offset (ms)", "lat.auto": "Auto", "lat.info": "Auto estimate on this device: {ms} ms (output {out} ms + input {inp} ms + processing {proc} ms)",
     "help.title": "How to use",
-    "help.body": "<ol><li>Type chords in <b>Chords &amp; backing</b> (one box per beat; an empty box keeps the previous chord). Bass, piano and drums play along automatically. Pick a pattern and a sound for each part, and choose a drum fill for any bar.</li><li><b>Backing as MIDI</b> saves bass, piano and drums as a standard MIDI file (with tempo, time signature and chord names as markers) to open in a DAW. <b>Backing → audio track</b> (or ⋯ on a part) renders the backing into a recorded track, so you can edit or export it like any take.</li><li>To change single notes, press <b>Edit</b> on a part (or double-tap its lane). Choose <b>Whole pattern</b> to change every bar, or <b>This bar only</b>.</li><li>Press <b>R</b> on a track to arm it (the browser asks for the microphone the first time).</li><li>Press <b>●</b> to record. With Count-in on, one bar of clicks plays first. Use headphones so other tracks do not leak into the microphone.</li><li>Press <b>■</b> to stop. Recording again on the same track replaces only the recorded range. <b>Undo</b> brings back the previous take.</li><li>Tap or drag on the waveform or the ruler to move the playhead.</li><li>Your work is saved in this browser automatically. To keep it safe or move it to another device, use <b>Export project (.zip)</b> and later <b>Open project…</b>. The zip contains <code>project.json</code> (settings) and one WAV file per track.</li><li>In Chrome / Edge on a computer, <b>Save to folder</b> writes the same files into a folder you choose, and saves over it the next time.</li></ol>",
+    "help.body": "<ol><li>Type chords in <b>Chords &amp; backing</b> (one box per beat; an empty box keeps the previous chord). Bass, piano and drums play along automatically. Pick a pattern and a sound for each part, and choose a drum fill for any bar.</li><li><b>Backing as MIDI</b> saves bass, piano and drums as a standard MIDI file (with tempo, time signature and chord names as markers) to open in a DAW. <b>Backing → audio track</b> (or ⋯ on a part) renders the backing into a recorded track, so you can edit or export it like any take.</li><li><b>Variation</b> makes the band play like people do: bass runs into the next chord, the piano anticipates chord changes and adds colour notes, the drums add crashes, open hi-hats, ghost notes and short lead-ins at the end of 4- and 8-bar phrases. <b>Another take</b> picks a different set; set Variation to 0 for the plain pattern. <b>Ending</b> stops the band on the first beat of the last bar.</li><li>To change single notes, press <b>Edit</b> on a part (or double-tap its lane). Choose <b>Whole pattern</b> to change every bar, or <b>This bar only</b>.</li><li>Press <b>R</b> on a track to arm it (the browser asks for the microphone the first time).</li><li>Press <b>●</b> to record. With Count-in on, one bar of clicks plays first. Use headphones so other tracks do not leak into the microphone.</li><li>Press <b>■</b> to stop. Recording again on the same track replaces only the recorded range. <b>Undo</b> brings back the previous take.</li><li>Tap or drag on the waveform or the ruler to move the playhead.</li><li>Your work is saved in this browser automatically. To keep it safe or move it to another device, use <b>Export project (.zip)</b> and later <b>Open project…</b>. The zip contains <code>project.json</code> (settings) and one WAV file per track.</li><li>In Chrome / Edge on a computer, <b>Save to folder</b> writes the same files into a folder you choose, and saves over it the next time.</li></ol>",
     "privacy.title": "Privacy",
     "privacy.body": "<p>Audio is recorded and processed only on your device. Nothing you record is sent to any server.</p><p>Your project (settings and audio) is kept in this browser's storage (IndexedDB) so you can continue after reloading. “New” clears it. Exported files are saved only where you choose.</p>",
     "about.title": "About this app",
@@ -400,7 +403,7 @@ const I18N = {
   },
   ja: {
     "menu.settings": "設定", "menu.help": "使い方",
-    "song.title": "コードと伴奏", "song.bounce": "伴奏を音声トラックに", "part.bounce": "このパートを音声トラックに書き出す", "msg.bounced": "「{name}」を音声トラックに書き出し、元のパートはミュートしました。", "msg.noBacking": "伴奏がオフか、音がありません。", "tk.bounced": "{name}（書き出し）", "tk.backing": "伴奏", "song.on": "伴奏オン", "song.bars": "小節", "song.barsLess": "小節を減らす", "song.barsMore": "小節を増やす",
+    "song.title": "コードと伴奏", "song.variation": "バリエーション", "song.reseed": "別の案", "song.reseeded": "バリエーションの組み合わせを変えました。", "song.ending": "エンディング", "ed.varNote": "自動のバリエーションはここには出ません（パターンの上に足されます）。", "ed.varBar": "自動のバリエーションも含めて、実際に鳴る音を表示しています。", "song.bounce": "伴奏を音声トラックに", "part.bounce": "このパートを音声トラックに書き出す", "msg.bounced": "「{name}」を音声トラックに書き出し、元のパートはミュートしました。", "msg.noBacking": "伴奏がオフか、音がありません。", "tk.bounced": "{name}（書き出し）", "tk.backing": "伴奏", "song.on": "伴奏オン", "song.bars": "小節", "song.barsLess": "小節を減らす", "song.barsMore": "小節を増やす",
     "song.swing": "ハネ", "song.humanize": "揺らぎ", "song.text": "テキストで入力…", "song.undo": "編集を戻す", "song.chords": "コード",
     "song.noFill": "フィルなし", "song.fillOf": "{n} 小節目のドラムのフィル", "song.chordAt": "{bar} 小節 {beat} 拍目のコード", "song.editBar": "編集", "song.editBarN": "{n} 小節目の音を編集",
     "song.badChord": "読めないコード名です（例: C, Am7, F#m7b5, G7sus4, C/E）", "song.textTitle": "テキストでコード入力", "song.apply": "反映", "song.textEmpty": "小節が見つかりません。| C | G | のように書いてください",
@@ -437,7 +440,7 @@ const I18N = {
     "lat.body": "録音した音は、聞こえている音より少し遅れてブラウザに届きます。新しく録った音をこの時間だけ前にずらして、ほかのトラックとそろえます。録った音が遅れて聞こえるなら増やし、早いなら減らしてください。",
     "lat.label": "補正（ミリ秒）", "lat.auto": "自動", "lat.info": "この端末での自動の推定値: {ms} ms（出力 {out} ms ＋ 入力 {inp} ms ＋ 処理 {proc} ms）",
     "help.title": "使い方",
-    "help.body": "<ol><li><b>コードと伴奏</b> にコードを入力します（1 拍に 1 マス。空のマスは前のコードが続きます）。ベース・ピアノ・ドラムが自動で伴奏します。パートごとにパターンと音色を選び、ドラムのフィルは小節ごとに選べます。</li><li><b>伴奏を MIDI で書き出し</b> で、ベース・ピアノ・ドラムを標準 MIDI ファイル（テンポ・拍子・コード名のマーカー入り）に書き出し、DAW で開けます。<b>伴奏を音声トラックに</b>（またはパートの ⋯）で、伴奏を録音トラックの音声に変換できます。</li><li>1 音ずつ変えるときは、パートの <b>編集</b>（またはパートの行をダブルタップ）。<b>パターン全体</b> ならすべての小節に、<b>この小節だけ</b> ならその小節にだけ反映されます。</li><li>トラックの <b>R</b> を押して録音待機にします（初回はマイクの許可を求められます）。</li><li><b>●</b> で録音開始。「カウント」がオンなら 1 小節クリックが鳴ってから始まります。ほかのトラックの音がマイクに入らないよう、ヘッドホンを使ってください。</li><li><b>■</b> で停止。同じトラックにもう一度録ると、録った範囲だけ置き換わります。<b>元に戻す</b>で前のテイクに戻せます。</li><li>波形や上の目盛りを押す・なぞると再生位置が動きます。</li><li>作業内容はこのブラウザに自動で保存されます。消えないように残したいときや別の端末に移すときは <b>書き出し（.zip）</b>、続きをやるときは <b>読み込み…</b>。zip の中身は設定の <code>project.json</code> とトラックごとの WAV ファイルです。</li><li>PC の Chrome・Edge では <b>フォルダに保存</b> で、選んだフォルダに同じファイルを書き出し、次からは上書き保存できます。</li></ol>",
+    "help.body": "<ol><li><b>コードと伴奏</b> にコードを入力します（1 拍に 1 マス。空のマスは前のコードが続きます）。ベース・ピアノ・ドラムが自動で伴奏します。パートごとにパターンと音色を選び、ドラムのフィルは小節ごとに選べます。</li><li><b>伴奏を MIDI で書き出し</b> で、ベース・ピアノ・ドラムを標準 MIDI ファイル（テンポ・拍子・コード名のマーカー入り）に書き出し、DAW で開けます。<b>伴奏を音声トラックに</b>（またはパートの ⋯）で、伴奏を録音トラックの音声に変換できます。</li><li><b>バリエーション</b> で、人が弾くような変化を自動で付けます。ベースは次のコードへ駆け上がり、ピアノはコードを先取りして和音に色を足し、ドラムは 4 小節・8 小節の区切りでクラッシュ・オープンハイハット・ゴーストノート・短いつなぎを入れます。<b>別の案</b> で組み合わせが変わり、0 にすると元のパターンのままです。<b>エンディング</b> がオンなら、最後の小節の 1 拍目で全員が止まります。</li><li>1 音ずつ変えるときは、パートの <b>編集</b>（またはパートの行をダブルタップ）。<b>パターン全体</b> ならすべての小節に、<b>この小節だけ</b> ならその小節にだけ反映されます。</li><li>トラックの <b>R</b> を押して録音待機にします（初回はマイクの許可を求められます）。</li><li><b>●</b> で録音開始。「カウント」がオンなら 1 小節クリックが鳴ってから始まります。ほかのトラックの音がマイクに入らないよう、ヘッドホンを使ってください。</li><li><b>■</b> で停止。同じトラックにもう一度録ると、録った範囲だけ置き換わります。<b>元に戻す</b>で前のテイクに戻せます。</li><li>波形や上の目盛りを押す・なぞると再生位置が動きます。</li><li>作業内容はこのブラウザに自動で保存されます。消えないように残したいときや別の端末に移すときは <b>書き出し（.zip）</b>、続きをやるときは <b>読み込み…</b>。zip の中身は設定の <code>project.json</code> とトラックごとの WAV ファイルです。</li><li>PC の Chrome・Edge では <b>フォルダに保存</b> で、選んだフォルダに同じファイルを書き出し、次からは上書き保存できます。</li></ol>",
     "privacy.title": "プライバシー",
     "privacy.body": "<p>録音と処理はすべてお使いの端末の中で行います。録音した音をサーバーに送ることはありません。</p><p>再読み込みしても続けられるよう、プロジェクト（設定と音声）をこのブラウザの保存領域（IndexedDB）に保存します。「新規」で消去できます。書き出したファイルは、あなたが選んだ場所にだけ保存されます。</p>",
     "about.title": "このアプリについて",
@@ -1956,7 +1959,7 @@ function defaultSong(enabled = true) {
   const prog = [["C"], ["G"], ["Am"], ["F"], ["C"], ["G"], ["F", "", "G"], ["C"]];
   const base = { volume: 0.8, pan: 0, mute: false, solo: false, custom: null, overrides: {} };
   return {
-    enabled, bars: prog.length, swing: 0, humanize: 0.3,
+    enabled, bars: prog.length, swing: 0, humanize: 0.3, variation: 0.6, ending: true, seed: 0,
     chords: prog.map((r) => Array.from({ length: state.beats }, (_, k) => r[k] || "")),
     parts: {
       bass: { ...base, preset: "eighth", tone: "finger", volume: 0.85 },
@@ -1970,7 +1973,8 @@ function normalizeSong(s) {
   if (!s || typeof s !== "object") return d;
   const out = {
     enabled: s.enabled !== false, bars: Math.round(clamp(+s.bars, 1, MAX_BARS, 8)),
-    swing: clamp(+s.swing, 0, 1, 0), humanize: clamp(+s.humanize, 0, 1, 0.3), chords: [], parts: {},
+    swing: clamp(+s.swing, 0, 1, 0), humanize: clamp(+s.humanize, 0, 1, 0.3),
+    variation: clamp(+s.variation, 0, 1, 0.6), ending: s.ending !== false, seed: Math.round(clamp(+s.seed, 0, 1e6, 0)), chords: [], parts: {},
   };
   for (let b = 0; b < out.bars; b++) {
     const row = Array.isArray(s.chords && s.chords[b]) ? s.chords[b] : [];
@@ -2076,9 +2080,10 @@ function renderBar(name, bar, ignoreOverride) {
       out.push({ t: 0, i: "C", v: 0.9, d: 2, src: "c" });
       if (!out.some((n) => n.t === 0 && n.i === "K")) out.push({ t: 0, i: "K", v: 0.9, d: 2, src: "c" });
     }
-    return out;
+    return ignoreOverride ? out : varyBar(name, bar, out);
   }
   const out = [];
+  const vs = name === "piano" && !ignoreOverride ? pianoShift(bar) : 0;
   partPattern(name).forEach((n, i) => {
     if (n.t >= barT) return;
     let s = n.t;
@@ -2090,14 +2095,204 @@ function renderBar(name, bar, ignoreOverride) {
       let pieceEnd = end;
       // Long notes are struck again when the chord changes under them
       if (nx && end - s >= TPB) { const rs = (nx.start - bar * B) * TPB; if (rs > s && rs < end) pieceEnd = rs; }
-      const midi = resolveSpec(n.p, name, r, nx, bar * B + s / TPB);
+      const midi = resolveSpec(n.p, name, vs ? { ...r, voicing: shiftVoicing(r.voicing, vs) } : r, nx, bar * B + s / TPB);
       if (midi != null) out.push({ t: s, d: pieceEnd - s, v: n.v, midi, src: "p:" + i });
       if (pieceEnd >= end) break;
       s = pieceEnd; ri++;
     }
   });
+  return ignoreOverride ? out : varyBar(name, bar, out);
+}
+// ---- automatic variation: what a band does on top of a repeated pattern
+// Decisions are pseudo-random but fixed per bar (seeded by bar number and song.seed), so playback, drawing,
+// MIDI and rendering all agree. song.variation (0..1) scales how often things happen; 0 = the plain pattern.
+// Phrases are 4 and 8 bars: bar 1 states the groove, bars 2-3 vary it, bar 4 leads into the next phrase.
+const rnd = (bar, salt) => hash01(bar + 1, salt, (state.song.seed || 0) * 131 + 7);
+function phraseInfo(bar) {
+  const S = state.song;
+  return { p4: bar % 4, p8: bar % 8, last: !!S.ending && S.bars > 1 && bar === S.bars - 1, fill: !!S.parts.drums.fills[bar] };
+}
+function changesAtNextBar(bar) {
+  const A = analysis(), i = (bar + 1) * state.beats;
+  return i < A.regionAt.length && A.regionAt[i] >= 0 && A.regions[A.regionAt[i]].start === i;
+}
+function nextBarRegion(bar) { const A = analysis(); return A.regions[A.regionAt[(bar + 1) * state.beats]]; }
+const patternHas = (name, test) => partPattern(name).some(test);
+function shiftVoicing(v, s) {
+  const doubled = v.length === 4 && v[0] % 12 === v[3] % 12;
+  let out;
+  if (s > 0) out = doubled ? [v[1], v[2], v[3], v[1] + 12] : [v[1], v[2], v[3], v[0] + 12];
+  else out = doubled ? [v[2] - 12, v[0], v[1], v[2]] : [v[3] - 12, v[0], v[1], v[2]];
+  return out[0] < 50 || out[out.length - 1] > 84 ? v : out;
+}
+// Piano: move the right hand up or down one inversion in the middle of a phrase
+function pianoShift(bar) {
+  const V = state.song.variation, ph = phraseInfo(bar);
+  if (!V || ph.last || ph.p4 === 0) return 0;
+  return rnd(bar, 31) < V * 0.4 ? (rnd(bar, 32) < 0.6 ? 1 : -1) : 0;
+}
+// Piano: play the next bar's chord on the last 8th and hold it over the bar line
+function pianoAnt(bar) {
+  const S = state.song, V = S.variation;
+  if (!V || bar < 0 || bar >= S.bars - 1 || !changesAtNextBar(bar)) return false;
+  if (patternHas("piano", (n) => n.ant)) return false; // the pattern already anticipates
+  return rnd(bar, 41) < (phraseInfo(bar).p4 === 3 ? 0.3 + 0.5 * V : 0.25 * V);
+}
+function endingChord(name, bar) {
+  const A = analysis(), ri = regionIdx(A, bar * state.beats);
+  if (ri < 0) return [];
+  const r = A.regions[ri], barT = state.beats * TPB, root = r.chord.bass != null ? r.chord.bass : r.chord.root;
+  if (name === "bass") return [{ t: 0, d: barT, v: 0.9, midi: bassMidi(root), src: "v" }];
+  return r.voicing.map((m) => ({ t: 0, d: barT, v: 0.72, midi: m, src: "v" })).concat([{ t: 0, d: barT, v: 0.7, midi: lhMidi(root), src: "v" }]);
+}
+function varyBass(bar, notes) {
+  const S = state.song, V = S.variation, A = analysis(), B = state.beats, barT = B * TPB, ph = phraseInfo(bar);
+  if (ph.last) return endingChord("bass", bar);
+  if (!V) return notes;
+  let out = notes.map((n) => ({ ...n }));
+  const regionAtT = (t) => { const ri = regionIdx(A, bar * B + t / TPB); return ri < 0 ? null : A.regions[ri]; };
+  const rootOf = (r) => bassMidi(r.chord.bass != null ? r.chord.bass : r.chord.root);
+  // 1) lead into the next chord: a short run in the last beat (often at the end of a phrase)
+  const leadsAlready = patternHas("bass", (n) => n.p && n.p.ap && n.p.w); // walking lines already lead every bar
+  const pPick = changesAtNextBar(bar) && !leadsAlready ? (ph.p4 === 3 ? 0.35 + 0.6 * V : 0.35 * V) : 0;
+  if (rnd(bar, 11) < pPick) {
+    let target = rootOf(nextBarRegion(bar));
+    const before = out.filter((n) => n.t < barT - TPB);
+    const ref = before.length ? before[before.length - 1].midi : target;
+    while (target - ref > 6) target -= 12;
+    while (ref - target > 6) target += 12;
+    if (target < 30) target += 12;
+    if (target > 50) target -= 12;
+    const dir = rnd(bar, 12) < 0.35 ? 1 : -1; // approach from above sometimes
+    out = before;
+    out.forEach((n) => { if (n.t + n.d > barT - TPB) n.d = Math.max(2, barT - TPB - n.t); });
+    const busy = rnd(bar, 13) < V * 0.6;
+    const pts = busy ? [[barT - 12, 5, 5], [barT - 6, 2, 2], [barT - 3, 2, 1]] : [[barT - 12, 5, 2], [barT - 6, 5, 1]];
+    for (const [t, d, k] of pts) out.push({ t, d, v: 0.78, midi: target + dir * k, src: "v" });
+    return out;
+  }
+  // 2) inside a phrase: one or two small ornaments
+  if (ph.p4 !== 0 && rnd(bar, 21) < V * 0.75) {
+    const kinds = [Math.floor(rnd(bar, 22) * 3)];
+    if (V > 0.7 && rnd(bar, 23) < 0.4) kinds.push((kinds[0] + 1) % 3);
+    for (const kind of kinds) {
+      if (kind === 0) { // octave up on an offbeat root
+        const c = out.filter((n) => n.t % TPB === 6 && regionAtT(n.t) && n.midi === rootOf(regionAtT(n.t)));
+        const n = c[c.length - 1];
+        if (n && n.midi + 12 <= 55) n.midi += 12;
+      } else if (kind === 1) { // fifth instead of the root on beat 3 (or beat 2 in 3/4)
+        const bt = (B === 3 ? 1 : 2) * TPB;
+        const n = out.find((x) => x.t === bt);
+        const r = regionAtT(bt);
+        if (n && r && n.midi === rootOf(r)) { const f = n.midi + r.chord.fifth; n.midi = f > 45 ? f - 12 : f; }
+      } else { // 16th ghost note pushing into beat 3
+        const t = (B === 3 ? 2 : 2) * TPB - 3;
+        if (!out.some((x) => x.t === t)) {
+          const prev = out.filter((x) => x.t < t).pop();
+          if (prev) { prev.d = Math.min(prev.d, Math.max(2, t - prev.t)); out.push({ t, d: 2, v: 0.32, midi: prev.midi, src: "v" }); }
+        }
+      }
+    }
+  }
+  return out.sort((a, b) => a.t - b.t);
+}
+function varyPiano(bar, notes) {
+  const S = state.song, V = S.variation, A = analysis(), B = state.beats, barT = B * TPB, ph = phraseInfo(bar), RH = 52;
+  if (ph.last) return endingChord("piano", bar);
+  if (!V) return notes;
+  let out = notes.map((n) => ({ ...n }));
+  // the chord was already played at the end of the previous bar
+  if (pianoAnt(bar - 1)) out = out.filter((n) => !(n.t === 0 && n.midi >= RH));
+  if (pianoAnt(bar)) {
+    const nr = nextBarRegion(bar), vs = pianoShift(bar + 1);
+    const voic = vs ? shiftVoicing(nr.voicing, vs) : nr.voicing;
+    out = out.filter((n) => !(n.midi >= RH && n.t >= barT - 6));
+    out.forEach((n) => { if (n.midi >= RH && n.t + n.d > barT - 6) n.d = Math.max(2, barT - 6 - n.t); });
+    const firstHit = partPattern("piano").filter((n) => n.t === 0 && n.p && n.p.vi != null);
+    const hold = Math.min(barT, Math.max(TPB / 2, ...firstHit.map((n) => n.d || TPB)));
+    voic.forEach((m) => out.push({ t: barT - 6, d: 6 + hold, v: 0.74, midi: m, src: "v" }));
+  }
+  // colour tones, decided once per chord
+  const B0 = bar * B;
+  const seen = new Set();
+  for (let k = 0; k < B; k++) {
+    const ri = regionIdx(A, B0 + k);
+    if (ri < 0 || seen.has(ri)) continue;
+    seen.add(ri);
+    const r = A.regions[ri], ch = r.chord, nx = A.regions[ri + 1];
+    const plainMajor = ch.sev == null && !ch.ext.length && ch.third === 4 && ch.fifth === 7;
+    if (!plainMajor) continue;
+    const from = (Math.max(r.start, B0) - B0) * TPB;
+    const to = nx ? Math.min(barT, (nx.start - B0) * TPB) : barT;
+    const inR = (n) => n.midi >= RH && n.t >= from && n.t < to && n.src !== "v";
+    const toFifthUp = nx && (nx.chord.root - ch.root + 12) % 12 === 5; // V -> I
+    if (toFifthUp && to - from >= 2 * TPB && rnd(r.start, 51) < V * 0.5) {
+      const mid = from + Math.floor((to - from) / 2 / TPB) * TPB;
+      out.forEach((n) => { if (inR(n) && n.t < mid && n.midi % 12 === (ch.root + 4) % 12) n.midi += 1; }); // sus4, resolving to the 3rd
+    } else if (rnd(r.start, 52) < V * 0.45) {
+      const tops = {};
+      out.forEach((n) => { if (inR(n) && n.midi % 12 === ch.root && (!tops[n.t] || n.midi > tops[n.t].midi)) tops[n.t] = n; });
+      Object.values(tops).forEach((n) => { if (out.some((x) => x !== n && x.t === n.t && x.midi % 12 === ch.root)) n.midi += 2; }); // doubled root -> add9
+    }
+  }
   return out;
 }
+function varyDrums(bar, notes) {
+  const S = state.song, V = S.variation, B = state.beats, barT = B * TPB, ph = phraseInfo(bar);
+  if (ph.last) return [{ t: 0, i: "C", v: 0.95, d: 2, src: "v" }, { t: 0, i: "K", v: 0.95, d: 2, src: "v" }];
+  let out = notes.map((n) => ({ ...n }));
+  if (!V) return out;
+  const has = (t, i) => out.some((n) => n.t === t && n.i === i);
+  const fillStart = fillStartOf(bar);
+  const crashAt0 = () => {
+    if (has(0, "C")) return;
+    out = out.filter((n) => !(n.t === 0 && /^(H|O|R)$/.test(n.i)));
+    out.push({ t: 0, i: "C", v: 0.85, d: 2, src: "v" });
+    if (!has(0, "K")) out.push({ t: 0, i: "K", v: 0.9, d: 2, src: "v" });
+  };
+  if (ph.p8 === 0) crashAt0();
+  else if (ph.p4 === 0 && rnd(bar, 61) < V * 0.35) crashAt0();
+  // open hi-hat on the last offbeat of bars 2 and 4
+  if ((ph.p4 === 1 || ph.p4 === 3) && rnd(bar, 62) < V * 0.6) {
+    const h = out.find((n) => n.t === barT - 6 && n.i === "H" && n.t < fillStart);
+    if (h) { h.i = "O"; h.src = "v"; }
+  }
+  // an extra syncopated kick
+  if (ph.p4 !== 0 && rnd(bar, 63) < V * 0.45) {
+    const opts = [TPB + 6, 2 * TPB + 9, 3 * TPB + 6].filter((t) => t < fillStart && t < barT && !has(t, "K") && !has(t, "S") && !has(t - 3, "K"));
+    if (opts.length) out.push({ t: opts[Math.floor(rnd(bar, 64) * opts.length)], i: "K", v: 0.68, d: 2, src: "v" });
+  }
+  // ghost notes after the backbeat
+  if (V > 0.3 && rnd(bar, 65) < V * 0.5) {
+    for (const s of out.filter((n) => n.i === "S" && n.v > 0.6 && n.t < fillStart)) {
+      const t = s.t + 3;
+      if (t < fillStart && t < barT && !has(t, "S") && rnd(bar, 66 + s.t) < 0.6) out.push({ t, i: "S", v: 0.22, d: 2, src: "v" });
+    }
+  }
+  // a short lead-in at phrase ends where no fill was chosen
+  if (!ph.fill && ph.p4 === 3 && bar < S.bars - 1 && rnd(bar, 70) < V * 0.55) {
+    const big = ph.p8 === 7 && V > 0.5 && rnd(bar, 71) < 0.6;
+    const start = barT - (big ? TPB : 6);
+    out = out.filter((n) => n.t < start || (n.i === "K" && n.t === start));
+    const seq = big ? [["S", 0.6], ["S", 0.72], ["T1", 0.82], ["T3", 0.92]] : [["S", 0.62], ["S", 0.85]];
+    seq.forEach(([i, v], k) => out.push({ t: start + k * 3, i, v, d: 2, src: "v" }));
+  }
+  return out;
+}
+function varyBar(name, bar, notes) {
+  const out = name === "bass" ? varyBass(bar, notes) : name === "piano" ? varyPiano(bar, notes) : varyDrums(bar, notes);
+  // phrase dynamics: a lighter first phrase in longer songs, a small accent on each phrase's downbeat
+  const S = state.song;
+  if (!S.variation) return out;
+  const soft = S.bars >= 8 && bar < 4 ? 0.92 : 1;
+  for (const n of out) {
+    let v = n.v * soft;
+    if (n.t === 0 && bar % 4 === 0) v += 0.05;
+    n.v = Math.max(0.05, Math.min(1, v));
+  }
+  return out;
+}
+
 const songLen = () => (state.song.enabled ? state.song.bars * state.beats * (60 / state.bpm) : 0);
 function hash01(a, b, c) { let h = (a * 374761393 + b * 668265263 + c * 2147483647) | 0; h = Math.imul(h ^ (h >>> 13), 1274126177); return ((h ^ (h >>> 16)) >>> 0) / 4294967296; }
 // All notes of the song in seconds, sorted
@@ -2336,6 +2531,9 @@ function renderChordGrid() {
   $("#barsOut").textContent = S.bars;
   $("#swing").value = S.swing;
   $("#humanize").value = S.humanize;
+  $("#variation").value = S.variation;
+  $("#endingBtn").setAttribute("aria-pressed", !!S.ending);
+  $("#reseedBtn").disabled = !S.variation;
   $("#songBody").classList.toggle("off", !S.enabled);
   const fillOpts = `<option value="">${escHtml(t("song.noFill"))}</option>` + FILLS.map((f) => `<option value="${f.id}">${escHtml(label(f))}</option>`).join("");
   grid.innerHTML = "";
@@ -2719,9 +2917,10 @@ function updateEditorUi(notes) {
   let msg = t("ed.chords", { c: names.join(" → ") || "—" }) + " ";
   if (ed.scope === "pattern") {
     msg += t(ed.part === "drums" ? "ed.patternDrums" : "ed.pattern");
+    if (S.variation) msg += " " + t("ed.varNote");
     if (P.overrides[ed.bar]) msg += " " + t("ed.hasOverride");
     if (ed.part === "drums" && P.fills[ed.bar]) msg += " " + t("ed.fillNote", { name: label(FILLS.find((f) => f.id === P.fills[ed.bar])) });
-  } else msg += t("ed.barOnly") + (P.overrides[ed.bar] ? "" : " " + t("ed.noOverrideYet"));
+  } else msg += t("ed.barOnly") + (P.overrides[ed.bar] ? "" : " " + t("ed.noOverrideYet") + (S.variation ? " " + t("ed.varBar") : ""));
   $("#edNote").textContent = msg;
   const resetBtn = $("#edReset");
   if (!resetBtn.dataset.armed) resetBtn.textContent = t(ed.scope === "pattern" ? "ed.resetPattern" : "ed.resetBar");
@@ -2877,6 +3076,9 @@ function setupSongPanel() {
   $("#barsPlus").addEventListener("click", () => setBars(state.song.bars + 1));
   $("#swing").addEventListener("change", () => { state.song.swing = +$("#swing").value; songChanged(); });
   $("#humanize").addEventListener("change", () => { state.song.humanize = +$("#humanize").value; songChanged(); });
+  $("#variation").addEventListener("change", () => { pushSongHistory(); state.song.variation = +$("#variation").value; $("#reseedBtn").disabled = !state.song.variation; songChanged(); });
+  $("#reseedBtn").addEventListener("click", () => { pushSongHistory(); state.song.seed = ((state.song.seed || 0) + 1) % 1e6; songChanged(); toast(t("song.reseeded")); });
+  $("#endingBtn").addEventListener("click", () => { pushSongHistory(); state.song.ending = !state.song.ending; songChanged({ grid: true }); });
   $("#chordTextBtn").addEventListener("click", (e) => { $("#chordText").value = songToText(); openDlg("chordTextDlg", e.currentTarget); });
   $("#chordTextApply").addEventListener("click", () => {
     const rows = textToChords($("#chordText").value);

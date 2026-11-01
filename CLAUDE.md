@@ -25,7 +25,8 @@
 - 伴奏（`state.song`、project.json の `song`）: `chords[小節][拍]`（空文字 = 前のコードが続く）、`parts.bass/piano/drums`
   （`preset`・`tone`・`custom` = パターン全体の編集・`overrides[小節]` = その小節だけの編集・ドラムは `fills[小節]`・`fillCustom`・`crash`）。
   時間は 1 拍 = 12 tick。パターンの音の高さはコードからの相対（`deg` R/3/5/7/9、`semi`、`vi` = ピアノ右手の和音の何番目か、`ap` = 次のコードへの半音アプローチ）、
-  小節だけの編集は絶対音高（`midi`）。音源はすべて Web Audio の合成（外部の音源ファイルなし）。拍子は 4/4 と 3/4 のみ。
+  小節だけの編集は絶対音高（`midi`）。自動のバリエーション（`variation` 0〜1、`seed`、`ending`）は renderBar の最後で重ねる（`varyBar`）。
+  小節ごとに seed から決まる疑似乱数なので、再生・表示・MIDI・書き出しで同じ結果になる。パターン全体の編集画面はバリエーションを含まない元のパターン、「この小節だけ」は聞こえている音（バリエーション込み）をコピーする。音源はすべて Web Audio の合成（外部の音源ファイルなし）。拍子は 4/4 と 3/4 のみ。
 - フォルダに保存: File System Access API（PC の Chrome・Edge）。zip と同じ構成のファイルを直接書く。
 - ミックスダウン: 16bit ステレオ WAV（OfflineAudioContext）。
 - 伴奏の MIDI: SMF type 1、480 PPQ。トラック 0 = テンポ・拍子・コード名（マーカー）、ベース ch1・ピアノ ch2・ドラム ch10（GM ドラムマップ）。グリッドどおり（ハネは反映、揺らぎは入れない）。
