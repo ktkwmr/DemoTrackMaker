@@ -176,6 +176,8 @@
   .track.inst .sels { gap: 4px; }
   .track.inst .sels select { flex: 1; min-width: 0; font-size: 12px; padding: 4px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); }
   .track.inst .lane { min-height: 132px; }
+  .track.inst.disabled { opacity: .35; filter: grayscale(1); pointer-events: none; user-select: none; }
+  .song-head input:disabled, .song-head button:disabled { opacity: .4; }
   .sbtn.edit { font-weight: 600; font-size: 12px; }
   .sbtn.fxb { font-size: 11px; font-weight: 700; letter-spacing: .04em; }
   .sbtn.fxb.on { background: var(--fg); color: var(--bg); border-color: var(--fg); }
@@ -420,7 +422,7 @@
 const I18N = {
   en: {
     "menu.settings": "Settings", "menu.help": "How to use",
-    "song.title": "Chords & backing", "mix.title": "Mixdown", "mix.format": "File format", "mix.wav": "Uncompressed, best quality (16-bit stereo). Larger files.", "mix.mp3": "Small files for sharing and listening on phones.", "mix.kbps": "Quality", "mix.ok": "Next", "mix.encoding": "Converting to MP3…", "mix.lameFail": "Could not load the MP3 encoder. Connect to the internet and try again, or choose WAV.", "name.title": "File name", "name.ok": "Export", "name.hint": "The file goes to your browser's download folder.", "fx.title": "Effects: {name}", "fx.open": "Effects for {name}", "fx.preset": "Preset", "fx.custom": "(custom)", "fx.dyn": "Compressor / drive", "fx.sends": "Reverb / delay (amount sent)", "fx.shared": "Shared by all tracks", "fx.revLen": "Reverb length", "fx.dlyNote": "Delay time", "fx.dlyFb": "Delay repeats", "fx.note": "The delay follows the tempo. Double-click a slider to reset it.", "fx.low": "Low (120 Hz)", "fx.mid": "Mid", "fx.mf": "Mid frequency", "fx.high": "High (8 kHz)", "fx.comp": "Compressor", "fx.drive": "Drive (distortion)", "fx.rev": "Reverb", "fx.dly": "Delay", "view.label": "View", "view.out": "Zoom out", "view.in": "Zoom in", "view.fit": "Whole song", "view.hint": "Pinch or Ctrl + wheel to zoom, drag to scroll, tap to move the playhead", "song.moved": "Moved bar {from} to position {to}.", "song.grip": "Move bar {n} (drag, long-press, or arrow keys)", "song.variation": "Variation", "song.reseed": "Another take", "song.reseeded": "Picked a different set of variations.", "song.ending": "Ending", "ed.varNote": "Automatic variations are not shown here; they are added on top of the pattern.", "ed.varBar": "Shows what plays, including automatic variations.", "song.bounce": "Backing → audio track", "part.bounce": "Render this part to an audio track", "msg.bounced": "Rendered “{name}” to an audio track and muted the original part.", "msg.noBacking": "The backing is off or has no notes.", "tk.bounced": "{name} (rendered)", "tk.backing": "Backing", "song.on": "Backing on", "song.bars": "Bars", "song.barsLess": "Remove a bar", "song.barsMore": "Add a bar",
+    "song.title": "Chords & backing", "mix.title": "Mixdown", "mix.format": "File format", "mix.wav": "Uncompressed, best quality (16-bit stereo). Larger files.", "mix.mp3": "Small files for sharing and listening on phones.", "mix.kbps": "Quality", "mix.ok": "Next", "mix.encoding": "Converting to MP3…", "mix.lameFail": "Could not load the MP3 encoder. Connect to the internet and try again, or choose WAV.", "name.title": "File name", "name.ok": "Export", "name.hint": "The file goes to your browser's download folder.", "fx.title": "Effects: {name}", "fx.open": "Effects for {name}", "fx.preset": "Preset", "fx.custom": "(custom)", "fx.dyn": "Compressor / drive", "fx.sends": "Reverb / delay (amount sent)", "fx.shared": "Shared by all tracks", "fx.revLen": "Reverb length", "fx.dlyNote": "Delay time", "fx.dlyFb": "Delay repeats", "fx.note": "The delay follows the tempo. Double-click a slider to reset it.", "fx.low": "Low (120 Hz)", "fx.mid": "Mid", "fx.mf": "Mid frequency", "fx.high": "High (8 kHz)", "fx.comp": "Compressor", "fx.drive": "Drive (distortion)", "fx.rev": "Reverb", "fx.dly": "Delay", "view.label": "View", "view.out": "Zoom out", "view.in": "Zoom in", "view.fit": "Whole song", "view.hint": "Pinch or Ctrl + wheel to zoom, drag to scroll, tap to move the playhead", "song.moved": "Moved bar {from} to position {to}.", "song.grip": "Move bar {n} (drag, long-press, or arrow keys)", "song.variation": "Variation", "song.reseed": "Another take", "song.reseeded": "Picked a different set of variations.", "song.ending": "Ending", "ed.varNote": "Automatic variations are not shown here; they are added on top of the pattern.", "ed.varBar": "Shows what plays, including automatic variations.", "song.bounce": "Backing → audio track", "part.bounce": "Render this part to an audio track", "msg.bounced": "Rendered “{name}” to an audio track and muted the original part.", "msg.noBacking": "The backing is off or has no notes.", "tk.bounced": "{name} (rendered)", "tk.backing": "Backing", "song.on": "Backing on", "song.offLabel": "Backing off", "song.bars": "Bars", "song.barsLess": "Remove a bar", "song.barsMore": "Add a bar",
     "song.swing": "Swing", "song.humanize": "Feel", "song.text": "Type as text…", "song.undo": "Undo edit", "song.chords": "Chords",
     "song.noFill": "No fill", "song.fillOf": "Drum fill in bar {n}", "song.chordAt": "Chord, bar {bar} beat {beat}", "song.editBar": "Edit", "song.editBarN": "Edit notes in bar {n}",
     "song.badChord": "Unknown chord name (examples: C, Am7, F#m7b5, G7sus4, C/E)", "song.textTitle": "Chords as text", "song.apply": "Apply", "song.textEmpty": "No bars found. Write bars like | C | G |",
@@ -467,7 +469,7 @@ const I18N = {
   },
   ja: {
     "menu.settings": "設定", "menu.help": "使い方",
-    "song.title": "コードと伴奏", "mix.title": "ミックスダウン", "mix.format": "ファイル形式", "mix.wav": "無圧縮で最高音質（16bit ステレオ）。ファイルは大きめ。", "mix.mp3": "ファイルが小さく、共有やスマホで聞くのに向く。", "mix.kbps": "音質", "mix.ok": "次へ", "mix.encoding": "MP3 に変換中…", "mix.lameFail": "MP3 の変換部品を読み込めませんでした。ネットにつないでもう一度試すか、WAV を選んでください。", "name.title": "ファイル名", "name.ok": "書き出す", "name.hint": "ブラウザのダウンロード先に保存されます。", "fx.title": "エフェクト: {name}", "fx.open": "{name}のエフェクト", "fx.preset": "プリセット", "fx.custom": "（調整済み）", "fx.dyn": "コンプ・歪み", "fx.sends": "リバーブ・ディレイ（送る量）", "fx.shared": "全トラック共通", "fx.revLen": "リバーブの長さ", "fx.dlyNote": "ディレイの間隔", "fx.dlyFb": "ディレイの繰り返し", "fx.note": "ディレイの間隔はテンポに合わせます。つまみをダブルクリックすると元に戻ります。", "fx.low": "低音（120 Hz）", "fx.mid": "中音", "fx.mf": "中音の周波数", "fx.high": "高音（8 kHz）", "fx.comp": "コンプレッサー", "fx.drive": "歪み（ドライブ）", "fx.rev": "リバーブ", "fx.dly": "ディレイ", "view.label": "表示", "view.out": "縮小", "view.in": "拡大", "view.fit": "全体", "view.hint": "ピンチ・Ctrl＋ホイールで拡大縮小、ドラッグで左右に移動、タップで再生位置", "song.moved": "{from} 小節目を {to} 番目に移動しました。", "song.grip": "{n} 小節目を移動（ドラッグ・長押し・矢印キー）", "song.variation": "バリエーション", "song.reseed": "別の案", "song.reseeded": "バリエーションの組み合わせを変えました。", "song.ending": "エンディング", "ed.varNote": "自動のバリエーションはここには出ません（パターンの上に足されます）。", "ed.varBar": "自動のバリエーションも含めて、実際に鳴る音を表示しています。", "song.bounce": "伴奏を音声トラックに", "part.bounce": "このパートを音声トラックに書き出す", "msg.bounced": "「{name}」を音声トラックに書き出し、元のパートはミュートしました。", "msg.noBacking": "伴奏がオフか、音がありません。", "tk.bounced": "{name}（書き出し）", "tk.backing": "伴奏", "song.on": "伴奏オン", "song.bars": "小節", "song.barsLess": "小節を減らす", "song.barsMore": "小節を増やす",
+    "song.title": "コードと伴奏", "mix.title": "ミックスダウン", "mix.format": "ファイル形式", "mix.wav": "無圧縮で最高音質（16bit ステレオ）。ファイルは大きめ。", "mix.mp3": "ファイルが小さく、共有やスマホで聞くのに向く。", "mix.kbps": "音質", "mix.ok": "次へ", "mix.encoding": "MP3 に変換中…", "mix.lameFail": "MP3 の変換部品を読み込めませんでした。ネットにつないでもう一度試すか、WAV を選んでください。", "name.title": "ファイル名", "name.ok": "書き出す", "name.hint": "ブラウザのダウンロード先に保存されます。", "fx.title": "エフェクト: {name}", "fx.open": "{name}のエフェクト", "fx.preset": "プリセット", "fx.custom": "（調整済み）", "fx.dyn": "コンプ・歪み", "fx.sends": "リバーブ・ディレイ（送る量）", "fx.shared": "全トラック共通", "fx.revLen": "リバーブの長さ", "fx.dlyNote": "ディレイの間隔", "fx.dlyFb": "ディレイの繰り返し", "fx.note": "ディレイの間隔はテンポに合わせます。つまみをダブルクリックすると元に戻ります。", "fx.low": "低音（120 Hz）", "fx.mid": "中音", "fx.mf": "中音の周波数", "fx.high": "高音（8 kHz）", "fx.comp": "コンプレッサー", "fx.drive": "歪み（ドライブ）", "fx.rev": "リバーブ", "fx.dly": "ディレイ", "view.label": "表示", "view.out": "縮小", "view.in": "拡大", "view.fit": "全体", "view.hint": "ピンチ・Ctrl＋ホイールで拡大縮小、ドラッグで左右に移動、タップで再生位置", "song.moved": "{from} 小節目を {to} 番目に移動しました。", "song.grip": "{n} 小節目を移動（ドラッグ・長押し・矢印キー）", "song.variation": "バリエーション", "song.reseed": "別の案", "song.reseeded": "バリエーションの組み合わせを変えました。", "song.ending": "エンディング", "ed.varNote": "自動のバリエーションはここには出ません（パターンの上に足されます）。", "ed.varBar": "自動のバリエーションも含めて、実際に鳴る音を表示しています。", "song.bounce": "伴奏を音声トラックに", "part.bounce": "このパートを音声トラックに書き出す", "msg.bounced": "「{name}」を音声トラックに書き出し、元のパートはミュートしました。", "msg.noBacking": "伴奏がオフか、音がありません。", "tk.bounced": "{name}（書き出し）", "tk.backing": "伴奏", "song.on": "伴奏オン", "song.offLabel": "伴奏オフ", "song.bars": "小節", "song.barsLess": "小節を減らす", "song.barsMore": "小節を増やす",
     "song.swing": "ハネ", "song.humanize": "揺らぎ", "song.text": "テキストで入力…", "song.undo": "編集を戻す", "song.chords": "コード",
     "song.noFill": "フィルなし", "song.fillOf": "{n} 小節目のドラムのフィル", "song.chordAt": "{bar} 小節 {beat} 拍目のコード", "song.editBar": "編集", "song.editBarN": "{n} 小節目の音を編集",
     "song.badChord": "読めないコード名です（例: C, Am7, F#m7b5, G7sus4, C/E）", "song.textTitle": "テキストでコード入力", "song.apply": "反映", "song.textEmpty": "小節が見つかりません。| C | G | のように書いてください",
@@ -629,7 +631,7 @@ function ensureCtx() {
     master.gain.value = 0.8; // headroom: backing parts + recorded tracks
     const comp = ctx.createDynamicsCompressor();
     comp.threshold.value = -6; comp.ratio.value = 4; comp.attack.value = 0.003; comp.release.value = 0.15;
-    master.connect(comp); comp.connect(ctx.destination);
+    master.connect(comp); limiterChain(ctx, comp, ctx.destination);
     fxBus = makeFxBus(ctx, master);
     for (const tr of state.tracks) buildTrackNodes(tr);
     PARTS.forEach(partChan);
@@ -1297,6 +1299,63 @@ async function importProjectFile(file) {
     toast(t("msg.loaded", { name: state.name || t("pj.untitled") }));
   } catch (e) { console.warn(e); toast(t("msg.badProject")); }
 }
+// ---- master limiter
+// Live and offline: a fast, hard compressor (-1 dB, 20:1) and then a soft clipper that never goes above 0.99.
+const LIMIT_CEIL = Math.pow(10, -1 / 20); // -1 dBFS
+let softClipCurve = null;
+function limiterChain(ac, from, to) {
+  const lim = ac.createDynamicsCompressor();
+  lim.threshold.value = -1; lim.knee.value = 0; lim.ratio.value = 20; lim.attack.value = 0.001; lim.release.value = 0.08;
+  if (!softClipCurve) {
+    const n = 2048, c = new Float32Array(n), k = 0.85, room = 0.14;
+    for (let i = 0; i < n; i++) {
+      const x = (i / (n - 1)) * 4 - 2, a = Math.abs(x); // input range -2..2
+      c[i] = Math.sign(x) * (a <= k ? a : k + room * Math.tanh((a - k) / room));
+    }
+    softClipCurve = c;
+  }
+  const pre = ac.createGain(), clip = ac.createWaveShaper(), post = ac.createGain();
+  pre.gain.value = 0.5; clip.curve = softClipCurve; post.gain.value = 1; // the curve covers -2..2, so scale in by 1/2
+  clip.oversample = "2x";
+  from.connect(lim); lim.connect(pre); pre.connect(clip); clip.connect(post); post.connect(to);
+}
+// Mixdown: a look-ahead peak limiter on the rendered buffer, so the file never goes above -1 dBFS.
+// Gain = release-smoothed( box-average over the look-ahead( sliding minimum of the needed gain ) ).
+function limitBuffer(buf, ceiling = LIMIT_CEIL, lookMs = 5, relMs = 120) {
+  const n = buf.length, sr = buf.sampleRate, chs = [];
+  for (let c = 0; c < buf.numberOfChannels; c++) chs.push(buf.getChannelData(c));
+  const la = Math.max(1, Math.round((sr * lookMs) / 1000));
+  const need = new Float32Array(n);
+  let over = false;
+  for (let i = 0; i < n; i++) {
+    let pk = 0;
+    for (const d of chs) { const a = Math.abs(d[i]); if (a > pk) pk = a; }
+    need[i] = pk > ceiling ? ceiling / pk : 1;
+    if (pk > ceiling) over = true;
+  }
+  if (!over) return buf;
+  // sliding minimum of need[i .. i+la]
+  const win = new Float32Array(n), dq = new Int32Array(n + la + 1);
+  let h = 0, tl = 0, j = 0;
+  for (let i = 0; i < n; i++) {
+    const end = Math.min(n - 1, i + la);
+    for (; j <= end; j++) { while (tl > h && need[dq[tl - 1]] >= need[j]) tl--; dq[tl++] = j; }
+    while (dq[h] < i) h++;
+    win[i] = need[dq[h]];
+  }
+  // box average over the previous la samples (smooth attack), then release
+  const rel = 1 - Math.exp(-1 / ((sr * relMs) / 1000));
+  let sum = 0, g = 1;
+  for (let i = 0; i < n; i++) {
+    sum += win[i];
+    if (i >= la) sum -= win[i - la];
+    const avg = sum / Math.min(i + 1, la);
+    g = Math.min(avg, g + (1 - g) * rel);
+    for (const d of chs) d[i] *= g;
+  }
+  return buf;
+}
+
 // ---- mixdown: choose WAV or MP3 first
 const LAME_URL = "https://cdn.jsdelivr.net/npm/lamejs@1.2.1/lame.min.js"; // LGPL-3.0, loaded only when MP3 is chosen
 const LAME_SRI = "sha384-xuasJXVcyv3hZq0eYpelEkBC8l4yufatZXDsKuyCU2rqfhDCb+ftuE/mSfZAteiK";
@@ -1317,7 +1376,7 @@ async function encodeMp3(buf, kbps) {
   const L = buf.getChannelData(0), R = buf.numberOfChannels > 1 ? buf.getChannelData(1) : L;
   const toI16 = (src, from, n) => {
     const o = new Int16Array(n);
-    for (let i = 0; i < n; i++) { const x = Math.max(-1, Math.min(1, src[from + i] * 0.94)); o[i] = x < 0 ? x * 0x8000 : x * 0x7fff; } // a little headroom: MP3 decoding overshoots peaks
+    for (let i = 0; i < n; i++) { const x = Math.max(-1, Math.min(1, src[from + i])); o[i] = x < 0 ? x * 0x8000 : x * 0x7fff; }
     return o;
   };
   const parts = [], block = 1152 * 16;
@@ -1372,9 +1431,9 @@ async function mixdown(fmt = "wav", kbps = 192) {
   comp.threshold.value = -6; comp.ratio.value = 4; comp.attack.value = 0.003; comp.release.value = 0.15;
   const mixMaster = oc.createGain();
   mixMaster.gain.value = 0.8;
-  mixMaster.connect(comp); comp.connect(oc.destination);
+  mixMaster.connect(comp); limiterChain(oc, comp, oc.destination);
   renderMix(oc, mixMaster, { tracks: true, parts: PARTS });
-  const out = await oc.startRendering();
+  const out = limitBuffer(await oc.startRendering());
   if (fmt !== "mp3") return new Blob([encodeWav(out, false)], { type: "audio/wav" });
   toast(t("mix.encoding"), 60000);
   try { return await encodeMp3(out, kbps); }
@@ -1851,6 +1910,7 @@ function updateTransportUi() {
   $("#playIcon").setAttribute("d", transport.playing ? "M8 5v14M16 5v14" : "M7 4l13 8-13 8z");
   const busy = transport.recording;
   ["#exportBtn", "#importBtn", "#mixBtn", "#midiBtn", "#bounceAllBtn", "#newBtn", "#addTrackBtn"].forEach((s) => ($(s).disabled = busy));
+  if (!busy && state.song) applyBackingState(); // keep backing-only buttons off while the backing is off
   $("#undoBtn").disabled = busy || !undoInfo;
 }
 let resizeT;
@@ -3154,6 +3214,7 @@ function markCin(inp) {
 function renderChordGrid() {
   const S = state.song, B = state.beats, grid = $("#chordGrid");
   $("#songOnBtn").setAttribute("aria-pressed", S.enabled);
+  $("#songOnBtn").textContent = t(S.enabled ? "song.on" : "song.offLabel");
   $("#barsOut").textContent = S.bars;
   $("#swing").value = S.swing;
   $("#humanize").value = S.humanize;
@@ -3225,6 +3286,7 @@ function renderChordGrid() {
     grid.appendChild(el);
   }
   updateSongUndo();
+  applyBackingState();
 }
 // ---- moving a bar in the chord chart: mouse drag, or long-press then drag on touch screens
 let barDrag = null;
@@ -3308,6 +3370,18 @@ function moveBar(from, to) {
   for (const name of PARTS) S.parts[name].overrides = remap(S.parts[name].overrides);
   songChanged({ grid: true });
   toast(t("song.moved", { from: from + 1, to: to + 1 }));
+}
+// Backing off: the bass / piano / drums rows and every control that only affects the backing are greyed out and inert
+function applyBackingState() {
+  const off = !state.song.enabled;
+  document.querySelectorAll(".track.inst").forEach((el) => { el.classList.toggle("disabled", off); el.inert = off; });
+  ["#swing", "#humanize", "#variation", "#reseedBtn", "#endingBtn", "#bounceAllBtn", "#midiBtn"].forEach((sel) => {
+    const el = $(sel);
+    if (el) el.disabled = off || (sel === "#reseedBtn" && !state.song.variation);
+  });
+  document.querySelectorAll(".cbar .fillSel, .cbar .cbar-ed").forEach((el) => (el.disabled = off));
+  if (off && $("#editDlg").open) $("#editDlg").close();
+  if (off && $("#fxDlg").open && fxTarget && fxTarget.kind === "part") $("#fxDlg").close();
 }
 let nowBar = -1;
 function highlightBar(bar) {

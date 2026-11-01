@@ -34,6 +34,8 @@
   チャンネルは input → EQ → 歪み → コンプ → 音量 → 定位、音量のあとから共通のリバーブ（合成したインパルス応答）とテンポ同期のディレイへ送る（`makeStrip`・`makeFxBus`）。ミックスダウンと書き出しも同じ構成（`renderMix`）。
 - 「フォルダに保存」は zip の書き出しと用途が重なるので削除した（どの端末でも使える zip に一本化）。
 - 書き出すファイルの名前: `exportFile`。PC の Chrome・Edge は showSaveFilePicker（名前と保存先）、それ以外はページ内の名前の入力欄のあと通常のダウンロード。初期値は zip がプロジェクト名、ミックスダウンは「-mix」、MIDI は「-backing」、トラックは「-トラック名」を付ける。
+- マスター: 全体のコンプのあとにリミッター（`limiterChain`: -1 dB・20:1 の速いコンプ＋0.99 を超えないソフトクリップ）。ミックスダウンはさらに書き出した音に先読みのピークリミッター（`limitBuffer`、上限 -1 dBFS）をかける。
+- 伴奏オフのときは、ベース・ピアノ・ドラムの行と伴奏だけに効く操作（ハネ・揺らぎ・バリエーション・別の案・エンディング・フィル・小節の編集・MIDI・音声トラックに）を無効にする（`applyBackingState`、行は inert）。コード入力と小節数は触れる。
 - ミックスダウン: 押すと形式を選ぶダイアログ。WAV（16bit ステレオ）か MP3（128/192/320 kbps、lamejs 1.2.1）。最後の選択は localStorage `demotrackmaker-mixfmt`。
 - 外部ライブラリ: lamejs 1.2.1（LGPL-3.0）を MP3 を選んだときだけ jsDelivr から読み込む（SRI 付き、`LAME_URL`）。sw.js の `CDN` に同じ URL を入れてオフラインでも使えるようにしている。
   `public/_headers` を作るときは CSP の `script-src` と `connect-src` に `https://cdn.jsdelivr.net` を入れる。版を上げるときは `LAME_URL`・`LAME_SRI`・sw.js の `CDN`・`THIRD_PARTY_LICENSES.md` を同じ PR で直す。
