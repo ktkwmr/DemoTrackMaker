@@ -13,6 +13,7 @@ A simple multitrack recorder that runs entirely in the browser (one HTML file).
 - Note-by-note editing for the whole pattern (chord-relative) or for one bar only / 1 音ずつの編集（パターン全体＝コードからの相対、またはその小節だけ）
 - Automatic variation over 4/8-bar phrases (bass runs, piano anticipations and colour notes, drum crashes / ghost notes / lead-ins) and an ending / 4・8 小節のまとまりに合わせた自動のバリエーション（ベースの駆け上がり、ピアノの先取りと色づけ、ドラムのクラッシュ・ゴースト・つなぎ）とエンディング
 - Zoomable timeline (pinch, Ctrl + wheel, drag to scroll, follows the playhead); move bars in the chord chart by drag or long-press / タイムラインの拡大縮小（ピンチ・Ctrl＋ホイール、ドラッグで移動、再生位置に追従）、コード譜の小節をドラッグ・長押しで移動
+- 8 bass sounds, 5 piano sounds, 6 drum kits (standard, rock, brushes, 808, 909, lo-fi) with clap, tambourine, shaker and cowbell / ベース 8 音色、ピアノ 5 音色、ドラム 6 セット（クラップ・タンバリン・シェイカー・カウベル入り）
 - 4/4 and 3/4 / 拍子は 4/4 と 3/4
 - Export the backing as a Standard MIDI File (tempo, time signature, chord markers, GM sounds) / 伴奏を標準 MIDI ファイルで書き出し（テンポ・拍子・コード名のマーカー、GM の音色番号）
 - Render the backing (or one part) to an audio track / 伴奏（またはパート 1 つ）を音声トラックに書き出し

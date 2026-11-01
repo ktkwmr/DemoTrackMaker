@@ -382,7 +382,7 @@ const I18N = {
     "part.bass": "Bass", "part.piano": "Piano", "part.drums": "Drums", "part.edit": "Edit", "part.pattern": "Pattern", "part.tone": "Sound",
     "part.custom": "Custom (edited)", "part.customReset": "Your pattern edits were replaced by the preset. Use Undo edit to get them back.",
     "part.resetPattern": "Reset pattern to preset", "part.clearEdits": "Clear all single-bar edits", "part.fills4": "Fill every 4 bars", "part.clearFills": "Remove all fills", "part.crash": "Crash after fills",
-    "drum.C": "Crash", "drum.R": "Ride", "drum.O": "HH open", "drum.H": "HH closed", "drum.P": "HH pedal", "drum.T1": "High tom", "drum.T2": "Mid tom", "drum.T3": "Floor tom", "drum.S": "Snare", "drum.X": "Cross-stick", "drum.K": "Kick",
+    "drum.C": "Crash", "drum.R": "Ride", "drum.O": "HH open", "drum.H": "HH closed", "drum.P": "HH pedal", "drum.T1": "High tom", "drum.T2": "Mid tom", "drum.T3": "Floor tom", "drum.S": "Snare", "drum.X": "Cross-stick", "drum.K": "Kick", "drum.CL": "Clap", "drum.TB": "Tambourine", "drum.SH": "Shaker", "drum.CB": "Cowbell",
     "ed.title": "Edit {part}", "ed.part": "Part", "ed.prev": "Previous bar", "ed.next": "Next bar", "ed.bar": "Bar {n} / {total}", "ed.scope": "Apply edits to",
     "ed.scopePattern": "Whole pattern", "ed.scopeBar": "This bar only", "ed.grid": "Grid", "ed.g8": "8th", "ed.g16": "16th", "ed.g3": "Triplet", "ed.play": "▶ This bar",
     "ed.resetPattern": "Reset pattern", "ed.resetBar": "Back to automatic",
@@ -410,7 +410,7 @@ const I18N = {
     "lat.body": "What you record reaches the browser a little later than what you hear. MiniMTR moves each new take earlier by this amount so it lines up with the other tracks. If takes sound late, increase it; if early, decrease it.",
     "lat.label": "Offset (ms)", "lat.auto": "Auto", "lat.info": "Auto estimate on this device: {ms} ms (output {out} ms + input {inp} ms + processing {proc} ms)",
     "help.title": "How to use",
-    "help.body": "<ol><li>Type chords in <b>Chords &amp; backing</b> (one box per beat; an empty box keeps the previous chord). Bass, piano and drums play along automatically. Pick a pattern and a sound for each part, and choose a drum fill for any bar.</li><li><b>Backing as MIDI</b> saves bass, piano and drums as a standard MIDI file (with tempo, time signature and chord names as markers) to open in a DAW. <b>Backing → audio track</b> (or ⋯ on a part) renders the backing into a recorded track, so you can edit or export it like any take.</li><li><b>Variation</b> makes the band play like people do: bass runs into the next chord, the piano anticipates chord changes and adds colour notes, the drums add crashes, open hi-hats, ghost notes and short lead-ins at the end of 4- and 8-bar phrases. <b>Another take</b> picks a different set; set Variation to 0 for the plain pattern. <b>Ending</b> stops the band on the first beat of the last bar.</li><li>To change single notes, press <b>Edit</b> on a part (or double-tap its lane). Choose <b>Whole pattern</b> to change every bar, or <b>This bar only</b>.</li><li>Press <b>R</b> on a track to arm it (the browser asks for the microphone the first time).</li><li>Press <b>●</b> to record. With Count-in on, one bar of clicks plays first. Use headphones so other tracks do not leak into the microphone.</li><li>Press <b>■</b> to stop. Recording again on the same track replaces only the recorded range. <b>Undo</b> brings back the previous take.</li><li>Tap the timeline to move the playhead (■ always goes back to the start). Pinch, Ctrl + wheel or − / + to zoom, drag or scroll sideways to move along; during playback the view follows the playhead. Drag a bar in the chord chart (long-press on a touch screen, or ⠿ and the arrow keys) to move it.</li><li>Your work is saved in this browser automatically. To keep it safe or move it to another device, use <b>Export project (.zip)</b> and later <b>Open project…</b>. The zip contains <code>project.json</code> (settings) and one WAV file per track.</li><li>In Chrome / Edge on a computer, <b>Save to folder</b> writes the same files into a folder you choose, and saves over it the next time.</li></ol>",
+    "help.body": "<ol><li>Type chords in <b>Chords &amp; backing</b> (one box per beat; an empty box keeps the previous chord). Bass, piano and drums play along automatically. Pick a pattern and a sound for each part, and choose a drum fill for any bar.</li><li><b>Backing as MIDI</b> saves bass, piano and drums as a standard MIDI file (with tempo, time signature and chord names as markers) to open in a DAW. <b>Backing → audio track</b> (or ⋯ on a part) renders the backing into a recorded track, so you can edit or export it like any take.</li><li><b>Variation</b> makes the band play like people do: bass runs into the next chord, the piano anticipates chord changes and adds colour notes, the drums add crashes, open hi-hats, ghost notes and short lead-ins at the end of 4- and 8-bar phrases. <b>Another take</b> picks a different set; set Variation to 0 for the plain pattern. <b>Ending</b> stops the band on the first beat of the last bar.</li><li>To change single notes, press <b>Edit</b> on a part (or double-tap its lane). Choose <b>Whole pattern</b> to change every bar, or <b>This bar only</b>.</li><li>Press <b>R</b> on a track to arm it (the browser asks for the microphone the first time).</li><li>Press <b>●</b> to record. With Count-in on, one bar of clicks plays first. Use headphones so other tracks do not leak into the microphone.</li><li>Press <b>■</b> to stop. Recording again on the same track replaces only the recorded range. <b>Undo</b> brings back the previous take.</li><li>Each part has a <b>Sound</b> menu: 8 bass sounds (finger, pick, slap, muted, upright, synth, analog synth, 808) and 6 drum kits (standard, rock, brushes, 808, 909, lo-fi). Drums also have clap, tambourine, shaker and cowbell.</li><li>Tap the timeline to move the playhead (■ always goes back to the start). Pinch, Ctrl + wheel or − / + to zoom, drag or scroll sideways to move along; during playback the view follows the playhead. Drag a bar in the chord chart (long-press on a touch screen, or ⠿ and the arrow keys) to move it.</li><li>Your work is saved in this browser automatically. To keep it safe or move it to another device, use <b>Export project (.zip)</b> and later <b>Open project…</b>. The zip contains <code>project.json</code> (settings) and one WAV file per track.</li><li>In Chrome / Edge on a computer, <b>Save to folder</b> writes the same files into a folder you choose, and saves over it the next time.</li></ol>",
     "privacy.title": "Privacy",
     "privacy.body": "<p>Audio is recorded and processed only on your device. Nothing you record is sent to any server.</p><p>Your project (settings and audio) is kept in this browser's storage (IndexedDB) so you can continue after reloading. “New” clears it. Exported files are saved only where you choose.</p>",
     "about.title": "About this app",
@@ -429,7 +429,7 @@ const I18N = {
     "part.bass": "ベース", "part.piano": "ピアノ", "part.drums": "ドラム", "part.edit": "編集", "part.pattern": "パターン", "part.tone": "音色",
     "part.custom": "カスタム（編集済み）", "part.customReset": "編集したパターンをプリセットに置き換えました。「編集を戻す」で元に戻せます。",
     "part.resetPattern": "パターンをプリセットに戻す", "part.clearEdits": "小節ごとの編集をすべて解除", "part.fills4": "4 小節ごとにフィル", "part.clearFills": "フィルをすべて外す", "part.crash": "フィルのあとにクラッシュ",
-    "drum.C": "クラッシュ", "drum.R": "ライド", "drum.O": "HH オープン", "drum.H": "HH クローズ", "drum.P": "HH ペダル", "drum.T1": "ハイタム", "drum.T2": "ロータム", "drum.T3": "フロアタム", "drum.S": "スネア", "drum.X": "クロススティック", "drum.K": "キック",
+    "drum.C": "クラッシュ", "drum.R": "ライド", "drum.O": "HH オープン", "drum.H": "HH クローズ", "drum.P": "HH ペダル", "drum.T1": "ハイタム", "drum.T2": "ロータム", "drum.T3": "フロアタム", "drum.S": "スネア", "drum.X": "クロススティック", "drum.K": "キック", "drum.CL": "クラップ", "drum.TB": "タンバリン", "drum.SH": "シェイカー", "drum.CB": "カウベル",
     "ed.title": "{part}の編集", "ed.part": "パート", "ed.prev": "前の小節", "ed.next": "次の小節", "ed.bar": "{n} / {total} 小節", "ed.scope": "編集の適用先",
     "ed.scopePattern": "パターン全体", "ed.scopeBar": "この小節だけ", "ed.grid": "グリッド", "ed.g8": "8分", "ed.g16": "16分", "ed.g3": "3連", "ed.play": "▶ この小節",
     "ed.resetPattern": "パターンを元に戻す", "ed.resetBar": "自動に戻す",
@@ -457,7 +457,7 @@ const I18N = {
     "lat.body": "録音した音は、聞こえている音より少し遅れてブラウザに届きます。新しく録った音をこの時間だけ前にずらして、ほかのトラックとそろえます。録った音が遅れて聞こえるなら増やし、早いなら減らしてください。",
     "lat.label": "補正（ミリ秒）", "lat.auto": "自動", "lat.info": "この端末での自動の推定値: {ms} ms（出力 {out} ms ＋ 入力 {inp} ms ＋ 処理 {proc} ms）",
     "help.title": "使い方",
-    "help.body": "<ol><li><b>コードと伴奏</b> にコードを入力します（1 拍に 1 マス。空のマスは前のコードが続きます）。ベース・ピアノ・ドラムが自動で伴奏します。パートごとにパターンと音色を選び、ドラムのフィルは小節ごとに選べます。</li><li><b>伴奏を MIDI で書き出し</b> で、ベース・ピアノ・ドラムを標準 MIDI ファイル（テンポ・拍子・コード名のマーカー入り）に書き出し、DAW で開けます。<b>伴奏を音声トラックに</b>（またはパートの ⋯）で、伴奏を録音トラックの音声に変換できます。</li><li><b>バリエーション</b> で、人が弾くような変化を自動で付けます。ベースは次のコードへ駆け上がり、ピアノはコードを先取りして和音に色を足し、ドラムは 4 小節・8 小節の区切りでクラッシュ・オープンハイハット・ゴーストノート・短いつなぎを入れます。<b>別の案</b> で組み合わせが変わり、0 にすると元のパターンのままです。<b>エンディング</b> がオンなら、最後の小節の 1 拍目で全員が止まります。</li><li>1 音ずつ変えるときは、パートの <b>編集</b>（またはパートの行をダブルタップ）。<b>パターン全体</b> ならすべての小節に、<b>この小節だけ</b> ならその小節にだけ反映されます。</li><li>トラックの <b>R</b> を押して録音待機にします（初回はマイクの許可を求められます）。</li><li><b>●</b> で録音開始。「カウント」がオンなら 1 小節クリックが鳴ってから始まります。ほかのトラックの音がマイクに入らないよう、ヘッドホンを使ってください。</li><li><b>■</b> で停止。同じトラックにもう一度録ると、録った範囲だけ置き換わります。<b>元に戻す</b>で前のテイクに戻せます。</li><li>タイムラインを押すと再生位置が動きます（■ はいつも先頭に戻ります）。ピンチ・Ctrl＋ホイール・− / + で拡大縮小、ドラッグや横スクロールで左右に移動し、再生中は再生位置に合わせて表示が送られます。コード譜の小節は、ドラッグ（タッチ画面では長押ししてから）か ⠿ と矢印キーで移動できます。</li><li>作業内容はこのブラウザに自動で保存されます。消えないように残したいときや別の端末に移すときは <b>書き出し（.zip）</b>、続きをやるときは <b>読み込み…</b>。zip の中身は設定の <code>project.json</code> とトラックごとの WAV ファイルです。</li><li>PC の Chrome・Edge では <b>フォルダに保存</b> で、選んだフォルダに同じファイルを書き出し、次からは上書き保存できます。</li></ol>",
+    "help.body": "<ol><li><b>コードと伴奏</b> にコードを入力します（1 拍に 1 マス。空のマスは前のコードが続きます）。ベース・ピアノ・ドラムが自動で伴奏します。パートごとにパターンと音色を選び、ドラムのフィルは小節ごとに選べます。</li><li><b>伴奏を MIDI で書き出し</b> で、ベース・ピアノ・ドラムを標準 MIDI ファイル（テンポ・拍子・コード名のマーカー入り）に書き出し、DAW で開けます。<b>伴奏を音声トラックに</b>（またはパートの ⋯）で、伴奏を録音トラックの音声に変換できます。</li><li><b>バリエーション</b> で、人が弾くような変化を自動で付けます。ベースは次のコードへ駆け上がり、ピアノはコードを先取りして和音に色を足し、ドラムは 4 小節・8 小節の区切りでクラッシュ・オープンハイハット・ゴーストノート・短いつなぎを入れます。<b>別の案</b> で組み合わせが変わり、0 にすると元のパターンのままです。<b>エンディング</b> がオンなら、最後の小節の 1 拍目で全員が止まります。</li><li>1 音ずつ変えるときは、パートの <b>編集</b>（またはパートの行をダブルタップ）。<b>パターン全体</b> ならすべての小節に、<b>この小節だけ</b> ならその小節にだけ反映されます。</li><li>トラックの <b>R</b> を押して録音待機にします（初回はマイクの許可を求められます）。</li><li><b>●</b> で録音開始。「カウント」がオンなら 1 小節クリックが鳴ってから始まります。ほかのトラックの音がマイクに入らないよう、ヘッドホンを使ってください。</li><li><b>■</b> で停止。同じトラックにもう一度録ると、録った範囲だけ置き換わります。<b>元に戻す</b>で前のテイクに戻せます。</li><li>パートごとに <b>音色</b> を選べます。ベースは 8 種類（指弾き・ピック・スラップ・ミュート・ウッドベース・シンセ・アナログシンセ・808）、ドラムは 6 セット（スタンダード・ロック・ブラシ・808・909・ローファイ）。ドラムにはクラップ・タンバリン・シェイカー・カウベルもあります。</li><li>タイムラインを押すと再生位置が動きます（■ はいつも先頭に戻ります）。ピンチ・Ctrl＋ホイール・− / + で拡大縮小、ドラッグや横スクロールで左右に移動し、再生中は再生位置に合わせて表示が送られます。コード譜の小節は、ドラッグ（タッチ画面では長押ししてから）か ⠿ と矢印キーで移動できます。</li><li>作業内容はこのブラウザに自動で保存されます。消えないように残したいときや別の端末に移すときは <b>書き出し（.zip）</b>、続きをやるときは <b>読み込み…</b>。zip の中身は設定の <code>project.json</code> とトラックごとの WAV ファイルです。</li><li>PC の Chrome・Edge では <b>フォルダに保存</b> で、選んだフォルダに同じファイルを書き出し、次からは上書き保存できます。</li></ol>",
     "privacy.title": "プライバシー",
     "privacy.body": "<p>録音と処理はすべてお使いの端末の中で行います。録音した音をサーバーに送ることはありません。</p><p>再読み込みしても続けられるよう、プロジェクト（設定と音声）をこのブラウザの保存領域（IndexedDB）に保存します。「新規」で消去できます。書き出したファイルは、あなたが選んだ場所にだけ保存されます。</p>",
     "about.title": "このアプリについて",
@@ -1271,8 +1271,8 @@ async function bounceBacking(names) {
 // ---------------------------------------------------------------- backing -> Standard MIDI File
 // Type 1, 480 ticks per quarter note. Track 0: tempo, time signature, chord names as markers; then bass (ch 1),
 // piano (ch 2) and drums (ch 10, General MIDI drum map). Notes are on the grid (swing kept, no humanize).
-const GM_PROGRAM = { bass: { finger: 33, pick: 34, synth: 38 }, piano: { grand: 0, ep: 4, organ: 16, strings: 48, clav: 7 } };
-const GM_DRUM = { K: 36, S: 38, X: 37, H: 42, O: 46, P: 44, T1: 50, T2: 47, T3: 43, C: 49, R: 51 };
+const GM_PROGRAM = { bass: { finger: 33, pick: 34, slap: 36, mute: 33, upright: 32, synth: 38, moog: 39, "808": 39 }, piano: { grand: 0, ep: 4, organ: 16, strings: 48, clav: 7 }, drums: { standard: 0, rock: 16, brush: 40, "808": 25, "909": 24, lofi: 0 } };
+const GM_DRUM = { K: 36, S: 38, X: 37, H: 42, O: 46, P: 44, T1: 50, T2: 47, T3: 43, C: 49, R: 51, CL: 39, TB: 54, SH: 70, CB: 56 };
 function vlq(n) {
   const out = [n & 0x7f];
   while ((n >>= 7)) out.unshift((n & 0x7f) | 0x80);
@@ -1307,7 +1307,7 @@ function buildMidi() {
       { tick: 0, order: 0, bytes: [0xb0 | ch, 7, Math.round(Math.min(1, P.volume) * 127)] },
       { tick: 0, order: 0, bytes: [0xb0 | ch, 10, Math.round((P.pan + 1) * 63.5)] },
     ];
-    if (name !== "drums") ev.push({ tick: 0, order: 0, bytes: [0xc0 | ch, GM_PROGRAM[name][P.tone] || 0] });
+    ev.push({ tick: 0, order: 0, bytes: [0xc0 | ch, GM_PROGRAM[name][P.tone] || 0] }); // drums: GS/XG drum kit number
     for (let bar = 0; bar < S.bars; bar++) for (const n of renderBar(name, bar)) {
       let tk = bar * B * TPB + n.t;
       let on = tk * k;
@@ -2058,6 +2058,18 @@ const DRUM_PRESETS = [
   { id: "jazz", en: "Jazz swing (ride)", ja: "ジャズ（スウィング）",
     p4: [D(0, "R", 0.75), D(1, "R", 0.72), D(1 + 2 / 3, "R", 0.5), D(2, "R", 0.75), D(3, "R", 0.72), D(3 + 2 / 3, "R", 0.5), D(1, "P", 0.6), D(3, "P", 0.6), ...[0, 1, 2, 3].map((b) => D(b, "K", 0.22))],
     p3: [D(0, "R", 0.75), D(1, "R", 0.72), D(1 + 2 / 3, "R", 0.5), D(2, "R", 0.72), D(1, "P", 0.6), D(2, "P", 0.6), D(0, "K", 0.3)] },
+  { id: "tamb", en: "8-beat + tambourine (pop)", ja: "8ビート＋タンバリン（ポップ）",
+    p4: [...steps(0, 4, 0.5).map((b) => D(b, "H", b % 1 ? 0.5 : 0.72)), D(0, "K", 0.95), D(2, "K", 0.9), D(2.5, "K", 0.75), D(1, "S", 0.9), D(3, "S", 0.9), D(1, "TB", 0.75), D(3, "TB", 0.75), D(1.5, "TB", 0.4), D(3.5, "TB", 0.4)],
+    p3: [...steps(0, 3, 0.5).map((b) => D(b, "H", b % 1 ? 0.5 : 0.72)), D(0, "K", 0.95), D(1, "S", 0.85), D(2, "S", 0.7), D(1, "TB", 0.7), D(2, "TB", 0.7)] },
+  { id: "shaker", en: "Shaker 16ths (acoustic pop)", ja: "シェイカー16分（アコースティック）",
+    p4: [...steps(0, 4, 0.25).map((b) => D(b, "SH", b % 1 === 0 ? 0.45 : b % 0.5 === 0 ? 0.75 : 0.35)), D(0, "K", 0.85), D(2.5, "K", 0.7), D(1, "X", 0.8), D(3, "X", 0.8)],
+    p3: [...steps(0, 3, 0.25).map((b) => D(b, "SH", b % 1 === 0 ? 0.45 : b % 0.5 === 0 ? 0.75 : 0.35)), D(0, "K", 0.85), D(1, "X", 0.7), D(2, "X", 0.7)] },
+  { id: "clap4", en: "Four on the floor + clap", ja: "4つ打ち＋クラップ（ダンス）",
+    p4: [...[0, 1, 2, 3].map((b) => D(b, "K", 0.95)), D(1, "CL", 0.85), D(3, "CL", 0.85), ...[0.5, 1.5, 2.5, 3.5].map((b) => D(b, "O", 0.55)), ...steps(0, 4, 0.25).filter((b) => b % 0.5).map((b) => D(b, "H", 0.35))] },
+  { id: "hiphop", en: "Hip-hop / R&B (808)", ja: "ヒップホップ・R&B（808 向け）",
+    p4: [...steps(0, 4, 0.5).map((b) => D(b, "H", b % 1 ? 0.45 : 0.7)), D(0, "K", 0.95), D(1.75, "K", 0.75), D(2.5, "K", 0.85), D(1, "CL", 0.85), D(1, "S", 0.5), D(3, "CL", 0.85), D(3, "S", 0.5), D(3.75, "H", 0.4)] },
+  { id: "latin", en: "Cowbell groove (latin / funk)", ja: "カウベル（ラテン・ファンク）",
+    p4: [...[0, 1, 2, 3].map((b) => D(b, "CB", b % 2 ? 0.55 : 0.75)), D(1.5, "CB", 0.5), D(3.5, "CB", 0.5), ...steps(0, 4, 0.5).map((b) => D(b, "H", b % 1 ? 0.45 : 0.6)), D(0, "K", 0.9), D(1.5, "K", 0.7), D(2.5, "K", 0.8), D(1, "S", 0.85), D(3, "S", 0.85), D(2.75, "S", 0.25)] },
   { id: "waltz", en: "Waltz", ja: "ワルツ", beats: [3],
     p3: [D(0, "K", 0.9), D(0, "H", 0.6), D(1, "X", 0.6), D(1, "H", 0.5), D(2, "X", 0.6), D(2, "H", 0.5)] },
 ];
@@ -2075,14 +2087,22 @@ const FILLS = [
     notes: [0, 1.5, 3].flatMap((b) => [D(b, "C", 0.9), D(b, "K", 0.95), D(b, "S", 0.9)]) },
   { id: "break", en: "Break (stop 2 beats)", ja: "ブレイク（2拍休み）", beats: 2, notes: [] },
 ];
-const DRUM_ROWS = ["C", "R", "O", "H", "P", "T1", "T2", "T3", "S", "X", "K"];
-const BASS_TONES = [{ id: "finger", en: "Finger", ja: "指弾き" }, { id: "pick", en: "Pick", ja: "ピック" }, { id: "synth", en: "Synth bass", ja: "シンセベース" }];
+const DRUM_ROWS = ["C", "R", "O", "H", "P", "CB", "TB", "SH", "CL", "T1", "T2", "T3", "S", "X", "K"];
+const BASS_TONES = [
+  { id: "finger", en: "Finger", ja: "指弾き" }, { id: "pick", en: "Pick", ja: "ピック" }, { id: "slap", en: "Slap", ja: "スラップ" },
+  { id: "mute", en: "Muted (Motown)", ja: "ミュート（モータウン）" }, { id: "upright", en: "Upright", ja: "ウッドベース" },
+  { id: "synth", en: "Synth bass", ja: "シンセベース" }, { id: "moog", en: "Analog synth", ja: "アナログシンセ" }, { id: "808", en: "808 bass", ja: "808 ベース" },
+];
+const DRUM_TONES = [
+  { id: "standard", en: "Standard kit", ja: "スタンダード" }, { id: "rock", en: "Rock kit", ja: "ロック" }, { id: "brush", en: "Brushes", ja: "ブラシ" },
+  { id: "808", en: "808", ja: "808" }, { id: "909", en: "909 / dance", ja: "909（ダンス）" }, { id: "lofi", en: "Lo-fi", ja: "ローファイ" },
+];
 const PIANO_TONES = [
   { id: "grand", en: "Piano", ja: "ピアノ" }, { id: "ep", en: "Electric piano", ja: "エレピ" }, { id: "organ", en: "Organ", ja: "オルガン" },
   { id: "strings", en: "Strings / pad", ja: "ストリングス" }, { id: "clav", en: "Clavinet", ja: "クラビ" },
 ];
 const PRESETS = { bass: BASS_PRESETS, piano: PIANO_PRESETS, drums: DRUM_PRESETS };
-const TONES = { bass: BASS_TONES, piano: PIANO_TONES };
+const TONES = { bass: BASS_TONES, piano: PIANO_TONES, drums: DRUM_TONES };
 const label = (o) => (LANG === "ja" ? o.ja : o.en);
 const presetsFor = (name) => PRESETS[name].filter((p) => !p.beats || p.beats.includes(state.beats));
 const fillDef = (id) => {
@@ -2112,7 +2132,7 @@ function defaultSong(enabled = true) {
     parts: {
       bass: { ...base, preset: "eighth", tone: "finger", volume: 0.85 },
       piano: { ...base, preset: "eighth", tone: "grand", volume: 0.7, overrides: {} },
-      drums: { ...base, preset: "8beat", volume: 0.8, overrides: {}, fills: { 3: "snare1", 7: "tom2" }, fillCustom: {}, crash: true },
+      drums: { ...base, preset: "8beat", tone: "standard", volume: 0.8, overrides: {}, fills: { 3: "snare1", 7: "tom2" }, fillCustom: {}, crash: true },
     },
   };
 }
@@ -2504,9 +2524,82 @@ function osc(ac, type, f, t, stop, dest, detune) {
   o.connect(dest); o.start(t); o.stop(stop);
   return o;
 }
+// soft clipping for the 808 bass (adds harmonics so it is audible on small speakers)
+const shaperCache = new WeakMap();
+function softClip(ac, amount) {
+  let m = shaperCache.get(ac);
+  if (!m) { m = {}; shaperCache.set(ac, m); }
+  if (!m[amount]) {
+    const n = 1024, c = new Float32Array(n);
+    for (let i = 0; i < n; i++) { const x = (i / (n - 1)) * 2 - 1; c[i] = Math.tanh(x * amount) / Math.tanh(amount); }
+    m[amount] = c;
+  }
+  const ws = ac.createWaveShaper();
+  ws.curve = m[amount];
+  return ws;
+}
 function voiceBass(ac, out, tone, t, midi, dur, vel) {
   const f = mtof(midi), end = t + dur;
-  const g = ac.createGain(), filt = ac.createBiquadFilter(), body = ac.createGain(), sub = ac.createGain();
+  const g = ac.createGain();
+  g.connect(out);
+  if (tone === "808") {
+    // long sine with a short pitch drop, lightly saturated
+    const sat = softClip(ac, 2.2), o = ac.createOscillator();
+    o.type = "sine"; o.frequency.setValueAtTime(f * 1.35, t); o.frequency.setTargetAtTime(f, t, 0.025);
+    o.connect(sat); sat.connect(g);
+    const stop = adsr(g, t, end, 0.5 * vel, 0.003, 0.85, 1.2, 0.09);
+    o.start(t); o.stop(stop);
+    return;
+  }
+  if (tone === "moog") {
+    // two detuned saws and a square an octave below into a resonant low-pass
+    const filt = ac.createBiquadFilter();
+    filt.type = "lowpass"; filt.Q.value = 5;
+    filt.frequency.setValueAtTime(2200 * (0.5 + 0.5 * vel), t); filt.frequency.setTargetAtTime(320, t, 0.14);
+    filt.connect(g);
+    const stop = adsr(g, t, end, 0.3 * vel, 0.004, 0.7, 0.25, 0.05);
+    osc(ac, "sawtooth", f, t, stop, filt, -7); osc(ac, "sawtooth", f, t, stop, filt, 7);
+    const sub = ac.createGain(); sub.gain.value = 0.45; sub.connect(filt); osc(ac, "square", f / 2, t, stop, sub);
+    return;
+  }
+  if (tone === "slap") {
+    // bright, fast decay; thumb thump on every note and a "pop" on high notes
+    const filt = ac.createBiquadFilter();
+    filt.type = "lowpass"; filt.Q.value = 3;
+    filt.frequency.setValueAtTime(5000, t); filt.frequency.setTargetAtTime(900, t, 0.07);
+    filt.connect(g);
+    const stop = adsr(g, t, end, 0.5 * vel, 0.001, 0.3, 0.18, 0.03);
+    osc(ac, "sawtooth", f, t, stop, filt);
+    const sub = ac.createGain(); sub.gain.value = 0.5; sub.connect(g); osc(ac, "sine", f, t, stop, sub);
+    noiseHit(ac, out, t, "bandpass", midi >= 41 ? 3200 : 1200, 1.5, (midi >= 41 ? 0.35 : 0.22) * vel, midi >= 41 ? 0.012 : 0.008);
+    return;
+  }
+  if (tone === "mute") {
+    // palm-muted / flatwound: dark and short
+    const filt = ac.createBiquadFilter();
+    filt.type = "lowpass"; filt.Q.value = 0.7;
+    filt.frequency.setValueAtTime(700, t); filt.frequency.setTargetAtTime(280, t, 0.05);
+    filt.connect(g);
+    const stop = adsr(g, t, Math.min(end, t + 0.25), 0.45 * vel, 0.004, 0, 0.13, 0.03);
+    osc(ac, "triangle", f, t, stop, filt);
+    const sub = ac.createGain(); sub.gain.value = 0.6; sub.connect(filt); osc(ac, "sine", f, t, stop, sub);
+    return;
+  }
+  if (tone === "upright") {
+    // upright bass: soft attack, short body, finger pluck noise, slight pitch settle
+    const filt = ac.createBiquadFilter();
+    filt.type = "lowpass"; filt.frequency.value = 900; filt.Q.value = 0.6;
+    filt.connect(g);
+    const stop = adsr(g, t, end, 0.48 * vel, 0.012, 0.08, 0.45, 0.06);
+    const o1 = osc(ac, "sine", f, t, stop, filt);
+    o1.frequency.setValueAtTime(f * 1.012, t); o1.frequency.setTargetAtTime(f, t, 0.05);
+    const tri = ac.createGain(); tri.gain.value = 0.4; tri.connect(filt);
+    const o2 = osc(ac, "triangle", f, t, stop, tri);
+    o2.frequency.setValueAtTime(f * 1.012, t); o2.frequency.setTargetAtTime(f, t, 0.05);
+    noiseHit(ac, out, t, "lowpass", 500, 0.7, 0.18 * vel, 0.02);
+    return;
+  }
+  const filt = ac.createBiquadFilter(), body = ac.createGain(), sub = ac.createGain();
   filt.type = "lowpass";
   const synth = tone === "synth", pick = tone === "pick";
   filt.Q.value = synth ? 9 : pick ? 2 : 0.8;
@@ -2514,7 +2607,7 @@ function voiceBass(ac, out, tone, t, midi, dur, vel) {
   filt.frequency.setValueAtTime(f0, t);
   filt.frequency.setTargetAtTime(f1, t, synth ? 0.08 : 0.12);
   body.gain.value = synth ? 0.6 : 0.5; sub.gain.value = synth ? 0.35 : 0.6;
-  body.connect(filt); filt.connect(g); sub.connect(g); g.connect(out);
+  body.connect(filt); filt.connect(g); sub.connect(g);
   const stop = adsr(g, t, end, 0.55 * vel, pick ? 0.002 : 0.006, synth ? 0.7 : 0.45, synth ? 0.2 : 0.35, 0.04);
   osc(ac, synth ? "square" : "sawtooth", f, t, stop, body);
   osc(ac, "sine", f, t, stop, sub);
@@ -2558,66 +2651,127 @@ function voiceKeys(ac, out, tone, t, midi, dur, vel) {
     const h3 = ac.createGain(); h3.gain.value = 0.12; h3.connect(lp); osc(ac, "sine", f * 3, t, stop, h3, -2);
   }
 }
-function noiseHit(ac, out, t, type, freq, q, peak, tau) {
+function noiseHit(ac, out, t, type, freq, q, peak, tau, atk) {
   const src = ac.createBufferSource(), filt = ac.createBiquadFilter(), g = ac.createGain();
   src.buffer = noiseBuf(ac); filt.type = type; filt.frequency.value = freq; filt.Q.value = q;
-  g.gain.setValueAtTime(peak, t); g.gain.setTargetAtTime(0, t + 0.002, tau);
+  if (atk) { g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(peak, t + atk); g.gain.setTargetAtTime(0, t + atk, tau); }
+  else { g.gain.setValueAtTime(peak, t); g.gain.setTargetAtTime(0, t + 0.002, tau); }
   src.connect(filt); filt.connect(g); g.connect(out);
-  src.start(t, Math.random() * 1.5); src.stop(t + tau * 8 + 0.05);
+  src.start(t, Math.random() * 1.5); src.stop(t + (atk || 0) + tau * 8 + 0.05);
 }
-function metal(ac, out, t, peak, tau, hp) {
+function metal(ac, out, t, peak, tau, hp, base) {
   const g = ac.createGain(), band = ac.createBiquadFilter(), high = ac.createBiquadFilter();
   band.type = "bandpass"; band.frequency.value = 10000; band.Q.value = 0.8;
   high.type = "highpass"; high.frequency.value = hp;
   band.connect(high); high.connect(g); g.connect(out);
   g.gain.setValueAtTime(peak, t); g.gain.setTargetAtTime(0, t + 0.001, tau);
   const stop = t + tau * 8 + 0.05;
-  [2, 3, 4.16, 5.43, 6.79, 8.21].forEach((r) => osc(ac, "square", 40 * r, t, stop, band));
+  [2, 3, 4.16, 5.43, 6.79, 8.21].forEach((r) => osc(ac, "square", (base || 40) * r, t, stop, band));
 }
-function voiceDrum(ac, out, inst, t, v) {
+function sineDrum(ac, out, t, f0, f1, bendTau, peak, tau, stopAfter) {
+  const g = ac.createGain(), o = ac.createOscillator();
+  o.type = "sine"; o.frequency.setValueAtTime(f0, t); o.frequency.setTargetAtTime(f1, t, bendTau);
+  g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(peak, t + 0.002); g.gain.setTargetAtTime(0, t + 0.01, tau);
+  o.connect(g); g.connect(out); o.start(t); o.stop(t + stopAfter);
+}
+function toneHit(ac, out, t, type, f0, f1, peak, tau) {
+  const g = ac.createGain(), o = ac.createOscillator();
+  o.type = type; o.frequency.setValueAtTime(f0, t); o.frequency.setTargetAtTime(f1, t, 0.03);
+  g.gain.setValueAtTime(peak, t); g.gain.setTargetAtTime(0, t + 0.002, tau);
+  o.connect(g); g.connect(out); o.start(t); o.stop(t + tau * 8 + 0.05);
+}
+// handclap: three quick noise bursts, then a short tail
+function clap(ac, out, t, v, freq, tail) {
+  const src = ac.createBufferSource(), filt = ac.createBiquadFilter(), g = ac.createGain();
+  src.buffer = noiseBuf(ac); filt.type = "bandpass"; filt.frequency.value = freq; filt.Q.value = 1.1;
+  g.gain.setValueAtTime(0, t);
+  for (const d of [0, 0.011, 0.022]) { g.gain.setValueAtTime(1.3 * v, t + d); g.gain.setTargetAtTime(0.05 * v, t + d + 0.001, 0.004); }
+  g.gain.setValueAtTime(0.9 * v, t + 0.032); g.gain.setTargetAtTime(0, t + 0.033, tail);
+  src.connect(filt); filt.connect(g); g.connect(out);
+  src.start(t, Math.random() * 1.5); src.stop(t + 0.04 + tail * 8);
+}
+function cowbell(ac, out, t, v) {
+  const g = ac.createGain(), band = ac.createBiquadFilter();
+  band.type = "bandpass"; band.frequency.value = 2640; band.Q.value = 1;
+  g.gain.setValueAtTime(0.35 * v, t); g.gain.setTargetAtTime(0.12 * v, t + 0.002, 0.02); g.gain.setTargetAtTime(0, t + 0.04, 0.12);
+  band.connect(g); g.connect(out);
+  const stop = t + 0.9;
+  osc(ac, "square", 540, t, stop, band); osc(ac, "square", 800, t, stop, band);
+}
+// Lo-fi kit: the standard kit through a dull low-pass and a coarse 4-bit-ish curve
+const lofiCache = new WeakMap();
+function lofiOut(ac, out) {
+  let n = lofiCache.get(out);
+  if (n) return n;
+  const lp = ac.createBiquadFilter(), ws = ac.createWaveShaper(), g = ac.createGain();
+  lp.type = "lowpass"; lp.frequency.value = 3200; lp.Q.value = 0.5;
+  const steps = 14, c = new Float32Array(512);
+  for (let i = 0; i < c.length; i++) { const x = (i / (c.length - 1)) * 2 - 1; c[i] = Math.round(Math.tanh(x * 1.6) * steps) / steps; }
+  ws.curve = c; g.gain.value = 0.9;
+  lp.connect(ws); ws.connect(g); g.connect(out);
+  lofiCache.set(out, lp);
+  return lp;
+}
+function voiceDrum(ac, out, inst, t, v, kit) {
+  kit = kit || "standard";
+  if (kit === "lofi") { out = lofiOut(ac, out); kit = "standard"; }
+  const k808 = kit === "808", k909 = kit === "909", rock = kit === "rock", brush = kit === "brush";
   switch (inst) {
-    case "K": {
-      const g = ac.createGain(), o = ac.createOscillator();
-      o.type = "sine"; o.frequency.setValueAtTime(150, t); o.frequency.setTargetAtTime(48, t, 0.03);
-      g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(0.95 * v, t + 0.002); g.gain.setTargetAtTime(0, t + 0.01, 0.13);
-      o.connect(g); g.connect(out); o.start(t); o.stop(t + 0.9);
-      noiseHit(ac, out, t, "highpass", 2500, 0.7, 0.18 * v, 0.006);
+    case "K":
+      if (k808) sineDrum(ac, out, t, 110, 44, 0.04, 0.85 * v, 0.38, 2.2);
+      else if (k909) { sineDrum(ac, out, t, 190, 50, 0.025, 0.82 * v, 0.17, 1); noiseHit(ac, out, t, "highpass", 3000, 0.7, 0.25 * v, 0.008); }
+      else if (rock) { sineDrum(ac, out, t, 120, 52, 0.035, 0.85 * v, 0.2, 1.2); noiseHit(ac, out, t, "lowpass", 900, 0.7, 0.15 * v, 0.03); noiseHit(ac, out, t, "highpass", 2500, 0.7, 0.2 * v, 0.006); }
+      else if (brush) sineDrum(ac, out, t, 95, 48, 0.04, 0.65 * v, 0.12, 0.8);
+      else { sineDrum(ac, out, t, 150, 48, 0.03, 0.95 * v, 0.13, 0.9); noiseHit(ac, out, t, "highpass", 2500, 0.7, 0.18 * v, 0.006); }
       break;
-    }
-    case "S": {
-      noiseHit(ac, out, t, "highpass", 1400, 0.7, 0.42 * v, 0.06 + 0.04 * v);
-      const g = ac.createGain(), o = ac.createOscillator();
-      o.type = "triangle"; o.frequency.setValueAtTime(220, t); o.frequency.setTargetAtTime(170, t, 0.03);
-      g.gain.setValueAtTime(0.45 * v, t); g.gain.setTargetAtTime(0, t + 0.002, 0.05);
-      o.connect(g); g.connect(out); o.start(t); o.stop(t + 0.4);
+    case "S":
+      if (k808) { toneHit(ac, out, t, "sine", 238, 180, 0.35 * v, 0.06); toneHit(ac, out, t, "sine", 476, 330, 0.18 * v, 0.04); noiseHit(ac, out, t, "highpass", 1800, 0.7, 0.4 * v, 0.07); }
+      else if (k909) { toneHit(ac, out, t, "triangle", 240, 190, 0.4 * v, 0.05); noiseHit(ac, out, t, "highpass", 1500, 0.7, 0.45 * v, 0.1); }
+      else if (rock) { toneHit(ac, out, t, "triangle", 200, 160, 0.55 * v, 0.08); noiseHit(ac, out, t, "highpass", 900, 0.7, 0.42 * v, 0.14); noiseHit(ac, out, t, "lowpass", 3000, 0.5, 0.1 * v, 0.28); }
+      else if (brush) noiseHit(ac, out, t, "bandpass", 2600, 0.8, 0.32 * v, 0.12, 0.025);
+      else { noiseHit(ac, out, t, "highpass", 1400, 0.7, 0.42 * v, 0.06 + 0.04 * v); toneHit(ac, out, t, "triangle", 220, 170, 0.45 * v, 0.05); }
       break;
-    }
-    case "X": {
-      noiseHit(ac, out, t, "bandpass", 1800, 6, 0.55 * v, 0.03);
-      const g = ac.createGain(), o = ac.createOscillator();
-      o.type = "triangle"; o.frequency.value = 480;
-      g.gain.setValueAtTime(0.35 * v, t); g.gain.setTargetAtTime(0, t + 0.001, 0.02);
-      o.connect(g); g.connect(out); o.start(t); o.stop(t + 0.2);
+    case "X":
+      if (brush) noiseHit(ac, out, t, "bandpass", 3000, 1, 0.25 * v, 0.05, 0.01);
+      else if (k808) { noiseHit(ac, out, t, "bandpass", 2400, 8, 0.6 * v, 0.02); toneHit(ac, out, t, "square", 1700, 1700, 0.08 * v, 0.01); }
+      else { noiseHit(ac, out, t, "bandpass", 1800, 6, 0.55 * v, 0.03); toneHit(ac, out, t, "triangle", 480, 480, 0.35 * v, 0.02); }
       break;
-    }
-    case "H": metal(ac, out, t, 0.22 * v, 0.022, 7000); break;
-    case "O": metal(ac, out, t, 0.2 * v, 0.16, 7000); break;
-    case "P": metal(ac, out, t, 0.14 * v, 0.018, 6000); break;
-    case "R": metal(ac, out, t, 0.1 * v, 0.35, 5000); noiseHit(ac, out, t, "highpass", 8000, 0.7, 0.05 * v, 0.3); break;
-    case "C": noiseHit(ac, out, t, "highpass", 4000, 0.7, 0.32 * v, 0.6); metal(ac, out, t, 0.08 * v, 0.5, 4000); break;
+    case "H":
+      if (k909) noiseHit(ac, out, t, "highpass", 8000, 0.7, 0.28 * v, 0.03);
+      else if (brush) metal(ac, out, t, 0.12 * v, 0.03, 8000);
+      else metal(ac, out, t, (k808 ? 0.26 : 0.22) * v, k808 ? 0.018 : 0.022, 7000);
+      break;
+    case "O":
+      if (k909) noiseHit(ac, out, t, "highpass", 7500, 0.7, 0.24 * v, 0.2);
+      else metal(ac, out, t, (brush ? 0.12 : 0.2) * v, k808 ? 0.22 : 0.16, 7000);
+      break;
+    case "P": metal(ac, out, t, (brush ? 0.08 : 0.14) * v, 0.018, 6000); break;
+    case "R":
+      metal(ac, out, t, (brush ? 0.08 : 0.1) * v, rock ? 0.5 : 0.35, 5000, brush ? 36 : 40);
+      noiseHit(ac, out, t, "highpass", 8000, 0.7, (brush ? 0.03 : 0.05) * v, 0.3);
+      break;
+    case "C":
+      noiseHit(ac, out, t, "highpass", 4000, 0.7, (brush ? 0.2 : 0.32) * v, rock ? 1.0 : k808 ? 0.8 : 0.6);
+      metal(ac, out, t, 0.08 * v, rock ? 0.8 : 0.5, 4000);
+      break;
     case "T1": case "T2": case "T3": {
-      const f = { T1: 210, T2: 155, T3: 105 }[inst];
-      const g = ac.createGain(), o = ac.createOscillator();
-      o.type = "sine"; o.frequency.setValueAtTime(f * 1.5, t); o.frequency.setTargetAtTime(f, t, 0.04);
-      g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(0.7 * v, t + 0.003); g.gain.setTargetAtTime(0, t + 0.01, 0.16);
-      o.connect(g); g.connect(out); o.start(t); o.stop(t + 1.2);
-      noiseHit(ac, out, t, "bandpass", f * 4, 1, 0.12 * v, 0.02);
+      const f = { T1: 210, T2: 155, T3: 105 }[inst] * (k808 ? 0.75 : rock ? 0.85 : 1);
+      sineDrum(ac, out, t, f * 1.5, f, 0.04, (brush ? 0.45 : 0.7) * v, k808 ? 0.3 : rock ? 0.24 : 0.16, 1.6);
+      if (!k808) noiseHit(ac, out, t, "bandpass", f * 4, 1, (brush ? 0.05 : 0.12) * v, 0.02);
       break;
     }
+    case "CL": clap(ac, out, t, v, k909 ? 1500 : 1100, k808 ? 0.09 : 0.12); break;
+    case "TB": // tambourine: jingles
+      metal(ac, out, t, 0.12 * v, 0.1, 7000, 55);
+      noiseHit(ac, out, t, "bandpass", 9000, 1.5, 0.18 * v, 0.09);
+      noiseHit(ac, out, t + 0.012, "bandpass", 7000, 1.5, 0.08 * v, 0.06);
+      break;
+    case "SH": noiseHit(ac, out, t, "bandpass", 6500, 1.2, 0.3 * v, 0.045, 0.012); break;
+    case "CB": cowbell(ac, out, t, v); break;
   }
 }
 function playEvent(ac, out, e, at) {
-  if (e.part === "drums") voiceDrum(ac, out, e.inst, at, e.v);
+  if (e.part === "drums") voiceDrum(ac, out, e.inst, at, e.v, state.song.parts.drums.tone);
   else if (e.part === "bass") voiceBass(ac, out, state.song.parts.bass.tone, at, e.midi, e.dur, e.v);
   else voiceKeys(ac, out, state.song.parts.piano.tone, at, e.midi, e.dur, e.v);
 }
@@ -2954,7 +3108,12 @@ function renderPartRow(name) {
   if (TONES[name]) {
     tsel.setAttribute("aria-label", t("part.tone"));
     fillSelect(tsel, TONES[name], P.tone);
-    tsel.addEventListener("change", () => { state.song.parts[name].tone = tsel.value; songChanged(); audition(name, { midi: name === "bass" ? 40 : 64 }); });
+    tsel.addEventListener("change", () => {
+      state.song.parts[name].tone = tsel.value;
+      songChanged();
+      if (name === "drums") ["K", "H", "S", "H"].forEach((inst, k) => setTimeout(() => audition("drums", { inst }), k * 160));
+      else audition(name, { midi: name === "bass" ? 40 : 64 });
+    });
   } else tsel.remove();
   const [volL, panL] = el.querySelectorAll(".sl");
   volL.querySelector("span").textContent = t("tk.vol"); panL.querySelector("span").textContent = t("tk.pan");
