@@ -20,13 +20,15 @@
 
 ## データの持ち方（このアプリ独自）
 - 自動保存: IndexedDB `minimtr`（store `kv` の `project` = 設定、store `audio` = トラック id → `{ sr, chans: Float32Array[] }`、`kv` の `dirHandle` = フォルダ保存先）。
-- 書き出し: zip（無圧縮）に `project.json`（`format: "minimtr-project"`, `version: 2`）と `tracks/NN-<名前>.wav`（32bit float、劣化なし）。
-  フォーマットを変えるときは `version` を上げ、古い版も読めるようにする（version 1 = 伴奏なし。読むと伴奏は録音があればオフ）。
+- 書き出し: zip（無圧縮）に `project.json`（`format: "minimtr-project"`, `version: 3`）と `tracks/NN-<名前>.wav`（32bit float、劣化なし）。
+  フォーマットを変えるときは `version` を上げ、古い版も読めるようにする（version 1 = 伴奏なし。読むと伴奏は録音があればオフ。version 2 = エフェクトなし。読むとエフェクトは既定値）。
 - 伴奏（`state.song`、project.json の `song`）: `chords[小節][拍]`（空文字 = 前のコードが続く）、`parts.bass/piano/drums`
   （`preset`・`tone`（ドラムは音色セット）・`custom` = パターン全体の編集・`overrides[小節]` = その小節だけの編集・ドラムは `fills[小節]`・`fillCustom`・`crash`）。
   時間は 1 拍 = 12 tick。パターンの音の高さはコードからの相対（`deg` R/3/5/7/9、`semi`、`vi` = ピアノ右手の和音の何番目か、`rh` = 右手の音域で基本形の和音の音（分散和音用）、`ap` = 次のコードへの半音アプローチ）、
   小節だけの編集は絶対音高（`midi`）。自動のバリエーション（`variation` 0〜1、`seed`、`ending`）は renderBar の最後で重ねる（`varyBar`）。
   小節ごとに seed から決まる疑似乱数なので、再生・表示・MIDI・書き出しで同じ結果になる。パターン全体の編集画面はバリエーションを含まない元のパターン、「この小節だけ」は聞こえている音（バリエーション込み）をコピーする。音源はすべて Web Audio の合成（外部の音源ファイルなし）。拍子は 4/4 と 3/4 のみ。
+- エフェクト: トラックの `fx` と `song.parts.*.fx`（`low`/`mid`/`high` dB・`mf` Hz・`comp`/`drive`/`rev`/`dly` 0〜1）、共通の `fx`（`revLen` 秒・`dlyNote`・`dlyFb`）。
+  チャンネルは input → EQ → 歪み → コンプ → 音量 → 定位、音量のあとから共通のリバーブ（合成したインパルス応答）とテンポ同期のディレイへ送る（`makeStrip`・`makeFxBus`）。ミックスダウンと書き出しも同じ構成（`renderMix`）。
 - フォルダに保存: File System Access API（PC の Chrome・Edge）。zip と同じ構成のファイルを直接書く。
 - ミックスダウン: 16bit ステレオ WAV（OfflineAudioContext）。
 - 伴奏の MIDI: SMF type 1、480 PPQ。トラック 0 = テンポ・拍子・コード名（マーカー）、ベース ch1・ピアノ ch2・ドラム ch10（GM ドラムマップ、音色セットは GS/XG のドラムキット番号をプログラムチェンジで）。グリッドどおり（ハネは反映、揺らぎは入れない）。

@@ -177,6 +177,16 @@
   .track.inst .sels select { flex: 1; min-width: 0; font-size: 12px; padding: 4px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); }
   .track.inst .lane { min-height: 132px; }
   .sbtn.edit { font-weight: 600; font-size: 12px; }
+  .sbtn.fxb { font-size: 11px; font-weight: 700; letter-spacing: .04em; }
+  .sbtn.fxb.on { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+  #fxDlg fieldset { border: 1px solid var(--line); border-radius: 10px; margin: 0 0 10px; padding: 6px 10px 8px; }
+  #fxDlg legend { font-size: 13px; font-weight: 600; padding: 0 4px; }
+  .fx-sl { display: grid; grid-template-columns: 110px minmax(0, 1fr) 64px; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); min-height: 34px; }
+  .fx-sl input[type=range] { width: 100%; accent-color: var(--fg); }
+  .fx-sl output { text-align: right; font-variant-numeric: tabular-nums; color: var(--fg); }
+  .fx-top { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 10px; font-size: 13px; color: var(--muted); }
+  .fx-top select, #fxDlg select { padding: 5px 6px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); }
+  .fx-note { font-size: 12px; margin: 4px 0 0; }
   /* Note editor */
   dialog.wide { width: min(980px, calc(100vw - 16px)); max-width: none; padding: 14px; }
   .ed-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin-bottom: 8px; }
@@ -336,6 +346,20 @@
   </div>
   <div class="acts"><button data-close data-i18n="dlg.close">Close</button></div>
 </dialog>
+<dialog id="fxDlg" tabindex="-1" aria-labelledby="fxTitle">
+  <h2 id="fxTitle">Effects</h2>
+  <div class="fx-top"><label><span data-i18n="fx.preset">Preset</span> <select id="fxPreset"></select></label></div>
+  <fieldset id="fxEq"><legend>EQ</legend></fieldset>
+  <fieldset id="fxDyn"><legend data-i18n="fx.dyn">Compressor / drive</legend></fieldset>
+  <fieldset id="fxSend"><legend data-i18n="fx.sends">Reverb / delay (amount sent)</legend></fieldset>
+  <fieldset><legend data-i18n="fx.shared">Shared by all tracks</legend>
+    <label class="fx-sl"><span data-i18n="fx.revLen">Reverb length</span><input type="range" id="fxRevLen" min="0.4" max="4" step="0.1" /><output id="fxoRevLen"></output></label>
+    <label class="fx-sl"><span data-i18n="fx.dlyNote">Delay time</span><select id="fxDlyNote"></select><output></output></label>
+    <label class="fx-sl"><span data-i18n="fx.dlyFb">Delay repeats</span><input type="range" id="fxDlyFb" min="0" max="0.85" step="0.05" /><output id="fxoDlyFb"></output></label>
+    <p class="fx-note" data-i18n="fx.note">The delay follows the tempo. Double-click a slider to reset it.</p>
+  </fieldset>
+  <div class="acts"><button data-close data-i18n="dlg.close">Close</button></div>
+</dialog>
 <dialog id="chordTextDlg" tabindex="-1" aria-labelledby="ctTitle">
   <h2 id="ctTitle" data-i18n="song.textTitle">Chords as text</h2>
   <p data-i18n="song.textHelp"></p>
@@ -373,7 +397,7 @@
 const I18N = {
   en: {
     "menu.settings": "Settings", "menu.help": "How to use",
-    "song.title": "Chords & backing", "view.label": "View", "view.out": "Zoom out", "view.in": "Zoom in", "view.fit": "Whole song", "view.hint": "Pinch or Ctrl + wheel to zoom, drag to scroll, tap to move the playhead", "song.moved": "Moved bar {from} to position {to}.", "song.grip": "Move bar {n} (drag, long-press, or arrow keys)", "song.variation": "Variation", "song.reseed": "Another take", "song.reseeded": "Picked a different set of variations.", "song.ending": "Ending", "ed.varNote": "Automatic variations are not shown here; they are added on top of the pattern.", "ed.varBar": "Shows what plays, including automatic variations.", "song.bounce": "Backing → audio track", "part.bounce": "Render this part to an audio track", "msg.bounced": "Rendered “{name}” to an audio track and muted the original part.", "msg.noBacking": "The backing is off or has no notes.", "tk.bounced": "{name} (rendered)", "tk.backing": "Backing", "song.on": "Backing on", "song.bars": "Bars", "song.barsLess": "Remove a bar", "song.barsMore": "Add a bar",
+    "song.title": "Chords & backing", "fx.title": "Effects: {name}", "fx.open": "Effects for {name}", "fx.preset": "Preset", "fx.custom": "(custom)", "fx.dyn": "Compressor / drive", "fx.sends": "Reverb / delay (amount sent)", "fx.shared": "Shared by all tracks", "fx.revLen": "Reverb length", "fx.dlyNote": "Delay time", "fx.dlyFb": "Delay repeats", "fx.note": "The delay follows the tempo. Double-click a slider to reset it.", "fx.low": "Low (120 Hz)", "fx.mid": "Mid", "fx.mf": "Mid frequency", "fx.high": "High (8 kHz)", "fx.comp": "Compressor", "fx.drive": "Drive (distortion)", "fx.rev": "Reverb", "fx.dly": "Delay", "view.label": "View", "view.out": "Zoom out", "view.in": "Zoom in", "view.fit": "Whole song", "view.hint": "Pinch or Ctrl + wheel to zoom, drag to scroll, tap to move the playhead", "song.moved": "Moved bar {from} to position {to}.", "song.grip": "Move bar {n} (drag, long-press, or arrow keys)", "song.variation": "Variation", "song.reseed": "Another take", "song.reseeded": "Picked a different set of variations.", "song.ending": "Ending", "ed.varNote": "Automatic variations are not shown here; they are added on top of the pattern.", "ed.varBar": "Shows what plays, including automatic variations.", "song.bounce": "Backing → audio track", "part.bounce": "Render this part to an audio track", "msg.bounced": "Rendered “{name}” to an audio track and muted the original part.", "msg.noBacking": "The backing is off or has no notes.", "tk.bounced": "{name} (rendered)", "tk.backing": "Backing", "song.on": "Backing on", "song.bars": "Bars", "song.barsLess": "Remove a bar", "song.barsMore": "Add a bar",
     "song.swing": "Swing", "song.humanize": "Feel", "song.text": "Type as text…", "song.undo": "Undo edit", "song.chords": "Chords",
     "song.noFill": "No fill", "song.fillOf": "Drum fill in bar {n}", "song.chordAt": "Chord, bar {bar} beat {beat}", "song.editBar": "Edit", "song.editBarN": "Edit notes in bar {n}",
     "song.badChord": "Unknown chord name (examples: C, Am7, F#m7b5, G7sus4, C/E)", "song.textTitle": "Chords as text", "song.apply": "Apply", "song.textEmpty": "No bars found. Write bars like | C | G |",
@@ -410,7 +434,7 @@ const I18N = {
     "lat.body": "What you record reaches the browser a little later than what you hear. MiniMTR moves each new take earlier by this amount so it lines up with the other tracks. If takes sound late, increase it; if early, decrease it.",
     "lat.label": "Offset (ms)", "lat.auto": "Auto", "lat.info": "Auto estimate on this device: {ms} ms (output {out} ms + input {inp} ms + processing {proc} ms)",
     "help.title": "How to use",
-    "help.body": "<ol><li>Type chords in <b>Chords &amp; backing</b> (one box per beat; an empty box keeps the previous chord). Bass, piano and drums play along automatically. Pick a pattern and a sound for each part, and choose a drum fill for any bar.</li><li><b>Backing as MIDI</b> saves bass, piano and drums as a standard MIDI file (with tempo, time signature and chord names as markers) to open in a DAW. <b>Backing → audio track</b> (or ⋯ on a part) renders the backing into a recorded track, so you can edit or export it like any take.</li><li><b>Variation</b> makes the band play like people do: bass runs into the next chord, the piano anticipates chord changes and adds colour notes, the drums add crashes, open hi-hats, ghost notes and short lead-ins at the end of 4- and 8-bar phrases. <b>Another take</b> picks a different set; set Variation to 0 for the plain pattern. <b>Ending</b> stops the band on the first beat of the last bar.</li><li>To change single notes, press <b>Edit</b> on a part (or double-tap its lane). Choose <b>Whole pattern</b> to change every bar, or <b>This bar only</b>.</li><li>Press <b>R</b> on a track to arm it (the browser asks for the microphone the first time).</li><li>Press <b>●</b> to record. With Count-in on, one bar of clicks plays first. Use headphones so other tracks do not leak into the microphone.</li><li>Press <b>■</b> to stop. Recording again on the same track replaces only the recorded range. <b>Undo</b> brings back the previous take.</li><li>Each part has a <b>Sound</b> menu: 8 bass sounds (finger, pick, slap, muted, upright, synth, analog synth, 808) and 6 drum kits (standard, rock, brushes, 808, 909, lo-fi). Drums also have clap, tambourine, shaker and cowbell.</li><li>Tap the timeline to move the playhead (■ always goes back to the start). Pinch, Ctrl + wheel or − / + to zoom, drag or scroll sideways to move along; during playback the view follows the playhead. Drag a bar in the chord chart (long-press on a touch screen, or ⠿ and the arrow keys) to move it.</li><li>Your work is saved in this browser automatically. To keep it safe or move it to another device, use <b>Export project (.zip)</b> and later <b>Open project…</b>. The zip contains <code>project.json</code> (settings) and one WAV file per track.</li><li>In Chrome / Edge on a computer, <b>Save to folder</b> writes the same files into a folder you choose, and saves over it the next time.</li></ol>",
+    "help.body": "<ol><li>Type chords in <b>Chords &amp; backing</b> (one box per beat; an empty box keeps the previous chord). Bass, piano and drums play along automatically. Pick a pattern and a sound for each part, and choose a drum fill for any bar.</li><li><b>Backing as MIDI</b> saves bass, piano and drums as a standard MIDI file (with tempo, time signature and chord names as markers) to open in a DAW. <b>Backing → audio track</b> (or ⋯ on a part) renders the backing into a recorded track, so you can edit or export it like any take.</li><li><b>Variation</b> makes the band play like people do: bass runs into the next chord, the piano anticipates chord changes and adds colour notes, the drums add crashes, open hi-hats, ghost notes and short lead-ins at the end of 4- and 8-bar phrases. <b>Another take</b> picks a different set; set Variation to 0 for the plain pattern. <b>Ending</b> stops the band on the first beat of the last bar.</li><li>To change single notes, press <b>Edit</b> on a part (or double-tap its lane). Choose <b>Whole pattern</b> to change every bar, or <b>This bar only</b>.</li><li>Press <b>R</b> on a track to arm it (the browser asks for the microphone the first time).</li><li>Press <b>●</b> to record. With Count-in on, one bar of clicks plays first. Use headphones so other tracks do not leak into the microphone.</li><li>Press <b>■</b> to stop. Recording again on the same track replaces only the recorded range. <b>Undo</b> brings back the previous take.</li><li><b>FX</b> on each track and part opens its effects: EQ, compressor, drive, and how much goes to the shared reverb and tempo-synced delay. Presets (vocal, acoustic, crunch guitar …) are a starting point.</li><li>Each part has a <b>Sound</b> menu: 8 bass sounds (finger, pick, slap, muted, upright, synth, analog synth, 808) and 6 drum kits (standard, rock, brushes, 808, 909, lo-fi). Drums also have clap, tambourine, shaker and cowbell.</li><li>Tap the timeline to move the playhead (■ always goes back to the start). Pinch, Ctrl + wheel or − / + to zoom, drag or scroll sideways to move along; during playback the view follows the playhead. Drag a bar in the chord chart (long-press on a touch screen, or ⠿ and the arrow keys) to move it.</li><li>Your work is saved in this browser automatically. To keep it safe or move it to another device, use <b>Export project (.zip)</b> and later <b>Open project…</b>. The zip contains <code>project.json</code> (settings) and one WAV file per track.</li><li>In Chrome / Edge on a computer, <b>Save to folder</b> writes the same files into a folder you choose, and saves over it the next time.</li></ol>",
     "privacy.title": "Privacy",
     "privacy.body": "<p>Audio is recorded and processed only on your device. Nothing you record is sent to any server.</p><p>Your project (settings and audio) is kept in this browser's storage (IndexedDB) so you can continue after reloading. “New” clears it. Exported files are saved only where you choose.</p>",
     "about.title": "About this app",
@@ -420,7 +444,7 @@ const I18N = {
   },
   ja: {
     "menu.settings": "設定", "menu.help": "使い方",
-    "song.title": "コードと伴奏", "view.label": "表示", "view.out": "縮小", "view.in": "拡大", "view.fit": "全体", "view.hint": "ピンチ・Ctrl＋ホイールで拡大縮小、ドラッグで左右に移動、タップで再生位置", "song.moved": "{from} 小節目を {to} 番目に移動しました。", "song.grip": "{n} 小節目を移動（ドラッグ・長押し・矢印キー）", "song.variation": "バリエーション", "song.reseed": "別の案", "song.reseeded": "バリエーションの組み合わせを変えました。", "song.ending": "エンディング", "ed.varNote": "自動のバリエーションはここには出ません（パターンの上に足されます）。", "ed.varBar": "自動のバリエーションも含めて、実際に鳴る音を表示しています。", "song.bounce": "伴奏を音声トラックに", "part.bounce": "このパートを音声トラックに書き出す", "msg.bounced": "「{name}」を音声トラックに書き出し、元のパートはミュートしました。", "msg.noBacking": "伴奏がオフか、音がありません。", "tk.bounced": "{name}（書き出し）", "tk.backing": "伴奏", "song.on": "伴奏オン", "song.bars": "小節", "song.barsLess": "小節を減らす", "song.barsMore": "小節を増やす",
+    "song.title": "コードと伴奏", "fx.title": "エフェクト: {name}", "fx.open": "{name}のエフェクト", "fx.preset": "プリセット", "fx.custom": "（調整済み）", "fx.dyn": "コンプ・歪み", "fx.sends": "リバーブ・ディレイ（送る量）", "fx.shared": "全トラック共通", "fx.revLen": "リバーブの長さ", "fx.dlyNote": "ディレイの間隔", "fx.dlyFb": "ディレイの繰り返し", "fx.note": "ディレイの間隔はテンポに合わせます。つまみをダブルクリックすると元に戻ります。", "fx.low": "低音（120 Hz）", "fx.mid": "中音", "fx.mf": "中音の周波数", "fx.high": "高音（8 kHz）", "fx.comp": "コンプレッサー", "fx.drive": "歪み（ドライブ）", "fx.rev": "リバーブ", "fx.dly": "ディレイ", "view.label": "表示", "view.out": "縮小", "view.in": "拡大", "view.fit": "全体", "view.hint": "ピンチ・Ctrl＋ホイールで拡大縮小、ドラッグで左右に移動、タップで再生位置", "song.moved": "{from} 小節目を {to} 番目に移動しました。", "song.grip": "{n} 小節目を移動（ドラッグ・長押し・矢印キー）", "song.variation": "バリエーション", "song.reseed": "別の案", "song.reseeded": "バリエーションの組み合わせを変えました。", "song.ending": "エンディング", "ed.varNote": "自動のバリエーションはここには出ません（パターンの上に足されます）。", "ed.varBar": "自動のバリエーションも含めて、実際に鳴る音を表示しています。", "song.bounce": "伴奏を音声トラックに", "part.bounce": "このパートを音声トラックに書き出す", "msg.bounced": "「{name}」を音声トラックに書き出し、元のパートはミュートしました。", "msg.noBacking": "伴奏がオフか、音がありません。", "tk.bounced": "{name}（書き出し）", "tk.backing": "伴奏", "song.on": "伴奏オン", "song.bars": "小節", "song.barsLess": "小節を減らす", "song.barsMore": "小節を増やす",
     "song.swing": "ハネ", "song.humanize": "揺らぎ", "song.text": "テキストで入力…", "song.undo": "編集を戻す", "song.chords": "コード",
     "song.noFill": "フィルなし", "song.fillOf": "{n} 小節目のドラムのフィル", "song.chordAt": "{bar} 小節 {beat} 拍目のコード", "song.editBar": "編集", "song.editBarN": "{n} 小節目の音を編集",
     "song.badChord": "読めないコード名です（例: C, Am7, F#m7b5, G7sus4, C/E）", "song.textTitle": "テキストでコード入力", "song.apply": "反映", "song.textEmpty": "小節が見つかりません。| C | G | のように書いてください",
@@ -457,7 +481,7 @@ const I18N = {
     "lat.body": "録音した音は、聞こえている音より少し遅れてブラウザに届きます。新しく録った音をこの時間だけ前にずらして、ほかのトラックとそろえます。録った音が遅れて聞こえるなら増やし、早いなら減らしてください。",
     "lat.label": "補正（ミリ秒）", "lat.auto": "自動", "lat.info": "この端末での自動の推定値: {ms} ms（出力 {out} ms ＋ 入力 {inp} ms ＋ 処理 {proc} ms）",
     "help.title": "使い方",
-    "help.body": "<ol><li><b>コードと伴奏</b> にコードを入力します（1 拍に 1 マス。空のマスは前のコードが続きます）。ベース・ピアノ・ドラムが自動で伴奏します。パートごとにパターンと音色を選び、ドラムのフィルは小節ごとに選べます。</li><li><b>伴奏を MIDI で書き出し</b> で、ベース・ピアノ・ドラムを標準 MIDI ファイル（テンポ・拍子・コード名のマーカー入り）に書き出し、DAW で開けます。<b>伴奏を音声トラックに</b>（またはパートの ⋯）で、伴奏を録音トラックの音声に変換できます。</li><li><b>バリエーション</b> で、人が弾くような変化を自動で付けます。ベースは次のコードへ駆け上がり、ピアノはコードを先取りして和音に色を足し、ドラムは 4 小節・8 小節の区切りでクラッシュ・オープンハイハット・ゴーストノート・短いつなぎを入れます。<b>別の案</b> で組み合わせが変わり、0 にすると元のパターンのままです。<b>エンディング</b> がオンなら、最後の小節の 1 拍目で全員が止まります。</li><li>1 音ずつ変えるときは、パートの <b>編集</b>（またはパートの行をダブルタップ）。<b>パターン全体</b> ならすべての小節に、<b>この小節だけ</b> ならその小節にだけ反映されます。</li><li>トラックの <b>R</b> を押して録音待機にします（初回はマイクの許可を求められます）。</li><li><b>●</b> で録音開始。「カウント」がオンなら 1 小節クリックが鳴ってから始まります。ほかのトラックの音がマイクに入らないよう、ヘッドホンを使ってください。</li><li><b>■</b> で停止。同じトラックにもう一度録ると、録った範囲だけ置き換わります。<b>元に戻す</b>で前のテイクに戻せます。</li><li>パートごとに <b>音色</b> を選べます。ベースは 8 種類（指弾き・ピック・スラップ・ミュート・ウッドベース・シンセ・アナログシンセ・808）、ドラムは 6 セット（スタンダード・ロック・ブラシ・808・909・ローファイ）。ドラムにはクラップ・タンバリン・シェイカー・カウベルもあります。</li><li>タイムラインを押すと再生位置が動きます（■ はいつも先頭に戻ります）。ピンチ・Ctrl＋ホイール・− / + で拡大縮小、ドラッグや横スクロールで左右に移動し、再生中は再生位置に合わせて表示が送られます。コード譜の小節は、ドラッグ（タッチ画面では長押ししてから）か ⠿ と矢印キーで移動できます。</li><li>作業内容はこのブラウザに自動で保存されます。消えないように残したいときや別の端末に移すときは <b>書き出し（.zip）</b>、続きをやるときは <b>読み込み…</b>。zip の中身は設定の <code>project.json</code> とトラックごとの WAV ファイルです。</li><li>PC の Chrome・Edge では <b>フォルダに保存</b> で、選んだフォルダに同じファイルを書き出し、次からは上書き保存できます。</li></ol>",
+    "help.body": "<ol><li><b>コードと伴奏</b> にコードを入力します（1 拍に 1 マス。空のマスは前のコードが続きます）。ベース・ピアノ・ドラムが自動で伴奏します。パートごとにパターンと音色を選び、ドラムのフィルは小節ごとに選べます。</li><li><b>伴奏を MIDI で書き出し</b> で、ベース・ピアノ・ドラムを標準 MIDI ファイル（テンポ・拍子・コード名のマーカー入り）に書き出し、DAW で開けます。<b>伴奏を音声トラックに</b>（またはパートの ⋯）で、伴奏を録音トラックの音声に変換できます。</li><li><b>バリエーション</b> で、人が弾くような変化を自動で付けます。ベースは次のコードへ駆け上がり、ピアノはコードを先取りして和音に色を足し、ドラムは 4 小節・8 小節の区切りでクラッシュ・オープンハイハット・ゴーストノート・短いつなぎを入れます。<b>別の案</b> で組み合わせが変わり、0 にすると元のパターンのままです。<b>エンディング</b> がオンなら、最後の小節の 1 拍目で全員が止まります。</li><li>1 音ずつ変えるときは、パートの <b>編集</b>（またはパートの行をダブルタップ）。<b>パターン全体</b> ならすべての小節に、<b>この小節だけ</b> ならその小節にだけ反映されます。</li><li>トラックの <b>R</b> を押して録音待機にします（初回はマイクの許可を求められます）。</li><li><b>●</b> で録音開始。「カウント」がオンなら 1 小節クリックが鳴ってから始まります。ほかのトラックの音がマイクに入らないよう、ヘッドホンを使ってください。</li><li><b>■</b> で停止。同じトラックにもう一度録ると、録った範囲だけ置き換わります。<b>元に戻す</b>で前のテイクに戻せます。</li><li>トラックとパートの <b>FX</b> でエフェクト（EQ・コンプ・歪み、共通のリバーブとテンポに合わせたディレイへ送る量）を付けられます。プリセット（ボーカル・アコギ・エレキなど）から始めると簡単です。</li><li>パートごとに <b>音色</b> を選べます。ベースは 8 種類（指弾き・ピック・スラップ・ミュート・ウッドベース・シンセ・アナログシンセ・808）、ドラムは 6 セット（スタンダード・ロック・ブラシ・808・909・ローファイ）。ドラムにはクラップ・タンバリン・シェイカー・カウベルもあります。</li><li>タイムラインを押すと再生位置が動きます（■ はいつも先頭に戻ります）。ピンチ・Ctrl＋ホイール・− / + で拡大縮小、ドラッグや横スクロールで左右に移動し、再生中は再生位置に合わせて表示が送られます。コード譜の小節は、ドラッグ（タッチ画面では長押ししてから）か ⠿ と矢印キーで移動できます。</li><li>作業内容はこのブラウザに自動で保存されます。消えないように残したいときや別の端末に移すときは <b>書き出し（.zip）</b>、続きをやるときは <b>読み込み…</b>。zip の中身は設定の <code>project.json</code> とトラックごとの WAV ファイルです。</li><li>PC の Chrome・Edge では <b>フォルダに保存</b> で、選んだフォルダに同じファイルを書き出し、次からは上書き保存できます。</li></ol>",
     "privacy.title": "プライバシー",
     "privacy.body": "<p>録音と処理はすべてお使いの端末の中で行います。録音した音をサーバーに送ることはありません。</p><p>再読み込みしても続けられるよう、プロジェクト（設定と音声）をこのブラウザの保存領域（IndexedDB）に保存します。「新規」で消去できます。書き出したファイルは、あなたが選んだ場所にだけ保存されます。</p>",
     "about.title": "このアプリについて",
@@ -570,14 +594,15 @@ const state = {
   name: "", bpm: 120, beats: 4, metronome: false, countIn: true, latencyMs: null, // null = auto
   tracks: [],
   song: null, // chords and backing parts (set by defaultSong / normalizeSong)
+  fx: { revLen: 1.8, dlyNote: "8d", dlyFb: 0.35 }, // shared reverb and delay
 };
 function newTrack(n) {
-  return { id: uid(), name: t("tk.track", { n }), volume: 0.8, pan: 0, mute: false, solo: false, armed: false, buffer: null, rev: 0 };
+  return { id: uid(), name: t("tk.track", { n }), volume: 0.8, pan: 0, mute: false, solo: false, armed: false, buffer: null, rev: 0, fx: defaultFx() };
 }
 let undoInfo = null; // { trackId, buffer }
 
 // ---------------------------------------------------------------- audio engine
-let ctx = null, master = null;
+let ctx = null, master = null, fxBus = null;
 function ensureCtx() {
   if (!ctx) {
     ctx = new (window.AudioContext || window.webkitAudioContext)({ latencyHint: "interactive" });
@@ -586,6 +611,7 @@ function ensureCtx() {
     const comp = ctx.createDynamicsCompressor();
     comp.threshold.value = -6; comp.ratio.value = 4; comp.attack.value = 0.003; comp.release.value = 0.15;
     master.connect(comp); comp.connect(ctx.destination);
+    fxBus = makeFxBus(ctx, master);
     for (const tr of state.tracks) buildTrackNodes(tr);
     PARTS.forEach(partChan);
   }
@@ -594,9 +620,8 @@ function ensureCtx() {
 }
 function buildTrackNodes(tr) {
   if (!ctx || tr.gain) return;
-  tr.gain = ctx.createGain();
-  tr.panner = ctx.createStereoPanner ? ctx.createStereoPanner() : null;
-  if (tr.panner) { tr.gain.connect(tr.panner); tr.panner.connect(master); } else tr.gain.connect(master);
+  const st = makeStrip(ctx, master, fxBus);
+  tr.input = st.input; tr.gain = st.gain; tr.panner = st.pan; tr.strip = st;
   updateMix(tr);
 }
 function anySolo() {
@@ -609,6 +634,7 @@ function audibleGain(tr) {
 }
 function updateMix(tr) {
   if (!tr.gain) return;
+  applyFx(tr.strip, tr.fx, ctx);
   tr.gain.gain.setTargetAtTime(audibleGain(tr), ctx.currentTime, 0.01);
   if (tr.panner) tr.panner.pan.setTargetAtTime(tr.pan, ctx.currentTime, 0.01);
 }
@@ -627,7 +653,7 @@ function startSources() {
     buildTrackNodes(tr);
     const src = ctx.createBufferSource();
     src.buffer = tr.buffer;
-    src.connect(tr.gain);
+    src.connect(tr.input);
     const off = transport.startPos;
     if (off < tr.buffer.duration) {
       if (off >= 0) src.start(transport.startAt, off);
@@ -685,7 +711,7 @@ function scheduleBacking() {
 }
 function startBacking() {
   transport.bus = {};
-  for (const name of PARTS) { const g = ctx.createGain(); g.connect(partChan(name).gain); transport.bus[name] = g; }
+  for (const name of PARTS) { const g = ctx.createGain(); g.connect(partChan(name).input); transport.bus[name] = g; }
   transport.evIdx = -1;
   transport.schedSong = transport.startPos;
 }
@@ -1027,16 +1053,17 @@ async function readZip(u8) {
 // ---------------------------------------------------------------- project (de)serialization
 function projectJson(fileFor) {
   return {
-    format: FORMAT, version: 2, app: "MiniMTR", savedAt: new Date().toISOString(),
+    format: FORMAT, version: 3, app: "MiniMTR", savedAt: new Date().toISOString(),
     name: state.name, bpm: state.bpm, beatsPerBar: state.beats, metronome: state.metronome, countIn: state.countIn, latencyMs: state.latencyMs,
     tracks: state.tracks.map((tr, i) => ({
-      name: tr.name, volume: tr.volume, pan: tr.pan, mute: tr.mute, solo: tr.solo,
+      name: tr.name, volume: tr.volume, pan: tr.pan, mute: tr.mute, solo: tr.solo, fx: tr.fx,
       file: tr.buffer ? fileFor(tr, i) : null,
       sampleRate: tr.buffer ? tr.buffer.sampleRate : null,
       channels: tr.buffer ? tr.buffer.numberOfChannels : null,
       durationSec: tr.buffer ? +tr.buffer.duration.toFixed(3) : 0,
     })),
     song: state.song,
+    fx: state.fx,
   };
 }
 const trackFile = (tr, i) => `tracks/${String(i + 1).padStart(2, "0")}-${safeName(tr.name)}.wav`;
@@ -1057,7 +1084,7 @@ async function loadProject(json, getFile) {
     const tr = newTrack(i + 1);
     Object.assign(tr, {
       name: String(m.name || tr.name).slice(0, 40),
-      volume: clamp(+m.volume, 0, 1.5, 0.8), pan: clamp(+m.pan, -1, 1, 0), mute: !!m.mute, solo: !!m.solo,
+      volume: clamp(+m.volume, 0, 1.5, 0.8), pan: clamp(+m.pan, -1, 1, 0), mute: !!m.mute, solo: !!m.solo, fx: normFx(m.fx),
     });
     if (m.file) {
       const u8 = await getFile(m.file);
@@ -1074,6 +1101,8 @@ async function loadProject(json, getFile) {
   });
   // Version 1 projects have no backing: keep them sounding as before (backing off when they contain audio)
   state.song = json.song ? normalizeSong(json.song) : defaultSong(!tracks.some((x) => x.buffer));
+  state.fx = normGlobalFx(json.fx);
+  updateFxBus(fxBus);
   songHistory.length = 0;
   analysisCache = null; eventsCache = null;
   updateAllMix();
@@ -1098,8 +1127,8 @@ async function saveNow() {
   try {
     const meta = {
       name: state.name, bpm: state.bpm, beats: state.beats, metronome: state.metronome, countIn: state.countIn, latencyMs: state.latencyMs,
-      tracks: state.tracks.map((tr) => ({ id: tr.id, name: tr.name, volume: tr.volume, pan: tr.pan, mute: tr.mute, solo: tr.solo, armed: false })),
-      song: state.song,
+      tracks: state.tracks.map((tr) => ({ id: tr.id, name: tr.name, volume: tr.volume, pan: tr.pan, mute: tr.mute, solo: tr.solo, armed: false, fx: tr.fx })),
+      song: state.song, fx: state.fx,
     };
     for (const id of [...dirtyAudio]) {
       const tr = state.tracks.find((x) => x.id === id);
@@ -1127,8 +1156,9 @@ async function restore() {
       tracks: [],
     });
     state.song = normalizeSong(meta.song);
+    state.fx = normGlobalFx(meta.fx);
     for (const m of meta.tracks || []) {
-      const tr = Object.assign(newTrack(state.tracks.length + 1), m, { armed: false, buffer: null, rev: 0 });
+      const tr = Object.assign(newTrack(state.tracks.length + 1), m, { armed: false, buffer: null, rev: 0, fx: normFx(m.fx) });
       const a = await audioGet(m.id);
       if (a && a.chans && a.chans.length) {
         tr.pending = a; // turned into an AudioBuffer by materializePending()
@@ -1202,8 +1232,8 @@ async function mixdown() {
   materializePending();
   const sr = ctx ? ctx.sampleRate : 48000;
   const events = getEvents();
-  const tail = events.length ? songLen() + 2 : 0;
-  const len = Math.max(tail, ...state.tracks.filter((x) => x.buffer && audibleGain(x) > 0).map((x) => x.buffer.duration));
+  const tail = events.length ? songLen() + 1 + state.fx.revLen : 0;
+  const len = Math.max(tail, ...state.tracks.filter((x) => x.buffer && audibleGain(x) > 0).map((x) => x.buffer.duration + state.fx.revLen));
   if (!len) { toast(t("msg.nothing")); return; }
   toast(t("msg.rendering"), 60000);
   const oc = new OfflineAudioContext(2, Math.ceil(len * sr) + 1, sr);
@@ -1212,20 +1242,7 @@ async function mixdown() {
   const mixMaster = oc.createGain();
   mixMaster.gain.value = 0.8;
   mixMaster.connect(comp); comp.connect(oc.destination);
-  const buses = {};
-  for (const name of PARTS) {
-    const P = state.song.parts[name], g = oc.createGain(), p = oc.createStereoPanner();
-    g.gain.value = audibleGain(P); p.pan.value = P.pan;
-    g.connect(p); p.connect(mixMaster); buses[name] = g;
-  }
-  for (const e of events) if (audibleGain(state.song.parts[e.part]) > 0) playEvent(oc, buses[e.part], e, e.time + 0.001);
-  for (const tr of state.tracks) {
-    if (!tr.buffer || audibleGain(tr) === 0) continue;
-    const s = oc.createBufferSource(); s.buffer = tr.buffer;
-    const g = oc.createGain(); g.gain.value = audibleGain(tr);
-    const p = oc.createStereoPanner(); p.pan.value = tr.pan;
-    s.connect(g); g.connect(p); p.connect(mixMaster); s.start(0);
-  }
+  renderMix(oc, mixMaster, { tracks: true, parts: PARTS });
   const out = await oc.startRendering();
   await saveFile(new Blob([encodeWav(out, false)], { type: "audio/wav" }), `${projectBase()}-mix-${stamp()}.wav`);
 }
@@ -1244,21 +1261,19 @@ async function bounceBacking(names) {
   if (transport.playing) pause();
   ensureCtx();
   toast(t("msg.rendering"), 60000);
-  const sr = ctx.sampleRate, len = songLen() + 2;
+  const sr = ctx.sampleRate, len = songLen() + 1 + (names.length === 1 ? 1 : state.fx.revLen);
   const oc = new OfflineAudioContext(2, Math.ceil(len * sr), sr);
-  const buses = {};
-  for (const n of parts) {
-    const g = oc.createGain(), p = oc.createStereoPanner();
-    g.gain.value = names.length === 1 ? 1 : audibleGain(S.parts[n]);
-    p.pan.value = names.length === 1 ? 0 : S.parts[n].pan;
-    g.connect(p); p.connect(oc.destination); buses[n] = g;
-  }
-  for (const e of used) playEvent(oc, buses[e.part], e, e.time + 0.001);
+  if (names.length === 1) {
+    // one part: dry; its volume, pan and effects move to the new track
+    const g = oc.createGain();
+    g.connect(oc.destination);
+    for (const e of used) playEvent(oc, g, e, e.time + 0.001);
+  } else renderMix(oc, oc.destination, { parts });
   const buf = await oc.startRendering();
   const one = names.length === 1 ? S.parts[names[0]] : null;
   const tr = newTrack(state.tracks.length + 1);
   const nm = names.length === 1 ? partName(names[0]) : t("tk.backing");
-  Object.assign(tr, { name: t("tk.bounced", { name: nm }).slice(0, 40), buffer: buf, volume: one ? one.volume : 1, pan: one ? one.pan : 0 });
+  Object.assign(tr, { name: t("tk.bounced", { name: nm }).slice(0, 40), buffer: buf, volume: one ? one.volume : 1, pan: one ? one.pan : 0, fx: one ? normFx(one.fx) : defaultFx() });
   state.tracks.push(tr);
   buildTrackNodes(tr);
   for (const n of parts) S.parts[n].mute = true;
@@ -1421,6 +1436,7 @@ function renderTrack(tr) {
         <button class="sbtn arm" aria-pressed="false">R</button>
         <button class="sbtn mute" aria-pressed="false">M</button>
         <button class="sbtn solo" aria-pressed="false">S</button>
+        <button class="sbtn fxb">FX</button>
         <div class="menu-wrap">
           <button class="sbtn more" aria-haspopup="menu" aria-expanded="false">⋯</button>
           <div class="tmenu" role="menu" hidden>
@@ -1438,6 +1454,10 @@ function renderTrack(tr) {
   const q = (s) => el.querySelector(s);
   const name = q(".tname"); name.value = tr.name; name.setAttribute("aria-label", t("tk.track", { n: state.tracks.indexOf(tr) + 1 }));
   name.addEventListener("change", () => { tr.name = name.value.trim() || t("tk.track", { n: state.tracks.indexOf(tr) + 1 }); name.value = tr.name; saveSoon(); });
+  const fxb = q(".fxb");
+  fxb.setAttribute("aria-label", t("fx.open", { name: tr.name }));
+  fxb.classList.toggle("on", fxActive(tr.fx));
+  fxb.addEventListener("click", () => openFx({ kind: "track", id: tr.id }, fxb));
   const arm = q(".arm"), mute = q(".mute"), solo = q(".solo");
   arm.setAttribute("aria-label", t("tk.arm")); mute.setAttribute("aria-label", t("tk.mute")); solo.setAttribute("aria-label", t("tk.solo"));
   arm.title = t("tk.arm"); mute.title = t("tk.mute"); solo.title = t("tk.solo");
@@ -1802,6 +1822,7 @@ $("#bpm").addEventListener("change", () => {
   const wasPlaying = transport.playing && !transport.recording;
   if (wasPlaying) pause();
   state.bpm = v;
+  updateFxBus(fxBus);
   songChanged();
   if (wasPlaying) play();
 });
@@ -1844,6 +1865,8 @@ twoTap(newBtn, "pj.new", async () => {
   for (const tr of state.tracks) { if (tr.gain) tr.gain.disconnect(); if (tr.panner) tr.panner.disconnect(); }
   Object.assign(state, { name: "", bpm: 120, beats: 4, metronome: false, countIn: true, latencyMs: state.latencyMs, tracks: [1, 2].map(newTrack) });
   state.song = defaultSong(true);
+  state.fx = normGlobalFx();
+  updateFxBus(fxBus);
   songHistory.length = 0; analysisCache = null; eventsCache = null;
   updateAllMix();
   state.tracks.forEach(buildTrackNodes);
@@ -1867,6 +1890,225 @@ document.addEventListener("keydown", (e) => {
   else if (e.key === "r" || e.key === "R") { e.preventDefault(); transport.recording ? stopRecording() : startRecording(); }
   else if (e.key === "Home") { e.preventDefault(); seek(0); }
 });
+
+// ---------------------------------------------------------------- effects
+// Every track and backing part has a channel strip:
+//   input -> EQ (low shelf, mid peak, high shelf) -> drive -> compressor -> volume -> pan -> master
+// with post-fader sends to one shared reverb and one shared tempo-synced delay (like a mixing desk).
+const defaultFx = (o) => Object.assign({ low: 0, mid: 0, mf: 1000, high: 0, comp: 0, drive: 0, rev: 0, dly: 0 }, o || {});
+function normFx(f) {
+  f = f || {};
+  return {
+    low: clamp(+f.low, -12, 12, 0), mid: clamp(+f.mid, -12, 12, 0), mf: clamp(+f.mf, 150, 8000, 1000), high: clamp(+f.high, -12, 12, 0),
+    comp: clamp(+f.comp, 0, 1, 0), drive: clamp(+f.drive, 0, 1, 0), rev: clamp(+f.rev, 0, 1, 0), dly: clamp(+f.dly, 0, 1, 0),
+  };
+}
+const fxActive = (f) => !!f && !!(f.low || f.mid || f.high || f.comp || f.drive || f.rev || f.dly);
+const FX_PRESETS = [
+  { id: "none", en: "None (flat)", ja: "なし（素の音）", fx: {} },
+  { id: "vocal", en: "Vocal", ja: "ボーカル", fx: { low: -3, mid: 1.5, mf: 3000, high: 3, comp: 0.5, rev: 0.25, dly: 0.12 } },
+  { id: "acoustic", en: "Acoustic guitar", ja: "アコギ", fx: { low: -2, mid: -1, mf: 400, high: 2, comp: 0.3, rev: 0.2 } },
+  { id: "crunch", en: "Electric guitar (crunch)", ja: "エレキ（クランチ）", fx: { low: -2, mid: 2, mf: 1500, drive: 0.55, comp: 0.2, rev: 0.15 } },
+  { id: "lead", en: "Lead (drive + delay)", ja: "リード（歪み＋ディレイ）", fx: { mid: 3, mf: 1800, drive: 0.75, rev: 0.2, dly: 0.35 } },
+  { id: "bass", en: "Bass (tight)", ja: "ベース（引き締め）", fx: { low: 2, mid: -2, mf: 400, comp: 0.5 } },
+  { id: "punch", en: "Drums (punchy)", ja: "ドラム（パンチ）", fx: { low: 2, mid: -2, mf: 500, high: 2, comp: 0.6, rev: 0.08 } },
+  { id: "far", en: "Distant / ambient", ja: "遠くで鳴る（アンビエント）", fx: { high: -5, rev: 0.6, dly: 0.3 } },
+];
+const DLY_NOTES = [
+  { id: "4", beats: 1, en: "Quarter", ja: "4分" }, { id: "8d", beats: 0.75, en: "Dotted 8th", ja: "付点8分" },
+  { id: "8", beats: 0.5, en: "8th", ja: "8分" }, { id: "16", beats: 0.25, en: "16th", ja: "16分" }, { id: "4d", beats: 1.5, en: "Dotted quarter", ja: "付点4分" },
+];
+function normGlobalFx(f) {
+  f = f || {};
+  return { revLen: clamp(+f.revLen, 0.4, 4, 1.8), dlyNote: DLY_NOTES.some((d) => d.id === f.dlyNote) ? f.dlyNote : "8d", dlyFb: clamp(+f.dlyFb, 0, 0.85, 0.35) };
+}
+const driveCurves = new Map();
+function driveCurve(a) {
+  const k = Math.round(a * 20) / 20;
+  if (!driveCurves.has(k)) {
+    const n = 1024, c = new Float32Array(n), g = 1 + k * 25;
+    for (let i = 0; i < n; i++) { const x = (i / (n - 1)) * 2 - 1; c[i] = Math.tanh(x * g) / Math.tanh(g); }
+    driveCurves.set(k, c);
+  }
+  return driveCurves.get(k);
+}
+// Reverb impulse: decaying stereo noise that gets darker as it decays
+const irCache = new WeakMap();
+function reverbIR(ac, len) {
+  len = Math.round(len * 10) / 10;
+  let m = irCache.get(ac);
+  if (!m) { m = new Map(); irCache.set(ac, m); }
+  if (m.has(len)) return m.get(len);
+  const sr = ac.sampleRate, n = Math.floor(sr * len), pre = Math.floor(sr * 0.012);
+  const b = ac.createBuffer(2, n, sr);
+  for (let c = 0; c < 2; c++) {
+    const d = b.getChannelData(c);
+    let y = 0;
+    for (let i = pre; i < n; i++) {
+      const tt = (i - pre) / (n - pre);
+      const x = (Math.random() * 2 - 1) * Math.exp(-6.9 * tt);
+      const a = 1 - 0.88 * tt; // one-pole low-pass, closing over time
+      y += a * (x - y);
+      d[i] = y;
+    }
+  }
+  m.set(len, b);
+  return b;
+}
+function makeFxBus(ac, out) {
+  const revIn = ac.createGain(), conv = ac.createConvolver(), revOut = ac.createGain();
+  revOut.gain.value = 0.55;
+  revIn.connect(conv); conv.connect(revOut); revOut.connect(out);
+  const dlyIn = ac.createGain(), delay = ac.createDelay(4), fb = ac.createGain(), lp = ac.createBiquadFilter(), dlyOut = ac.createGain();
+  lp.type = "lowpass"; lp.frequency.value = 3500;
+  dlyOut.gain.value = 0.7;
+  dlyIn.connect(delay); delay.connect(lp); lp.connect(fb); fb.connect(delay); lp.connect(dlyOut); dlyOut.connect(out);
+  const toRev = ac.createGain(); toRev.gain.value = 0.25; dlyOut.connect(toRev); toRev.connect(revIn); // echoes sit in the room
+  const bus = { ac, revIn, conv, dlyIn, delay, fb, revLen: 0 };
+  updateFxBus(bus);
+  return bus;
+}
+function updateFxBus(bus) {
+  if (!bus) return;
+  const F = state.fx;
+  if (bus.revLen !== F.revLen) { bus.conv.buffer = reverbIR(bus.ac, F.revLen); bus.revLen = F.revLen; }
+  const note = DLY_NOTES.find((d) => d.id === F.dlyNote) || DLY_NOTES[1];
+  bus.delay.delayTime.value = Math.min(3.9, (60 / state.bpm) * note.beats);
+  bus.fb.gain.value = F.dlyFb;
+}
+function makeStrip(ac, out, bus) {
+  const s = {
+    input: ac.createBiquadFilter(), mid: ac.createBiquadFilter(), high: ac.createBiquadFilter(),
+    drive: ac.createWaveShaper(), driveGain: ac.createGain(), comp: ac.createDynamicsCompressor(), makeup: ac.createGain(),
+    gain: ac.createGain(), pan: ac.createStereoPanner(), rev: ac.createGain(), dly: ac.createGain(),
+  };
+  s.input.type = "lowshelf"; s.input.frequency.value = 120;
+  s.mid.type = "peaking"; s.mid.Q.value = 0.9;
+  s.high.type = "highshelf"; s.high.frequency.value = 8000;
+  s.drive.oversample = "2x";
+  s.comp.attack.value = 0.005; s.comp.release.value = 0.15; s.comp.knee.value = 6;
+  s.input.connect(s.mid); s.mid.connect(s.high); s.high.connect(s.drive); s.drive.connect(s.driveGain);
+  s.driveGain.connect(s.comp); s.comp.connect(s.makeup); s.makeup.connect(s.gain); s.gain.connect(s.pan); s.pan.connect(out);
+  s.gain.connect(s.rev); s.rev.connect(bus.revIn); s.gain.connect(s.dly); s.dly.connect(bus.dlyIn);
+  return s;
+}
+function applyFx(s, f, ac) {
+  if (!s) return;
+  f = f || defaultFx();
+  const live = typeof OfflineAudioContext === "undefined" || !(ac instanceof OfflineAudioContext);
+  const set = (param, v) => (live ? param.setTargetAtTime(v, ac.currentTime, 0.02) : (param.value = v));
+  set(s.input.gain, f.low); set(s.mid.gain, f.mid); set(s.mid.frequency, f.mf); set(s.high.gain, f.high);
+  s.drive.curve = f.drive > 0 ? driveCurve(f.drive) : null;
+  set(s.driveGain.gain, 1 - f.drive * 0.45);
+  s.comp.threshold.value = f.comp ? -8 - f.comp * 24 : 0;
+  s.comp.ratio.value = 1 + f.comp * 7;
+  set(s.makeup.gain, Math.pow(10, (f.comp * 9) / 20));
+  set(s.rev.gain, f.rev);
+  set(s.dly.gain, f.dly * 0.8);
+}
+// Offline: the same mixer for mixdown / rendering
+function renderMix(oc, dest, opts) {
+  const bus = makeFxBus(oc, dest);
+  const strips = {};
+  for (const name of opts.parts || []) {
+    const P = state.song.parts[name], s = makeStrip(oc, dest, bus);
+    applyFx(s, P.fx, oc);
+    s.gain.gain.value = audibleGain(P); s.pan.pan.value = P.pan;
+    strips[name] = s;
+  }
+  for (const e of getEvents()) if (strips[e.part] && audibleGain(state.song.parts[e.part]) > 0) playEvent(oc, strips[e.part].input, e, e.time + 0.001);
+  if (opts.tracks) for (const tr of state.tracks) {
+    if (!tr.buffer || audibleGain(tr) === 0) continue;
+    const s = makeStrip(oc, dest, bus);
+    applyFx(s, tr.fx, oc);
+    s.gain.gain.value = audibleGain(tr); s.pan.pan.value = tr.pan;
+    const src = oc.createBufferSource(); src.buffer = tr.buffer; src.connect(s.input); src.start(0);
+  }
+}
+
+// ---- effects dialog
+const FX_UI = [
+  { k: "low", sec: "eq", min: -12, max: 12, step: 0.5, fmt: (v) => (v > 0 ? "+" : "") + v + " dB" },
+  { k: "mid", sec: "eq", min: -12, max: 12, step: 0.5, fmt: (v) => (v > 0 ? "+" : "") + v + " dB" },
+  { k: "mf", sec: "eq", min: 0, max: 1, step: 0.01, log: [150, 8000], fmt: (v) => (v >= 1000 ? (v / 1000).toFixed(1) + " kHz" : Math.round(v) + " Hz") },
+  { k: "high", sec: "eq", min: -12, max: 12, step: 0.5, fmt: (v) => (v > 0 ? "+" : "") + v + " dB" },
+  { k: "comp", sec: "dyn", min: 0, max: 1, step: 0.05, fmt: (v) => Math.round(v * 100) + "%" },
+  { k: "drive", sec: "dyn", min: 0, max: 1, step: 0.05, fmt: (v) => Math.round(v * 100) + "%" },
+  { k: "rev", sec: "send", min: 0, max: 1, step: 0.05, fmt: (v) => Math.round(v * 100) + "%" },
+  { k: "dly", sec: "send", min: 0, max: 1, step: 0.05, fmt: (v) => Math.round(v * 100) + "%" },
+];
+let fxTarget = null; // { kind: "track", id } | { kind: "part", name }
+function fxObj() {
+  if (!fxTarget) return null;
+  if (fxTarget.kind === "part") return state.song.parts[fxTarget.name].fx;
+  const tr = state.tracks.find((x) => x.id === fxTarget.id);
+  return tr ? tr.fx : null;
+}
+function fxApplyTarget() {
+  if (!fxTarget) return;
+  if (fxTarget.kind === "part") updatePartMix(fxTarget.name);
+  else { const tr = state.tracks.find((x) => x.id === fxTarget.id); if (tr) updateMix(tr); }
+  const sel = fxTarget.kind === "part" ? `.track[data-part="${fxTarget.name}"] .fxb` : `.track[data-id="${fxTarget.id}"] .fxb`;
+  const b = document.querySelector(sel);
+  if (b) b.classList.toggle("on", fxActive(fxObj()));
+}
+const toSlider = (u, v) => (u.log ? Math.log(v / u.log[0]) / Math.log(u.log[1] / u.log[0]) : v);
+const fromSlider = (u, x) => (u.log ? Math.round(u.log[0] * Math.pow(u.log[1] / u.log[0], x)) : x);
+function fillFxDialog() {
+  const f = fxObj();
+  if (!f) return;
+  for (const u of FX_UI) {
+    $("#fx_" + u.k).value = toSlider(u, f[u.k]);
+    $("#fxo_" + u.k).textContent = u.fmt(f[u.k]);
+  }
+  const match = FX_PRESETS.find((p) => FX_UI.every((u) => defaultFx(p.fx)[u.k] === f[u.k]));
+  $("#fxPreset").value = match ? match.id : "";
+  $("#fxRevLen").value = state.fx.revLen; $("#fxoRevLen").textContent = state.fx.revLen.toFixed(1) + " s";
+  $("#fxDlyNote").value = state.fx.dlyNote;
+  $("#fxDlyFb").value = state.fx.dlyFb; $("#fxoDlyFb").textContent = Math.round(state.fx.dlyFb * 100) + "%";
+}
+function openFx(target, opener) {
+  fxTarget = target;
+  ensureCtx();
+  const nm = target.kind === "part" ? partName(target.name) : (state.tracks.find((x) => x.id === target.id) || {}).name;
+  $("#fxTitle").textContent = t("fx.title", { name: nm || "" });
+  fillFxDialog();
+  openDlg("fxDlg", opener);
+}
+function setupFxDialog() {
+  const secs = { eq: $("#fxEq"), dyn: $("#fxDyn"), send: $("#fxSend") };
+  for (const u of FX_UI) {
+    const row = document.createElement("label");
+    row.className = "fx-sl";
+    row.innerHTML = `<span>${escHtml(t("fx." + u.k))}</span><input type="range" id="fx_${u.k}" min="${u.min}" max="${u.max}" step="${u.step}" /><output id="fxo_${u.k}"></output>`;
+    secs[u.sec].appendChild(row);
+    const inp = row.querySelector("input");
+    inp.addEventListener("input", () => {
+      const f = fxObj();
+      if (!f) return;
+      f[u.k] = fromSlider(u, +inp.value);
+      $("#fxo_" + u.k).textContent = u.fmt(f[u.k]);
+      $("#fxPreset").value = "";
+      fxApplyTarget();
+    });
+    inp.addEventListener("change", saveSoon);
+    // double-click resets one control
+    inp.addEventListener("dblclick", () => { const f = fxObj(); if (!f) return; f[u.k] = defaultFx()[u.k]; fillFxDialog(); fxApplyTarget(); saveSoon(); });
+  }
+  $("#fxPreset").innerHTML = `<option value="" disabled>${escHtml(t("fx.custom"))}</option>` + FX_PRESETS.map((p) => `<option value="${p.id}">${escHtml(label(p))}</option>`).join("");
+  $("#fxPreset").addEventListener("change", () => {
+    const f = fxObj(), p = FX_PRESETS.find((x) => x.id === $("#fxPreset").value);
+    if (!f || !p) return;
+    Object.assign(f, defaultFx(p.fx));
+    fillFxDialog(); fxApplyTarget(); saveSoon();
+  });
+  $("#fxDlyNote").innerHTML = DLY_NOTES.map((d) => `<option value="${d.id}">${escHtml(label(d))}</option>`).join("");
+  $("#fxRevLen").addEventListener("input", () => { $("#fxoRevLen").textContent = (+$("#fxRevLen").value).toFixed(1) + " s"; });
+  $("#fxRevLen").addEventListener("change", () => { state.fx.revLen = +$("#fxRevLen").value; updateFxBus(fxBus); saveSoon(); });
+  $("#fxDlyNote").addEventListener("change", () => { state.fx.dlyNote = $("#fxDlyNote").value; updateFxBus(fxBus); saveSoon(); });
+  $("#fxDlyFb").addEventListener("input", () => { state.fx.dlyFb = +$("#fxDlyFb").value; $("#fxoDlyFb").textContent = Math.round(state.fx.dlyFb * 100) + "%"; updateFxBus(fxBus); });
+  $("#fxDlyFb").addEventListener("change", saveSoon);
+}
 
 // ================================================================ backing: chords, bass, piano, drums
 // Time inside a bar is counted in ticks: 12 per beat (16th = 3, 8th = 6, 8th-triplet = 4).
@@ -2130,9 +2372,9 @@ function defaultSong(enabled = true) {
     enabled, bars: prog.length, swing: 0, humanize: 0.3, variation: 0.6, ending: true, seed: 0,
     chords: prog.map((r) => Array.from({ length: state.beats }, (_, k) => r[k] || "")),
     parts: {
-      bass: { ...base, preset: "eighth", tone: "finger", volume: 0.85 },
-      piano: { ...base, preset: "eighth", tone: "grand", volume: 0.7, overrides: {} },
-      drums: { ...base, preset: "8beat", tone: "standard", volume: 0.8, overrides: {}, fills: { 3: "snare1", 7: "tom2" }, fillCustom: {}, crash: true },
+      bass: { ...base, preset: "eighth", tone: "finger", volume: 0.85, fx: defaultFx({ comp: 0.3 }) },
+      piano: { ...base, preset: "eighth", tone: "grand", volume: 0.7, overrides: {}, fx: defaultFx({ rev: 0.18 }) },
+      drums: { ...base, preset: "8beat", tone: "standard", volume: 0.8, overrides: {}, fx: defaultFx({ rev: 0.08 }), fills: { 3: "snare1", 7: "tom2" }, fillCustom: {}, crash: true },
     },
   };
 }
@@ -2155,6 +2397,7 @@ function normalizeSong(s) {
       ...dp, volume: clamp(+src.volume, 0, 1.5, dp.volume), pan: clamp(+src.pan, -1, 1, 0), mute: !!src.mute, solo: !!src.solo,
       preset: PRESETS[name].some((x) => x.id === src.preset) ? src.preset : dp.preset,
       custom: okNotes(src.custom), overrides: {},
+      fx: normFx(src.fx || dp.fx),
     };
     if (TONES[name]) p.tone = TONES[name].some((x) => x.id === src.tone) ? src.tone : dp.tone;
     for (const [k, v] of Object.entries(src.overrides || {})) { const a = okNotes(v); if (a && +k < out.bars) p.overrides[+k] = a; }
@@ -2782,9 +3025,8 @@ function partChan(name) {
   if (!ctx) return null;
   let n = partNodes[name];
   if (!n) {
-    const gain = ctx.createGain(), pan = ctx.createStereoPanner();
-    gain.connect(pan); pan.connect(master);
-    n = partNodes[name] = { gain, pan };
+    const st = makeStrip(ctx, master, fxBus);
+    n = partNodes[name] = { input: st.input, gain: st.gain, pan: st.pan, strip: st };
     updatePartMix(name);
   }
   return n;
@@ -2793,13 +3035,14 @@ function updatePartMix(name) {
   const n = partNodes[name];
   if (!n) return;
   const P = state.song.parts[name];
+  applyFx(n.strip, P.fx, ctx);
   n.gain.gain.setTargetAtTime(state.song.enabled ? audibleGain(P) : 0, ctx.currentTime, 0.01);
   n.pan.pan.setTargetAtTime(P.pan, ctx.currentTime, 0.01);
 }
 function audition(name, e) {
   ensureCtx();
   const ch = partChan(name);
-  playEvent(ctx, ch.gain, Object.assign({ part: name, dur: 0.4, v: 0.8 }, e), ctx.currentTime + 0.01);
+  playEvent(ctx, ch.input, Object.assign({ part: name, dur: 0.4, v: 0.8 }, e), ctx.currentTime + 0.01);
 }
 
 // ---- undo for chord and note edits
@@ -3072,6 +3315,7 @@ function renderPartRow(name) {
         <button class="sbtn edit"></button>
         <button class="sbtn mute" aria-pressed="false">M</button>
         <button class="sbtn solo" aria-pressed="false">S</button>
+        <button class="sbtn fxb">FX</button>
         <div class="menu-wrap">
           <button class="sbtn more" aria-haspopup="menu" aria-expanded="false">⋯</button>
           <div class="tmenu" role="menu" hidden></div>
@@ -3087,6 +3331,10 @@ function renderPartRow(name) {
   const edit = q(".edit");
   edit.textContent = t("part.edit");
   edit.addEventListener("click", () => openEditor(name, barAtPos(), edit));
+  const fxb = q(".fxb");
+  fxb.setAttribute("aria-label", t("fx.open", { name: partName(name) }));
+  fxb.classList.toggle("on", fxActive(P.fx));
+  fxb.addEventListener("click", () => openFx({ kind: "part", name }, fxb));
   const mute = q(".mute"), solo = q(".solo");
   mute.setAttribute("aria-label", t("tk.mute")); solo.setAttribute("aria-label", t("tk.solo"));
   const sync = () => { const P = state.song.parts[name]; mute.setAttribute("aria-pressed", P.mute); solo.setAttribute("aria-pressed", P.solo); };
@@ -3516,6 +3764,7 @@ function setupSongPanel() {
 
 setupEditor();
 setupSongPanel();
+setupFxDialog();
 
 // ---------------------------------------------------------------- start
 applyI18n();
