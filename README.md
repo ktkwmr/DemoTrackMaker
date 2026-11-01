@@ -28,9 +28,7 @@ Open via a local server (not `file://`; the microphone and Service Worker need `
 `file://` ではなくローカルサーバーで開いてください。
 
 ```sh
-npx wrangler dev   # after wrangler.jsonc is added / wrangler.jsonc を足したあと
-# or
-npx serve public   # → http://localhost:3000/minimtr/
+npx wrangler dev   # → http://localhost:8787/minimtr/  (Windows PowerShell: npx.cmd wrangler dev)
 ```
 
 Preview copy for a claude.ai Artifact: `node scripts/build-preview.mjs` → `.preview/index.html`

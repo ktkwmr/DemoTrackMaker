@@ -1,0 +1,17 @@
+{
+  "name": "minimtr",
+  "compatibility_date": "2026-10-01",
+  "observability": { "enabled": true },
+  // Required by `wrangler preview`, which Workers Builds runs for non-production branches
+  "previews": {},
+  // Second or later app on ktkwmr.com: this Worker only serves /minimtr* (the domain root is ktkwmr/ktkwmr.com)
+  "routes": [{ "pattern": "ktkwmr.com/minimtr*", "zone_name": "ktkwmr.com" }],
+  "workers_dev": false,
+  // Keep PR preview URLs working while workers_dev is off
+  "preview_urls": true,
+  "assets": {
+    "directory": "./public",
+    // Unknown URLs get public/404.html with status 404
+    "not_found_handling": "404-page"
+  }
+}
