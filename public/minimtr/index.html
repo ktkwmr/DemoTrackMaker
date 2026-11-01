@@ -1935,6 +1935,7 @@ function degIv(ch, deg) {
 }
 const bassMidi = (pc) => 28 + ((pc - 4 + 12) % 12); // E1..Eb2
 const lhMidi = (pc) => 40 + ((pc - 4 + 12) % 12);   // E2..Eb3 (piano left hand)
+const rhRootMidi = (pc) => { let d = (((pc - 61) % 12) + 12) % 12; if (d > 6) d -= 12; return 61 + d; }; // G3..F#4
 // Right-hand pitch classes: triads (doubled root added by the voicing), 7th chords, 9th chords without the root
 function rhPcs(ch) {
   let ivs;
@@ -1966,9 +1967,12 @@ function voiceChord(ch, prev) {
 // ---- pattern notation helpers (presets are written compactly; projects store plain objects)
 // spec strings: "R" "3" "5" "7" "9" (chord tones, +1/-1 = octave), "ap"/"apu" approach the next chord root from
 // below/above when it changes within a beat (else root), "apw" always approach the next beat's chord (walking),
-// "v0".."v3" right-hand voicing notes, "L:R" left-hand register (piano)
+// "v0".."v3" right-hand voicing notes, "L:R" left-hand register, "H:R" "H:3" "H:5" right-hand register in root position
+// (root nearest to C#4, so an arpeggio always goes up 1-3-5) (piano)
 function SP(s) {
+  let rh = false;
   if (s.startsWith("L:")) s = s.slice(2);
+  else if (s.startsWith("H:")) { s = s.slice(2); rh = true; }
   if (s === "ap") return { ap: -1 };
   if (s === "apu") return { ap: 1 };
   if (s === "apw") return { ap: -1, w: true };
@@ -1977,6 +1981,7 @@ function SP(s) {
   if (mo) { o = +mo[1]; s = s.slice(0, -2); }
   const sp = s[0] === "v" ? { vi: +s.slice(1) } : { deg: s };
   if (o) sp.o = o;
+  if (rh) sp.rh = true;
   return sp;
 }
 const N = (beat, dur, v, sp, extra) => Object.assign({ t: Math.round(beat * TPB), d: Math.round(dur * TPB), v, p: SP(sp) }, extra || {});
@@ -2007,6 +2012,12 @@ const PIANO_PRESETS = [
   { id: "eighth", en: "8th-note chords (rock / pop)", ja: "8分刻み（ロック・ポップ）",
     p4: steps(0, 4, 0.5).flatMap((b) => RH(b, 0.42, b % 1 ? 0.5 : 0.68)).concat([N(0, 1, 0.65, "L:R"), N(1, 1, 0.55, "L:R+1"), N(2, 1, 0.65, "L:R"), N(3, 1, 0.55, "L:R+1")]),
     p3: steps(0, 3, 0.5).flatMap((b) => RH(b, 0.42, b % 1 ? 0.5 : 0.68)).concat([N(0, 1, 0.65, "L:R"), N(1, 1, 0.55, "L:R+1"), N(2, 1, 0.55, "L:R+1")]) },
+  // RH |1 3 5 3 1 3 5 3| in 8ths; LH root + 3rd in a 3-3-2 rhythm |3--33--3| over |1--11--1|
+  { id: "arp8", en: "8th-note arpeggio (pop)", ja: "8分アルペジオ（ポップ）",
+    p4: [...["H:R", "H:3", "H:5", "H:3", "H:R", "H:3", "H:5", "H:3"].map((sp, k) => N(k / 2, 0.5, k % 2 ? 0.5 : 0.62, sp)),
+      ...[[0, 1.45], [1.5, 0.45], [2, 1.45], [3.5, 0.45]].flatMap(([b, d], k) => [N(b, d, k % 2 ? 0.55 : 0.66, "L:R"), N(b, d, k % 2 ? 0.5 : 0.6, "L:3")])],
+    p3: [...["H:R", "H:3", "H:5", "H:3", "H:R", "H:3"].map((sp, k) => N(k / 2, 0.5, k % 2 ? 0.5 : 0.62, sp)),
+      ...[[0, 1.45], [1.5, 0.45], [2, 0.95]].flatMap(([b, d], k) => [N(b, d, k === 1 ? 0.55 : 0.66, "L:R"), N(b, d, k === 1 ? 0.5 : 0.6, "L:3")])] },
   { id: "quarter", en: "Quarter-note chords", ja: "4分刻み",
     p4: [0, 1, 2, 3].flatMap((b) => RH(b, 0.9, b ? 0.6 : 0.72)).concat([N(0, 1.9, 0.65, "L:R"), N(2, 1.9, 0.6, "L:R")]),
     p3: [N(0, 0.9, 0.7, "L:R"), ...RH(1, 0.8, 0.55), ...RH(2, 0.8, 0.5)] },
@@ -2172,6 +2183,7 @@ function resolveSpec(sp, name, r, nx, gb) {
   if (sp.m != null) return sp.m;
   const ch = r.chord, o = 12 * (sp.o || 0);
   if (sp.vi != null) { const v = r.voicing[sp.vi]; return v == null ? null : v + o; }
+  if (sp.rh) return rhRootMidi(ch.root) + degIv(ch, sp.deg || "R") + o;
   const reg = name === "bass" ? bassMidi : lhMidi;
   if (sp.ap) {
     const soon = nx && nx.start - gb <= 1 + 1e-6;
@@ -2284,6 +2296,7 @@ function pianoAnt(bar) {
   const S = state.song, V = S.variation;
   if (!V || bar < 0 || bar >= S.bars - 1 || !changesAtNextBar(bar)) return false;
   if (patternHas("piano", (n) => n.ant)) return false; // the pattern already anticipates
+  if (patternHas("piano", (n) => n.p && n.p.rh)) return false; // arpeggio patterns: a block chord would break the line
   return rnd(bar, 41) < (phraseInfo(bar).p4 === 3 ? 0.3 + 0.5 * V : 0.25 * V);
 }
 function endingChord(name, bar) {
@@ -2380,7 +2393,7 @@ function varyPiano(bar, notes) {
     } else if (rnd(r.start, 52) < V * 0.45) {
       const tops = {};
       out.forEach((n) => { if (inR(n) && n.midi % 12 === ch.root && (!tops[n.t] || n.midi > tops[n.t].midi)) tops[n.t] = n; });
-      Object.values(tops).forEach((n) => { if (out.some((x) => x !== n && x.t === n.t && x.midi % 12 === ch.root)) n.midi += 2; }); // doubled root -> add9
+      Object.values(tops).forEach((n) => { if (out.some((x) => x !== n && x.t === n.t && x.midi >= RH && x.midi % 12 === ch.root)) n.midi += 2; }); // doubled root in the right hand -> add9
     }
   }
   return out;
