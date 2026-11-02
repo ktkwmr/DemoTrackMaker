@@ -7,14 +7,14 @@ const pick = (list, id, lang) => {
   if (!x) throw new Error(`scripts/pages/backing-patterns.mjs: "${id}" is not in the app`);
   return x[lang];
 };
-// [genre en, genre ja, bass, bass sound, piano, piano sound, drums, drum kit, Shuffle step (0 / 0.5 / 1), BPM range]
+// [genre en, genre ja, bass, bass sound, piano, piano sound, drums, drum kit, Shuffle (0 = off / 1 = on), BPM range]
 const GENRES = [
   ["Rock", "ロック", "eighth", "pick", "eighth", "grand", "8beat", "rock", 0, "110–150"],
   ["Pop", "ポップス", "pop", "finger", "push", "grand", "16beat", "standard", 0, "90–130"],
   ["Ballad", "バラード", "whole", "finger", "arp8", "grand", "ballad", "standard", 0, "60–80"],
   ["Acoustic", "アコースティック", "half", "upright", "arp", "grand", "shaker", "brush", 0, "80–110"],
   ["Soul / R&B", "ソウル・R&B", "motown", "mute", "push", "ep", "16beat", "standard", 0, "80–110"],
-  ["Hip-hop", "ヒップホップ", "whole", "808", "pad", "ep", "hiphop", "808", 0.5, "70–95"],
+  ["Hip-hop", "ヒップホップ", "whole", "808", "pad", "ep", "hiphop", "808", 0, "70–95"],
   ["Dance", "ダンス", "octave", "synth", "quarter", "strings", "clap4", "909", 0, "118–130"],
   ["Funk", "ファンク", "octave", "slap", "eighth", "clav", "16beat", "standard", 0, "95–115"],
   ["Shuffle / blues", "シャッフル・ブルース", "walk", "finger", "stride", "organ", "shuffle", "standard", 1, "80–120"],
@@ -66,7 +66,7 @@ export default {
 <h2 id="table">Combinations by genre</h2>
 <p>Starting points in Demo Track Maker: the pattern (and sound, in small type) for each part. Pattern names are the ones in the app.</p>
 ${genreTable("en")}
-<p class="cap">“${SHUFFLE.label.en}” is the app's ${SHUFFLE.label.en} setting: ${SHUFFLE.step(0, "en")} = straight 8ths, ${SHUFFLE.step(0.5, "en")} = a slight lilt, ${SHUFFLE.step(1, "en")} = a triplet shuffle. Tempo ranges are rough guides, not rules.</p>
+<p class="cap">“${SHUFFLE.label.en}” is the app's ${SHUFFLE.label.en} setting: ${SHUFFLE.step(0, "en")} = straight 8ths, ${SHUFFLE.step(1, "en")} = a triplet shuffle. Tempo ranges are rough guides, not rules.</p>
 
 <h2 id="notes">Notes on each genre</h2>
 <h3>Rock</h3>
@@ -78,7 +78,7 @@ ${genreTable("en")}
 <h3>Soul / R&amp;B and funk</h3>
 <p>The bass moves more (octaves, fifths and approach notes), and the drums play 16th notes with ghost notes on the snare. An electric piano or a clavinet sound suits these styles.</p>
 <h3>Hip-hop and dance</h3>
-<p>Electronic kits (808, 909) and synth bass. Dance music usually has a kick on every beat (four on the floor) and a clap on 2 and 4; hip-hop keeps the kick syncopated and leaves space, often with a slight lilt (${SHUFFLE.label.en}: ${SHUFFLE.step(0.5, "en")}).</p>
+<p>Electronic kits (808, 909) and synth bass. Dance music usually has a kick on every beat (four on the floor) and a clap on 2 and 4; hip-hop keeps the kick syncopated and leaves space.</p>
 <h3>Shuffle, blues and jazz</h3>
 <p>These are played with a swung (triplet) feel, so set ${SHUFFLE.label.en} to ${SHUFFLE.step(1, "en")}. A walking bass plays one note per beat, mostly chord tones and scale steps, and often approaches the next chord's root by a half step. In jazz the ride cymbal carries the time and the piano “comps” — short chords in between the melody.</p>
 
@@ -118,7 +118,7 @@ ${genreTable("en")}
 <h2 id="table">ジャンル別の組み合わせ</h2>
 <p>Demo Track Maker で始めるときの目安です。パートごとのパターンと、小さい字で音色を示しています。パターン名はアプリの表示と同じです。</p>
 ${genreTable("ja")}
-<p class="cap">「${SHUFFLE.label.ja}」はアプリの${SHUFFLE.label.ja}の設定です（${SHUFFLE.step(0, "ja")}：まっすぐな 8 分、${SHUFFLE.step(0.5, "ja")}：少しだけ跳ねる、${SHUFFLE.step(1, "ja")}：3 連のノリ）。BPM は大まかな目安で、決まりではありません。</p>
+<p class="cap">「${SHUFFLE.label.ja}」はアプリの${SHUFFLE.label.ja}の設定です（${SHUFFLE.step(0, "ja")}：まっすぐな 8 分、${SHUFFLE.step(1, "ja")}：3 連のノリ）。BPM は大まかな目安で、決まりではありません。</p>
 
 <h2 id="notes">ジャンルごとのポイント</h2>
 <h3>ロック</h3>
@@ -130,7 +130,7 @@ ${genreTable("ja")}
 <h3>ソウル・R&amp;B、ファンク</h3>
 <p>ベースがよく動き（オクターブ・5 度・アプローチの音）、ドラムは 16 分でスネアのゴーストノートが入ります。エレピやクラビの音色が合います。</p>
 <h3>ヒップホップ、ダンス</h3>
-<p>808・909 のような電子ドラムと、シンセのベース。ダンスミュージックはキックが毎拍（4 つ打ち）でクラップが 2・4 拍目、ヒップホップはキックがシンコペーションですき間が多く、少し跳ねることがよくあります（${SHUFFLE.label.ja}：${SHUFFLE.step(0.5, "ja")}）。</p>
+<p>808・909 のような電子ドラムと、シンセのベース。ダンスミュージックはキックが毎拍（4 つ打ち）でクラップが 2・4 拍目、ヒップホップはキックがシンコペーションですき間が多めです。</p>
 <h3>シャッフル・ブルース、ジャズ</h3>
 <p>3 連のノリで演奏するので、${SHUFFLE.label.ja}を「${SHUFFLE.step(1, "ja")}」にします。ウォーキングベースは 1 拍に 1 音、コードの音や音階の音を弾き、次のコードのルートへ半音で近づくことがよくあります。ジャズではライドシンバルが拍を刻み、ピアノはメロディの合間に短い和音を入れます（コンピング）。</p>
 
