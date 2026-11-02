@@ -27,7 +27,7 @@
 - 自動保存: IndexedDB `demotrackmaker`（store `kv` の `project` = 設定、store `audio` = トラック id → `{ sr, chans: Float32Array[] }`）。
 - 書き出し: zip（無圧縮）に `project.json`（`format: "demotrackmaker-project"`, `version: 1`）と `tracks/NN-<名前>.wav`（32bit float、劣化なし）。
   フォーマットを変えるときは `version` を上げ、古い版も読めるようにする（改名時に version 1 からやり直した。`song`・`fx` が無いファイルも既定値で読めるようにしてある）。
-- 伴奏（`state.song`、project.json の `song`）: `chords[小節][拍]`（空文字 = 前のコードが続く）、`parts.bass/piano/drums`
+- 伴奏（`state.song`、project.json の `song`）: シャッフル `swing` は 0（オフ）・0.5（軽め）・1（3 連）の 3 段（`swingStep`、古い中間の値は近い段に読む）。`chords[小節][拍]`（空文字 = 前のコードが続く）、`parts.bass/piano/drums`
   （`preset`・`tone`（ドラムは音色セット）・`custom` = パターン全体の編集・`overrides[小節]` = その小節だけの編集・ドラムは `fills[小節]`・`fillCustom`・`crash`）。
   時間は 1 拍 = 12 tick。パターンの音の高さはコードからの相対（`deg` R/3/5/7/9、`semi`、`vi` = ピアノ右手の和音の何番目か、`rh` = 右手の音域で基本形の和音の音（分散和音用）、`ap` = 次のコードへの半音アプローチ）、
   小節だけの編集は絶対音高（`midi`）。自動のバリエーション（`variation` 0〜1、`seed`、`ending`）は renderBar の最後で重ねる（`varyBar`）。
@@ -39,11 +39,11 @@
 - 「フォルダに保存」は zip の書き出しと用途が重なるので削除した（どの端末でも使える zip に一本化）。
 - 書き出すファイルの名前: `exportFile`。PC の Chrome・Edge は showSaveFilePicker（名前と保存先）、それ以外はページ内の名前の入力欄のあと通常のダウンロード。初期値は zip がプロジェクト名、ミックスダウンは「-mix」、MIDI は「-backing」、トラックは「-トラック名」を付ける。
 - マスター: 全体のコンプのあとにリミッター（`limiterChain`: -1 dB・20:1 の速いコンプ＋0.99 を超えないソフトクリップ）。ミックスダウンはさらに書き出した音に先読みのピークリミッター（`limitBuffer`、上限 -1 dBFS）をかける。
-- 伴奏オフのときは、ベース・ピアノ・ドラムの行と伴奏だけに効く操作（ハネ・揺らぎ・バリエーション・別の案・エンディング・フィル・小節の編集・MIDI・音声トラックに）を無効にする（`applyBackingState`、行は inert）。コード入力と小節数は触れる。
+- 伴奏オフのときは、ベース・ピアノ・ドラムの行と伴奏だけに効く操作（シャッフル・揺らぎ・バリエーション・別の案・エンディング・フィル・小節の編集・MIDI・音声トラックに）を無効にする（`applyBackingState`、行は inert）。コード入力と小節数は触れる。
 - ミックスダウン: 押すと形式を選ぶダイアログ。WAV（16bit ステレオ）か MP3（128/192/320 kbps、lamejs 1.2.1）。最後の選択は localStorage `demotrackmaker-mixfmt`。
 - 外部ライブラリ: lamejs 1.2.1（LGPL-3.0）を MP3 を選んだときだけ jsDelivr から読み込む（SRI 付き、`LAME_URL`）。sw.js の `CDN` に同じ URL を入れてオフラインでも使えるようにしている。
   `public/_headers` を作るときは CSP の `script-src` と `connect-src` に `https://cdn.jsdelivr.net` を入れる。版を上げるときは `LAME_URL`・`LAME_SRI`・sw.js の `CDN`・`THIRD_PARTY_LICENSES.md` を同じ PR で直す。
-- 伴奏の MIDI: SMF type 1、480 PPQ。トラック 0 = テンポ・拍子・コード名（マーカー）、ベース ch1・ピアノ ch2・ドラム ch10（GM ドラムマップ、音色セットは GS/XG のドラムキット番号をプログラムチェンジで）。グリッドどおり（ハネは反映、揺らぎは入れない）。
+- 伴奏の MIDI: SMF type 1、480 PPQ。トラック 0 = テンポ・拍子・コード名（マーカー）、ベース ch1・ピアノ ch2・ドラム ch10（GM ドラムマップ、音色セットは GS/XG のドラムキット番号をプログラムチェンジで）。グリッドどおり（シャッフルは反映、揺らぎは入れない）。
 - 伴奏を音声トラックに: パート 1 つなら音量・定位をかけずに書き出し、新しいトラックの音量・定位に移す。全部なら音量・定位・ミュート・ソロを反映して 1 本に。書き出したパートはミュートする。
 
 ## ルール

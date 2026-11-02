@@ -1,5 +1,5 @@
 // How to use the app. Screenshots: node scripts/render-guide-images.mjs
-import { MAX_TRACKS, MAX_BARS, KBPS, BASS_PRESETS, PIANO_PRESETS, DRUM_PRESETS, FILLS, BASS_TONES, PIANO_TONES, DRUM_TONES, FX_PRESETS } from "./app.mjs";
+import { MAX_TRACKS, MAX_BARS, KBPS, BASS_PRESETS, PIANO_PRESETS, DRUM_PRESETS, FILLS, BASS_TONES, PIANO_TONES, DRUM_TONES, FX_PRESETS, SHUFFLE } from "./app.mjs";
 import { img } from "./shots.mjs";
 
 const names = (list, lang) => list.map((x) => x[lang]).join(lang === "ja" ? "・" : ", ");
@@ -41,7 +41,7 @@ export default {
 
 <h2 id="chords">Typing the chords</h2>
 <figure class="shot">
-  ${img("en", "chords", "The Chords and backing panel: switches for the backing, the number of bars, swing, feel, variation, another take, ending, type as text, and eight bars of chords with a fill menu on bars 4 and 8.")}
+  ${img("en", "chords", "The Chords and backing panel: switches for the backing, the number of bars, shuffle, feel, variation, another take, ending, type as text, and eight bars of chords with a fill menu on bars 4 and 8.")}
   <figcaption>The chord chart. Each bar has one box per beat and a drum-fill menu.</figcaption>
 </figure>
 <ul>
@@ -62,7 +62,7 @@ export default {
   <li><b>Sound</b> – Bass: ${names(BASS_TONES, "en")}. Piano: ${names(PIANO_TONES, "en")}. Drum kits: ${names(DRUM_TONES, "en")}. All sounds are synthesized in the browser.</li>
   <li><b>Fills</b> – choose a fill for any bar in the chord chart: ${names(FILLS, "en")}. After a fill the drummer hits a crash cymbal (switch it off in the drum menu ⋯).</li>
   <li><b>Variation</b> – makes the band play like people do: the bass runs into the next chord, the piano anticipates chord changes and adds colour notes, the drums add crashes, open hi-hats and short lead-ins at the end of 4- and 8-bar phrases. <b>Another take</b> picks a different set. 0 plays the plain pattern.</li>
-  <li><b>Swing</b> delays the off-beat 8th notes (up to a triplet shuffle). <b>Feel</b> adds small differences in timing and strength. <b>Ending</b> stops the band on the first beat of the last bar.</li>
+  <li><b>${SHUFFLE.label.en}</b> delays the off-beat 8th notes: ${SHUFFLE.step(0, "en")} plays them straight, ${SHUFFLE.step(0.5, "en")} gives a slight lilt, ${SHUFFLE.step(1, "en")} gives a triplet shuffle feel (blues, jazz). <b>Feel</b> adds small differences in timing and strength. <b>Ending</b> stops the band on the first beat of the last bar.</li>
   <li><b>Backing on / off</b> – when it is off, the three parts are greyed out and silent.</li>
 </ul>
 
@@ -160,7 +160,7 @@ export default {
 
 <h2 id="chords">コードの入力</h2>
 <figure class="shot">
-  ${img("ja", "chords", "「コードと伴奏」の欄：伴奏のオン・オフ、小節数、ハネ・揺らぎ・バリエーション、別の案、エンディング、テキストで入力、8 小節のコード譜（4・8 小節目にフィル）。")}
+  ${img("ja", "chords", "「コードと伴奏」の欄：伴奏のオン・オフ、小節数、シャッフル・揺らぎ・バリエーション、別の案、エンディング、テキストで入力、8 小節のコード譜（4・8 小節目にフィル）。")}
   <figcaption>コード譜。小節ごとに 1 拍 1 マスの欄と、ドラムのフィルの選択があります。</figcaption>
 </figure>
 <ul>
@@ -181,7 +181,7 @@ export default {
   <li><b>音色</b>：ベース：${names(BASS_TONES, "ja")}。ピアノ：${names(PIANO_TONES, "ja")}。ドラム：${names(DRUM_TONES, "ja")}。どの音もブラウザの中で合成しています。</li>
   <li><b>フィル</b>：コード譜の小節ごとに選びます（${names(FILLS, "ja")}）。フィルの次の小節の頭にはクラッシュが入ります（ドラムのメニュー ⋯ で切れます）。</li>
   <li><b>バリエーション</b>：人が弾くような変化を付けます。ベースは次のコードへ駆け上がり、ピアノはコードを先取りして和音に色を足し、ドラムは 4 小節・8 小節の区切りでクラッシュ・オープンハイハット・短いつなぎを入れます。<b>別の案</b>で組み合わせが変わり、0 にすると元のパターンのままです。</li>
-  <li><b>ハネ</b>は裏拍の 8 分音符を後ろにずらします（最大で 3 連のシャッフル）。<b>揺らぎ</b>はタイミングと強さに小さなばらつきを付けます。<b>エンディング</b>をオンにすると、最後の小節の 1 拍目で全員が止まります。</li>
+  <li><b>${SHUFFLE.label.ja}</b>は裏拍の 8 分音符を後ろにずらします。${SHUFFLE.step(0, "ja")}はまっすぐ、${SHUFFLE.step(0.5, "ja")}は少しだけ跳ね、${SHUFFLE.step(1, "ja")}は 3 連符のノリ（ブルース・ジャズ）になります。<b>揺らぎ</b>はタイミングと強さに小さなばらつきを付けます。<b>エンディング</b>をオンにすると、最後の小節の 1 拍目で全員が止まります。</li>
   <li><b>伴奏オン／オフ</b>：オフのときは 3 つのパートがグレーになり、鳴りません。</li>
 </ul>
 

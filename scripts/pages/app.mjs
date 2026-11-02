@@ -29,6 +29,11 @@ export const DRUM_TONES = list("DRUM_TONES");
 export const FX_PRESETS = list("FX_PRESETS");
 export const KBPS = [...html.matchAll(/<option value="(\d+)"(?: selected)?>\d+ kbps<\/option>/g)].map((m) => Number(m[1]));
 if (!KBPS.length) fail("MP3 bit rates (#mixKbps)");
+// The Shuffle steps (label of the control and of each step), from the app's I18N (en first, then ja)
+const i18n = (key) => { const v = [...html.matchAll(new RegExp(`"${key.replace(".", "\\.")}": "([^"]+)"`, "g"))].map((m) => m[1]); if (v.length !== 2) fail(`I18N "${key}"`); return { en: v[0], ja: v[1] }; };
+const SW = { 0: i18n("song.swOff"), 0.5: i18n("song.swLight"), 1: i18n("song.swFull") };
+for (const v of ["0", "0.5", "1"]) if (!html.includes(`<option value="${v}" data-i18n="song.sw`)) fail(`Shuffle step ${v} (#swing)`);
+export const SHUFFLE = { label: i18n("song.swing"), step: (v, lang) => { if (!SW[v]) throw new Error(`scripts/pages/app.mjs: ${v} is not a Shuffle step`); return SW[v][lang]; } };
 
 // The app's own chord parser, so the chord table in the articles is exactly what the app understands
 const pcSrc = html.match(/const PC = \{[^}]+\};/);

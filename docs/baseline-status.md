@@ -2,7 +2,7 @@
 
 基準: WEBAPP_BASELINE.md（最終更新 2026-10-30 版）
 状態: ✅ 実装済み / ⚠️ 一部 / ❌ 未実装 / 👤 待ち（人間の作業） / — 対象外
-最終更新: 2026-11-01（初版。共通部分・記事 6 本・ポリシー・運営者情報）
+最終更新: 2026-11-02（「ハネ」を「シャッフル」の 3 段階に。記事 2 本と画面写真を更新）
 
 ## 0. 変数
 
@@ -30,7 +30,7 @@
 | 2-11 | Cloudflare に接続 | 👤 | Project name は `demotrackmaker`、Production branch は `main` |
 | 2-13 | 自動デプロイの確認 | 👤 | |
 | 2-14 | 2 つ目以降のアプリの Worker 設定 | ✅ | sitemap は `/demotrackmaker/sitemap.xml` |
-| 2-16 | トップページへの追加 | ⚠️ | ktkwmr/ktkwmr.com#12（`APPS`・`ICON`・`PREVIEW`、`robots.txt`）。本番に出してからマージ |
+| 2-16 | トップページへの追加 | ✅ | ktkwmr/ktkwmr.com#12 をマージ済み（このアプリの本番公開の前にマージしたので、公開までカードのリンクは 404） |
 | 3-1〜3-5 | manifest・アイコン・meta・sw.js・SW 登録 | ✅ | |
 | 3-6 | `file://` の注意 | ✅ | README |
 | 3-7 | インストールの案内 | ❌ | 任意 |
@@ -59,7 +59,7 @@
 | 9-13 | 大きなダウンロードの確認 | — | lamejs（約 150 KB）だけ |
 | 10-1〜10-5 | 記事の生成・最初の記事・表の計算・画面写真・導線 | ✅ | 記事 6 本（guide・make-a-demo・chord-symbols・backing-patterns・recording-tips・faq）。パターン名・上限・コードの構成音はアプリから読む |
 | 10-6 | スマホ幅の UX レビュー | ✅ | 390px で全ページ。横スクロールなし。ジャンル表はスマホでカード型に変更 |
-| 10-7 | 記事の人間確認 | 👤 | `docs/article-review.md` |
+| 10-7 | 記事の人間確認 | 👤 | 初版（#2）はマージ済み。シャッフルの変更（H・I）は `docs/article-review.md` |
 | 10-8 | 再生成できる画面写真 | ✅ | `scripts/render-guide-images.mjs`（歌は架空のメロディを合成） |
 | 10-9 | 専門家視点の校閲 | ✅ | `docs/article-review.md` の「Claude による校閲」 |
 | 11-1〜11-3 | Web Analytics | ✅ | 全ページに beacon。404 にはなし |
