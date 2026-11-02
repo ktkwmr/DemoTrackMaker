@@ -1,5 +1,5 @@
 // How to make a song demo at home (workflow article)
-import { MAX_TRACKS } from "./app.mjs";
+import { MAX_TRACKS, MAX_KEY, KEY_LABEL } from "./app.mjs";
 
 export default {
   slug: "make-a-demo",
@@ -27,7 +27,7 @@ export default {
 
 <h2 id="prepare">1. Settle the key, tempo and chords</h2>
 <ul>
-  <li><b>Key.</b> Sing the highest and lowest notes of the melody. If the highest note strains your voice, move the whole song down (for example from C to A). With a guitar, a capo lets you keep the same shapes in a different key.</li>
+  <li><b>Key.</b> Sing the highest and lowest notes of the melody. If the highest note strains your voice, move the whole song down (for example from C to A). With a guitar, a capo lets you keep the same shapes in a different key. In the app, <b>${KEY_LABEL.en}</b> moves the whole backing by up to ${MAX_KEY} half steps without retyping the chords — try it before you record.</li>
   <li><b>Tempo.</b> Play the song along with a metronome and find the BPM that feels natural. A demo that is a little slower than you imagine is usually easier to follow than one that rushes.</li>
   <li><b>Chords and form.</b> Write the chords bar by bar, section by section (intro, verse, chorus…). Many pop songs are built from 4- and 8-bar phrases, so it helps to count bars as you write.</li>
 </ul>
@@ -85,7 +85,7 @@ export default {
 
 <h2 id="prepare">1. キー・テンポ・コードを決める</h2>
 <ul>
-  <li><b>キー。</b>メロディのいちばん高い音と低い音を歌ってみます。高い音が苦しければ、曲全体を下げます（例：C から A へ）。ギターならカポを使うと、同じ押さえ方のままキーを変えられます。</li>
+  <li><b>キー。</b>メロディのいちばん高い音と低い音を歌ってみます。高い音が苦しければ、曲全体を下げます（例：C から A へ）。ギターならカポを使うと、同じ押さえ方のままキーを変えられます。アプリでは<b>${KEY_LABEL.ja}</b>で、コードを入れ直さずに伴奏全体を半音ずつ最大 ${MAX_KEY} つ上げ下げできます（録音の前に試してください）。</li>
   <li><b>テンポ。</b>メトロノームに合わせて弾き、自然に感じる BPM を探します。デモは、思っているより少しゆっくりめのほうが聞きやすいことが多いです。</li>
   <li><b>コードと構成。</b>イントロ・A メロ・サビのように区切り、小節ごとにコードを書きます。ポップスの多くは 4 小節・8 小節のまとまりでできているので、小節を数えながら書くと整理しやすくなります。</li>
 </ul>

@@ -20,6 +20,7 @@ Planned URL / 公開予定: https://ktkwmr.com/demotrackmaker/
 - Zoomable timeline (pinch, Ctrl + wheel, drag to scroll, follows the playhead); move bars in the chord chart by drag or long-press / タイムラインの拡大縮小（ピンチ・Ctrl＋ホイール、ドラッグで移動、再生位置に追従）、コード譜の小節をドラッグ・長押しで移動
 - 8 bass sounds, 5 piano sounds, 6 drum kits (standard, rock, brushes, 808, 909, lo-fi) with clap, tambourine, shaker and cowbell / ベース 8 音色、ピアノ 5 音色、ドラム 6 セット（クラップ・タンバリン・シェイカー・カウベル入り）
 - Effects on every track and part: EQ, compressor, drive, sends to a shared reverb and tempo-synced delay, presets / トラックとパートごとのエフェクト（EQ・コンプ・歪み、共通のリバーブとテンポ同期のディレイへの送り、プリセット）
+- Shuffle on / off; ending that holds the last chord; key change for the whole backing (−6 to +6 half steps) / シャッフルのオン・オフ、最後のコードを伸ばすエンディング、伴奏全体のキー変更（−6〜+6）
 - 4/4 and 3/4 / 拍子は 4/4 と 3/4
 - Export the backing as a Standard MIDI File (tempo, time signature, chord markers, GM sounds) / 伴奏を標準 MIDI ファイルで書き出し（テンポ・拍子・コード名のマーカー、GM の音色番号）
 - Render the backing (or one part) to an audio track / 伴奏（またはパート 1 つ）を音声トラックに書き出し

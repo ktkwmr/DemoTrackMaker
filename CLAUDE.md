@@ -27,10 +27,10 @@
 - 自動保存: IndexedDB `demotrackmaker`（store `kv` の `project` = 設定、store `audio` = トラック id → `{ sr, chans: Float32Array[] }`）。
 - 書き出し: zip（無圧縮）に `project.json`（`format: "demotrackmaker-project"`, `version: 1`）と `tracks/NN-<名前>.wav`（32bit float、劣化なし）。
   フォーマットを変えるときは `version` を上げ、古い版も読めるようにする（改名時に version 1 からやり直した。`song`・`fx` が無いファイルも既定値で読めるようにしてある）。
-- 伴奏（`state.song`、project.json の `song`）: シャッフル `swing` は 0（オフ）・0.5（軽め）・1（3 連）の 3 段（`swingStep`、古い中間の値は近い段に読む）。`chords[小節][拍]`（空文字 = 前のコードが続く）、`parts.bass/piano/drums`
+- 伴奏（`state.song`、project.json の `song`）: シャッフル `swing` は 0（オフ）か 1（オン = 3 連）のトグル（`swingStep`、古い 0.25 以上の値はオンに読む）。キー `key` は -6〜+6 の半音（`MAX_KEY`）。コード・パターン・「この小節だけ」の音は入力したキーのまま持ち、鳴らすとき（`buildEvents`・MIDI・`audition`）に `key` を足す。コード名の表示（タイムラインのコード行・MIDI のマーカー・コード譜のマスの下）は `transposeChordName` で実際に鳴るコードに。音符の編集画面は入力したキーで表示。録音した音声の音程は変えない。`chords[小節][拍]`（空文字 = 前のコードが続く）、`parts.bass/piano/drums`
   （`preset`・`tone`（ドラムは音色セット）・`custom` = パターン全体の編集・`overrides[小節]` = その小節だけの編集・ドラムは `fills[小節]`・`fillCustom`・`crash`）。
   時間は 1 拍 = 12 tick。パターンの音の高さはコードからの相対（`deg` R/3/5/7/9、`semi`、`vi` = ピアノ右手の和音の何番目か、`rh` = 右手の音域で基本形の和音の音（分散和音用）、`ap` = 次のコードへの半音アプローチ）、
-  小節だけの編集は絶対音高（`midi`）。自動のバリエーション（`variation` 0〜1、`seed`、`ending`）は renderBar の最後で重ねる（`varyBar`）。
+  小節だけの編集は絶対音高（`midi`）。自動のバリエーション（`variation` 0〜1、`seed`、`ending`）は renderBar の最後で重ねる（`varyBar`）。エンディングは最後の小節の最後のコードの頭から（`endingStart`）全員がそのコードを鳴らして小節の終わりまで伸ばし、それより前はふつうに演奏する。
   小節ごとに seed から決まる疑似乱数なので、再生・表示・MIDI・書き出しで同じ結果になる。パターン全体の編集画面はバリエーションを含まない元のパターン、「この小節だけ」は聞こえている音（バリエーション込み）をコピーする。音源はすべて Web Audio の合成（外部の音源ファイルなし）。拍子は 4/4 と 3/4 のみ。
 - 音声トラックの位置: トラックの `offset`（秒、マイナス可。音声の頭がタイムラインのどこから始まるか）。音声ファイル自体は変えず、再生・ミックスダウン・表示でずらす。⋯ →「位置を調整…」（±1 ms・10 ms・1 拍・1 小節、数値、1 小節の繰り返し再生 `transport.loop`）、または波形の長押し→ドラッグ（PC は Alt＋ドラッグでもすぐ。Shift で 16 分に吸着。`attachSeek` の clipTrack）。普通のドラッグはタイムラインの横移動のまま。
   トラックの WAV 書き出しは曲の頭に合わせて無音を足す／切る（`alignedBuffer`）。zip の WAV は元のままで、ずれは project.json の `offset`。ずらしたトラックの手前に録音すると、音声の頭に無音を足して `offset` を前に動かす。
@@ -39,7 +39,7 @@
 - 「フォルダに保存」は zip の書き出しと用途が重なるので削除した（どの端末でも使える zip に一本化）。
 - 書き出すファイルの名前: `exportFile`。PC の Chrome・Edge は showSaveFilePicker（名前と保存先）、それ以外はページ内の名前の入力欄のあと通常のダウンロード。初期値は zip がプロジェクト名、ミックスダウンは「-mix」、MIDI は「-backing」、トラックは「-トラック名」を付ける。
 - マスター: 全体のコンプのあとにリミッター（`limiterChain`: -1 dB・20:1 の速いコンプ＋0.99 を超えないソフトクリップ）。ミックスダウンはさらに書き出した音に先読みのピークリミッター（`limitBuffer`、上限 -1 dBFS）をかける。
-- 伴奏オフのときは、ベース・ピアノ・ドラムの行と伴奏だけに効く操作（シャッフル・揺らぎ・バリエーション・別の案・エンディング・フィル・小節の編集・MIDI・音声トラックに）を無効にする（`applyBackingState`、行は inert）。コード入力と小節数は触れる。
+- 伴奏オフのときは、ベース・ピアノ・ドラムの行と伴奏だけに効く操作（キー・シャッフル・揺らぎ・バリエーション・別の案・エンディング・フィル・小節の編集・MIDI・音声トラックに）を無効にする（`applyBackingState`、行は inert）。コード入力と小節数は触れる。
 - ミックスダウン: 押すと形式を選ぶダイアログ。WAV（16bit ステレオ）か MP3（128/192/320 kbps、lamejs 1.2.1）。最後の選択は localStorage `demotrackmaker-mixfmt`。
 - 外部ライブラリ: lamejs 1.2.1（LGPL-3.0）を MP3 を選んだときだけ jsDelivr から読み込む（SRI 付き、`LAME_URL`）。sw.js の `CDN` に同じ URL を入れてオフラインでも使えるようにしている。
   `public/_headers` を作るときは CSP の `script-src` と `connect-src` に `https://cdn.jsdelivr.net` を入れる。版を上げるときは `LAME_URL`・`LAME_SRI`・sw.js の `CDN`・`THIRD_PARTY_LICENSES.md` を同じ PR で直す。
@@ -47,6 +47,7 @@
 - 伴奏を音声トラックに: パート 1 つなら音量・定位をかけずに書き出し、新しいトラックの音量・定位に移す。全部なら音量・定位・ミュート・ソロを反映して 1 本に。書き出したパートはミュートする。
 
 ## ルール
+- 画面はライトテーマ固定（ほかのアプリに合わせる。`:root` の `color-scheme: light`、ダーク用の色は持たない）。保存の状態（`#saveStatus`）はヘッダーの下の行（`.savebar`、sticky にしない）。
 - 手で編集するのはアプリ本体 `public/demotrackmaker/index.html`・`sw.js`・`manifest.json` と `scripts/`。生成ファイル（`public/demotrackmaker/ja/index.html`、記事・情報ページ `<slug>/` とその `ja/`、`public/demotrackmaker/sitemap.xml`）は編集せず、`node scripts/build-ja.mjs` と `node scripts/build-pages.mjs` で作り直す（`--check` で確認）。
 - 画面の文言は `index.html` の `I18N`（en / ja）に書き、要素には `data-i18n` / `data-i18n-html` / `data-i18n-attr` を付ける。`data-i18n-attr` の要素には英語の値の属性も書いておく（`build-ja.mjs` がその値を置き換える）。子要素を持つ要素に `data-i18n` は付けない。
 - 記事は `scripts/pages/<slug>.mjs`（`guide`・`make-a-demo`・`chord-symbols`・`backing-patterns`・`recording-tips`・`faq`）。パターン名・音色名・上限・コードの構成音は書き写さず `scripts/pages/app.mjs` がアプリから読む（見つからなければビルドが止まる）。記事を足したら `build-pages.mjs` の `PAGES` と、`index.html` の `intro.body` のガイド一覧（英日）、トップページ（ktkwmr/ktkwmr.com の `home.mjs`）にも足す。見た目を変えたら `node scripts/render-guide-images.mjs` で画面写真を撮り直す。
