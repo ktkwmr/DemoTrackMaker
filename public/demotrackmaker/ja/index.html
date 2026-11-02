@@ -183,6 +183,7 @@
   .song-head h2 { font-size: 15px; margin: 0; }
   .song-head label { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--muted); }
   .song-head input[type=range] { width: 90px; accent-color: var(--fg); }
+  .song-head select { padding: 4px 6px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--fg); font-size: 13px; }
   .song-head output { min-width: 22px; text-align: center; font-variant-numeric: tabular-nums; color: var(--fg); }
   .song-head .sm { min-width: 32px; min-height: 30px; padding: 2px 8px; }
   #songBody.off { opacity: .45; }
@@ -342,7 +343,7 @@
       <button id="songOnBtn" class="toggle" aria-pressed="true" data-i18n="song.on">伴奏オン</button>
       <label><span data-i18n="song.bars">小節</span>
         <button id="barsMinus" class="sm" data-i18n-attr="aria-label:song.barsLess" aria-label="小節を減らす">−</button><output id="barsOut">8</output><button id="barsPlus" class="sm" data-i18n-attr="aria-label:song.barsMore" aria-label="小節を増やす">+</button></label>
-      <label><span data-i18n="song.swing">ハネ</span> <input id="swing" type="range" min="0" max="1" step="0.05" value="0" /></label>
+      <label><span data-i18n="song.swing">シャッフル</span> <select id="swing"><option value="0" data-i18n="song.swOff">オフ</option><option value="0.5" data-i18n="song.swLight">軽め</option><option value="1" data-i18n="song.swFull">3連</option></select></label>
       <label><span data-i18n="song.humanize">揺らぎ</span> <input id="humanize" type="range" min="0" max="1" step="0.05" value="0.3" /></label>
       <label><span data-i18n="song.variation">バリエーション</span> <input id="variation" type="range" min="0" max="1" step="0.05" value="0.6" /></label>
       <button id="reseedBtn" data-i18n="song.reseed">別の案</button>
@@ -493,7 +494,7 @@ const I18N = {
   en: {
     "menu.settings": "Settings", "menu.help": "How to use",
     "song.title": "Chords & backing", "menu.guide": "Guides & articles", "guide.url": "/demotrackmaker/guide/", "loading": "Loading…", "err.license": "Could not load the license list. Reload the page to try again.", "about.license": "© 2026 ktkwmr · Licensed under the <a href=\"https://github.com/ktkwmr/DemoTrackMaker/blob/main/LICENSE\" target=\"_blank\" rel=\"noopener\">MIT License</a> · <a href=\"/demotrackmaker/about/\">About this site</a> · <a href=\"/demotrackmaker/privacy/\">Privacy policy</a>", "pos.menu": "Adjust position…", "pos.moved": "Moved “{name}”: {v}", "pos.title": "Position: {name}", "pos.start": "Starts at", "pos.beats": "beats", "pos.mBar": "−1 bar", "pos.mBeat": "−1 beat", "pos.pBeat": "+1 beat", "pos.pBar": "+1 bar", "pos.ms": "Offset (ms)", "pos.zero": "Back to 0", "pos.loop": "▶ Loop bar {n}", "pos.note": "+ moves the audio later, − earlier. Audio moved before 0 s is not played. The recorded file itself is not changed.", "mix.title": "Mixdown", "mix.format": "File format", "mix.wav": "Uncompressed, best quality (16-bit stereo). Larger files.", "mix.mp3": "Small files for sharing and listening on phones.", "mix.kbps": "Quality", "mix.ok": "Next", "mix.encoding": "Converting to MP3…", "mix.lameFail": "Could not load the MP3 encoder. Connect to the internet and try again, or choose WAV.", "name.title": "File name", "name.ok": "Export", "name.hint": "The file goes to your browser's download folder.", "fx.title": "Effects: {name}", "fx.open": "Effects for {name}", "fx.preset": "Preset", "fx.custom": "(custom)", "fx.dyn": "Compressor / drive", "fx.sends": "Reverb / delay (amount sent)", "fx.shared": "Shared by all tracks", "fx.revLen": "Reverb length", "fx.dlyNote": "Delay time", "fx.dlyFb": "Delay repeats", "fx.note": "The delay follows the tempo. Double-click a slider to reset it.", "fx.low": "Low (120 Hz)", "fx.mid": "Mid", "fx.mf": "Mid frequency", "fx.high": "High (8 kHz)", "fx.comp": "Compressor", "fx.drive": "Drive (distortion)", "fx.rev": "Reverb", "fx.dly": "Delay", "view.label": "View", "view.out": "Zoom out", "view.in": "Zoom in", "view.fit": "Whole song", "view.hint": "Pinch or Ctrl + wheel to zoom, drag to scroll, tap to move the playhead", "song.moved": "Moved bar {from} to position {to}.", "song.grip": "Move bar {n} (drag, long-press, or arrow keys)", "song.variation": "Variation", "song.reseed": "Another take", "song.reseeded": "Picked a different set of variations.", "song.ending": "Ending", "ed.varNote": "Automatic variations are not shown here; they are added on top of the pattern.", "ed.varBar": "Shows what plays, including automatic variations.", "song.bounce": "Backing → audio track", "part.bounce": "Render this part to an audio track", "msg.bounced": "Rendered “{name}” to an audio track and muted the original part.", "msg.noBacking": "The backing is off or has no notes.", "tk.bounced": "{name} (rendered)", "tk.backing": "Backing", "song.on": "Backing on", "song.offLabel": "Backing off", "song.bars": "Bars", "song.barsLess": "Remove a bar", "song.barsMore": "Add a bar",
-    "song.swing": "Swing", "song.humanize": "Feel", "song.text": "Type as text…", "song.undo": "Undo edit", "song.chords": "Chords",
+    "song.swing": "Shuffle", "song.swOff": "Off", "song.swLight": "Light", "song.swFull": "Full", "song.humanize": "Feel", "song.text": "Type as text…", "song.undo": "Undo edit", "song.chords": "Chords",
     "song.noFill": "No fill", "song.fillOf": "Drum fill in bar {n}", "song.chordAt": "Chord, bar {bar} beat {beat}", "song.editBar": "Edit", "song.editBarN": "Edit notes in bar {n}",
     "song.badChord": "Unknown chord name (examples: C, Am7, F#m7b5, G7sus4, C/E)", "song.textTitle": "Chords as text", "song.apply": "Apply", "song.textEmpty": "No bars found. Write bars like | C | G |",
     "song.textHelp": "Separate bars with |. One chord = whole bar, two = beats 1 and 3, otherwise one per beat (use . to keep the previous chord, % for a bar with no new chord). Example: | C | G | Am | F G |",
@@ -540,7 +541,7 @@ const I18N = {
   ja: {
     "menu.settings": "設定", "menu.help": "使い方",
     "song.title": "コードと伴奏", "menu.guide": "ガイド・記事", "guide.url": "/demotrackmaker/ja/guide/", "loading": "読み込み中…", "err.license": "ライセンスの一覧を読み込めませんでした。ページを再読み込みしてください。", "about.license": "© 2026 ktkwmr · <a href=\"https://github.com/ktkwmr/DemoTrackMaker/blob/main/LICENSE\" target=\"_blank\" rel=\"noopener\">MIT ライセンス</a> · <a href=\"/demotrackmaker/ja/about/\">運営者情報</a> · <a href=\"/demotrackmaker/ja/privacy/\">プライバシーポリシー</a>", "pos.menu": "位置を調整…", "pos.moved": "「{name}」を移動: {v}", "pos.title": "位置の調整: {name}", "pos.start": "開始位置", "pos.beats": "拍", "pos.mBar": "−1 小節", "pos.mBeat": "−1 拍", "pos.pBeat": "+1 拍", "pos.pBar": "+1 小節", "pos.ms": "ずらす量（ミリ秒）", "pos.zero": "0 に戻す", "pos.loop": "▶ {n} 小節目を繰り返し", "pos.note": "+ で後ろ、− で前に動きます。0 秒より前に出た部分は鳴りません。音声ファイルそのものは変わりません。", "mix.title": "ミックスダウン", "mix.format": "ファイル形式", "mix.wav": "無圧縮で最高音質（16bit ステレオ）。ファイルは大きめ。", "mix.mp3": "ファイルが小さく、共有やスマホで聞くのに向く。", "mix.kbps": "音質", "mix.ok": "次へ", "mix.encoding": "MP3 に変換中…", "mix.lameFail": "MP3 の変換部品を読み込めませんでした。ネットにつないでもう一度試すか、WAV を選んでください。", "name.title": "ファイル名", "name.ok": "書き出す", "name.hint": "ブラウザのダウンロード先に保存されます。", "fx.title": "エフェクト: {name}", "fx.open": "{name}のエフェクト", "fx.preset": "プリセット", "fx.custom": "（調整済み）", "fx.dyn": "コンプ・歪み", "fx.sends": "リバーブ・ディレイ（送る量）", "fx.shared": "全トラック共通", "fx.revLen": "リバーブの長さ", "fx.dlyNote": "ディレイの間隔", "fx.dlyFb": "ディレイの繰り返し", "fx.note": "ディレイの間隔はテンポに合わせます。つまみをダブルクリックすると元に戻ります。", "fx.low": "低音（120 Hz）", "fx.mid": "中音", "fx.mf": "中音の周波数", "fx.high": "高音（8 kHz）", "fx.comp": "コンプレッサー", "fx.drive": "歪み（ドライブ）", "fx.rev": "リバーブ", "fx.dly": "ディレイ", "view.label": "表示", "view.out": "縮小", "view.in": "拡大", "view.fit": "全体", "view.hint": "ピンチ・Ctrl＋ホイールで拡大縮小、ドラッグで左右に移動、タップで再生位置", "song.moved": "{from} 小節目を {to} 番目に移動しました。", "song.grip": "{n} 小節目を移動（ドラッグ・長押し・矢印キー）", "song.variation": "バリエーション", "song.reseed": "別の案", "song.reseeded": "バリエーションの組み合わせを変えました。", "song.ending": "エンディング", "ed.varNote": "自動のバリエーションはここには出ません（パターンの上に足されます）。", "ed.varBar": "自動のバリエーションも含めて、実際に鳴る音を表示しています。", "song.bounce": "伴奏を音声トラックに", "part.bounce": "このパートを音声トラックに書き出す", "msg.bounced": "「{name}」を音声トラックに書き出し、元のパートはミュートしました。", "msg.noBacking": "伴奏がオフか、音がありません。", "tk.bounced": "{name}（書き出し）", "tk.backing": "伴奏", "song.on": "伴奏オン", "song.offLabel": "伴奏オフ", "song.bars": "小節", "song.barsLess": "小節を減らす", "song.barsMore": "小節を増やす",
-    "song.swing": "ハネ", "song.humanize": "揺らぎ", "song.text": "テキストで入力…", "song.undo": "編集を戻す", "song.chords": "コード",
+    "song.swing": "シャッフル", "song.swOff": "オフ", "song.swLight": "軽め", "song.swFull": "3連", "song.humanize": "揺らぎ", "song.text": "テキストで入力…", "song.undo": "編集を戻す", "song.chords": "コード",
     "song.noFill": "フィルなし", "song.fillOf": "{n} 小節目のドラムのフィル", "song.chordAt": "{bar} 小節 {beat} 拍目のコード", "song.editBar": "編集", "song.editBarN": "{n} 小節目の音を編集",
     "song.badChord": "読めないコード名です（例: C, Am7, F#m7b5, G7sus4, C/E）", "song.textTitle": "テキストでコード入力", "song.apply": "反映", "song.textEmpty": "小節が見つかりません。| C | G | のように書いてください",
     "song.textHelp": "小節は | で区切ります。1 つなら小節全体、2 つなら 1 拍目と 3 拍目、それ以外は 1 拍ずつ（. は前のコードのまま、% は新しいコードのない小節）。例: | C | G | Am | F G |",
@@ -2729,12 +2730,15 @@ function defaultSong(enabled = true) {
     },
   };
 }
+// Shuffle has three steps: off (straight 8ths), light (off-beat 8th at 58 %), full (triplet, 67 %).
+// Older projects saved any value from 0 to 1, so they snap to the nearest step.
+const swingStep = (v) => (v < 0.25 ? 0 : v < 0.75 ? 0.5 : 1);
 function normalizeSong(s) {
   const d = defaultSong(true);
   if (!s || typeof s !== "object") return d;
   const out = {
     enabled: s.enabled !== false, bars: Math.round(clamp(+s.bars, 1, MAX_BARS, 8)),
-    swing: clamp(+s.swing, 0, 1, 0), humanize: clamp(+s.humanize, 0, 1, 0.3),
+    swing: swingStep(clamp(+s.swing, 0, 1, 0)), humanize: clamp(+s.humanize, 0, 1, 0.3),
     variation: clamp(+s.variation, 0, 1, 0.6), ending: s.ending === true, seed: Math.round(clamp(+s.seed, 0, 1e6, 0)), chords: [], parts: {},
   };
   for (let b = 0; b < out.bars; b++) {
@@ -3439,7 +3443,7 @@ function renderChordGrid() {
   $("#songOnBtn").setAttribute("aria-pressed", S.enabled);
   $("#songOnBtn").textContent = t(S.enabled ? "song.on" : "song.offLabel");
   $("#barsOut").textContent = S.bars;
-  $("#swing").value = S.swing;
+  $("#swing").value = String(swingStep(S.swing));
   $("#humanize").value = S.humanize;
   $("#variation").value = S.variation;
   $("#endingBtn").setAttribute("aria-pressed", !!S.ending);
@@ -4108,7 +4112,7 @@ function setupSongPanel() {
   $("#songOnBtn").addEventListener("click", () => { state.song.enabled = !state.song.enabled; songChanged({ grid: true }); });
   $("#barsMinus").addEventListener("click", () => setBars(state.song.bars - 1));
   $("#barsPlus").addEventListener("click", () => setBars(state.song.bars + 1));
-  $("#swing").addEventListener("change", () => { state.song.swing = +$("#swing").value; songChanged(); });
+  $("#swing").addEventListener("change", () => { state.song.swing = swingStep(+$("#swing").value); songChanged(); });
   $("#humanize").addEventListener("change", () => { state.song.humanize = +$("#humanize").value; songChanged(); });
   $("#variation").addEventListener("change", () => { pushSongHistory(); state.song.variation = +$("#variation").value; $("#reseedBtn").disabled = !state.song.variation; songChanged(); });
   $("#reseedBtn").addEventListener("click", () => { pushSongHistory(); state.song.seed = ((state.song.seed || 0) + 1) % 1e6; songChanged(); toast(t("song.reseeded")); });
