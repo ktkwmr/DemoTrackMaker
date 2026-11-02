@@ -2,6 +2,8 @@
   "name": "demotrackmaker",
   "compatibility_date": "2026-10-01",
   "observability": { "enabled": true },
+  // Regenerates ja/index.html, the guide / info pages, and sitemap.xml before deploy / dev
+  "build": { "command": "node scripts/build-ja.mjs && node scripts/build-pages.mjs" },
   // Required by `wrangler preview`, which Workers Builds runs for non-production branches
   "previews": {},
   // Second or later app on ktkwmr.com: this Worker only serves /demotrackmaker* (the domain root is ktkwmr/ktkwmr.com)

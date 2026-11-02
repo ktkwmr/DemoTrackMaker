@@ -17,7 +17,7 @@ import { fileURLToPath } from "node:url";
 const SLUG = "demotrackmaker";
 const NAME = "Demo Track Maker";
 // Files the page fetches or starts with a relative URL
-const FILES = [];
+const FILES = ["THIRD_PARTY_LICENSES.md", "icons/icon.svg"];
 
 const src = new URL(`../public/${SLUG}/`, import.meta.url);
 const out = new URL("../.preview/", import.meta.url);
