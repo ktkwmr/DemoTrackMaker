@@ -175,8 +175,9 @@
   .song-head select { padding: 4px 6px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--fg); font-size: 13px; }
   .song-head output { min-width: 22px; text-align: center; font-variant-numeric: tabular-nums; color: var(--fg); }
   .song-head .sm { min-width: 32px; min-height: 30px; padding: 2px 8px; }
+  .bars-row { margin-top: 10px; } /* number of bars, right above the chord chart */
   #songBody.off { opacity: .45; }
-  .chord-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(165px, 1fr)); gap: 8px; margin-top: 10px; }
+  .chord-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(165px, 1fr)); gap: 8px; margin-top: 8px; }
   .cbar { border: 1px solid var(--line); border-radius: 8px; padding: 4px; background: var(--bg); min-width: 0; }
   .cbar.now { border-color: var(--fg); box-shadow: 0 0 0 1px var(--fg) inset; }
   .cbar { cursor: grab; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
@@ -332,8 +333,6 @@
     <div class="song-head">
       <h2 id="songTitle" data-i18n="song.title">Chords &amp; backing</h2>
       <button id="songOnBtn" class="toggle" aria-pressed="true" data-i18n="song.on">Backing on</button>
-      <label><span data-i18n="song.bars">Bars</span>
-        <button id="barsMinus" class="sm" data-i18n-attr="aria-label:song.barsLess" aria-label="Remove a bar">−</button><output id="barsOut">8</output><button id="barsPlus" class="sm" data-i18n-attr="aria-label:song.barsMore" aria-label="Add a bar">+</button></label>
       <label><span data-i18n="song.key">Key</span> <select id="songKey" data-i18n-attr="title:song.keyHelp" title="Moves the whole backing up or down in half steps. The chords you typed stay as they are."></select></label>
       <button id="swingBtn" class="toggle" aria-pressed="false" data-i18n="song.swing" data-i18n-attr="title:song.swingHelp" title="Plays the off-beat 8th notes late, in a triplet feel (blues, jazz)">Shuffle</button>
       <label><span data-i18n="song.humanize">Feel</span> <input id="humanize" type="range" min="0" max="1" step="0.05" value="0.3" /></label>
@@ -343,6 +342,10 @@
       <button id="chordTextBtn" data-i18n="song.text">Type as text…</button>
       <button class="songUndo" disabled data-i18n="song.undo">Undo edit</button>
       <button id="bounceAllBtn" data-i18n="song.bounce">Backing → audio track</button>
+    </div>
+    <div class="song-head bars-row">
+      <label><span data-i18n="song.bars">Bars</span>
+        <button id="barsMinus" class="sm" data-i18n-attr="aria-label:song.barsLess" aria-label="Remove a bar">−</button><output id="barsOut">8</output><button id="barsPlus" class="sm" data-i18n-attr="aria-label:song.barsMore" aria-label="Add a bar">+</button></label>
     </div>
     <div id="songBody">
       <div id="chordGrid" class="chord-grid"></div>
