@@ -36,6 +36,7 @@
   トラックの WAV 書き出しは曲の頭に合わせて無音を足す／切る（`alignedBuffer`）。zip の WAV は元のままで、ずれは project.json の `offset`。ずらしたトラックの手前に録音すると、音声の頭に無音を足して `offset` を前に動かす。
 - エフェクト: トラックの `fx` と `song.parts.*.fx`（`low`/`mid`/`high` dB・`mf` Hz・`comp`/`drive`/`rev`/`dly` 0〜1）、共通の `fx`（`revLen` 秒・`dlyNote`・`dlyFb`）。
   チャンネルは input → EQ → 歪み → コンプ → 音量 → 定位、音量のあとから共通のリバーブ（合成したインパルス応答）とテンポ同期のディレイへ送る（`makeStrip`・`makeFxBus`）。ミックスダウンと書き出しも同じ構成（`renderMix`）。
+- 再生の終わり: 曲の終わり（伴奏と最後の音声トラックの長いほう、`contentEnd`）まで再生したら停止して先頭に戻す（`frame` で `stopAll`）。録音中と、終わりより後から再生を始めたときは止めない。
 - 「フォルダに保存」は zip の書き出しと用途が重なるので削除した（どの端末でも使える zip に一本化）。
 - 書き出すファイルの名前: `exportFile`。PC の Chrome・Edge は showSaveFilePicker（名前と保存先）、それ以外はページ内の名前の入力欄のあと通常のダウンロード。初期値は zip がプロジェクト名、ミックスダウンは「-mix」、MIDI は「-backing」、トラックは「-トラック名」を付ける。
 - マスター: 全体のコンプのあとにリミッター（`limiterChain`: -1 dB・20:1 の速いコンプ＋0.99 を超えないソフトクリップ）。ミックスダウンはさらに書き出した音に先読みのピークリミッター（`limitBuffer`、上限 -1 dBFS）をかける。

@@ -83,7 +83,7 @@ export default {
 <ol>
   <li>Press <b>R</b> on an audio track. The browser asks for the microphone the first time. The <b>Input</b> meter shows the level.</li>
   <li>Press <b>●</b>. With <b>Count-in</b> on, one bar of clicks plays first. <b>Click</b> plays a metronome during recording and playback.</li>
-  <li>Press <b>■</b> to stop (■ always goes back to the start). Recording again on the same track replaces only the recorded range. <b>Undo</b> brings back the previous take.</li>
+  <li>Press <b>■</b> to stop (■ always goes back to the start). Playback also stops and goes back to the start when it reaches the end of the song (the backing or the last track, whichever is longer). Recording again on the same track replaces only the recorded range. <b>Undo</b> brings back the previous take.</li>
 </ol>
 <div class="note"><p>Use headphones. With speakers, the backing goes into the microphone. If takes sound late or early compared with the backing, adjust ⚙ → <b>Recording latency</b>. Up to ${MAX_TRACKS} audio tracks. More tips: <a href="../recording-tips/">recording vocals and guitar at home</a>.</p></div>
 
@@ -203,7 +203,7 @@ export default {
 <ol>
   <li>音声トラックの <b>R</b> を押します。初回はブラウザがマイクの許可を求めます。<b>入力</b>のメーターに音の大きさが出ます。</li>
   <li><b>●</b> を押します。<b>録音前カウント</b>がオンなら、クリックが 1 小節鳴ってから録音が始まります。<b>クリック</b>をオンにすると、録音中も再生中もメトロノームが鳴ります。</li>
-  <li><b>■</b> で止めます（■ は常に先頭に戻ります）。同じトラックにもう一度録ると、録った範囲だけ置き換わります。<b>元に戻す</b>で前のテイクに戻せます。</li>
+  <li><b>■</b> で止めます（■ は常に先頭に戻ります）。曲の終わり（伴奏と最後のトラックの長いほう）まで再生したときも、止まって先頭に戻ります。同じトラックにもう一度録ると、録った範囲だけ置き換わります。<b>元に戻す</b>で前のテイクに戻せます。</li>
 </ol>
 <div class="note"><p>ヘッドホンを使ってください。スピーカーだと伴奏がマイクに入ります。録った音が伴奏より遅れて（早く）聞こえるときは、⚙ →「<b>録音のずれ補正</b>」で調整します。音声トラックは最大 ${MAX_TRACKS} 本です。録音のコツは<a href="../recording-tips/">家で歌・ギターをきれいに録るコツ</a>へ。</p></div>
 
