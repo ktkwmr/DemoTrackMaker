@@ -4150,7 +4150,7 @@ function setupSongPanel() {
   $("#barsMinus").addEventListener("click", () => setBars(state.song.bars - 1));
   $("#barsPlus").addEventListener("click", () => setBars(state.song.bars + 1));
   $("#swingBtn").addEventListener("click", () => { pushSongHistory(); state.song.swing = state.song.swing ? 0 : 1; songChanged({ grid: true }); });
-  $("#songKey").innerHTML = Array.from({ length: 2 * MAX_KEY + 1 }, (_, i) => i - MAX_KEY).map((k) => `<option value="${k}">${keyLabel(k)}</option>`).join("");
+  $("#songKey").innerHTML = Array.from({ length: 2 * MAX_KEY + 1 }, (_, i) => MAX_KEY - i).map((k) => `<option value="${k}">${keyLabel(k)}</option>`).join("");
   $("#songKey").addEventListener("change", () => {
     pushSongHistory();
     state.song.key = Math.round(clamp(+$("#songKey").value, -MAX_KEY, MAX_KEY, 0));
