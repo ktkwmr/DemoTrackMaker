@@ -65,6 +65,7 @@
 | 10-9 | 専門家視点の校閲 | ✅ | `docs/article-review.md` の「Claude による校閲」 |
 | 11-1〜11-3 | Web Analytics | ✅ | 全ページに beacon。404 にはなし |
 | 11-4 | 本番で beacon を確認 | 👤 | |
+| 17 | Zaraz + GA4（同意したときだけ） | ⚠️ | 2026-11-28 に実装（`docs/analytics.md`）。本番での確認・Configuration Rule の削除（17-13）・GA4 のカスタム定義の登録は 👤 待ち |
 | 12-1〜12-2 | Actions | ✅ | build-ja.yml・third-party-licenses.yml |
 | 12-9 | 2 回目以降・日本語ページの E2E | ✅ | SW が制御する 2 回目の訪問、`/ja/` での録音・MP3 書き出し |
 | 12-12 | 初回の Artifact | ✅ | 上の URL |

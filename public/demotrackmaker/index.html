@@ -292,6 +292,9 @@
     @media (hover: hover) { .related a:hover { border-color: var(--fg); background: var(--soft); } }
     @media (prefers-reduced-motion: reduce) { .related a { transition: none; } .related a:active { transform: none; } }
 </style>
+  <!-- Usage analytics: Cloudflare Zaraz → Google Analytics 4, only after consent (see usage-events.js) -->
+  <script src="/cdn-cgi/zaraz/i.js" referrerpolicy="origin"></script>
+  <script src="/demotrackmaker/usage-events.js"></script>
 </head>
 <body>
 <header class="top">
@@ -407,6 +410,7 @@
         <span>Demo Track Maker · © 2026 ktkwmr</span>
         <a href="/demotrackmaker/privacy/" target="_blank" rel="noopener">Privacy policy</a>
         <a href="/demotrackmaker/about/" target="_blank" rel="noopener">About this site</a>
+        <a href="#" class="cookie-settings">Cookie settings</a>
         <a href="https://github.com/ktkwmr/DemoTrackMaker" target="_blank" rel="noopener">Source code on GitHub</a>
         <a href="https://github.com/ktkwmr/DemoTrackMaker/issues" target="_blank" rel="noopener">Feedback</a>
         <a href="https://ktkwmr.com/" target="_blank" rel="noopener">More apps by ktkwmr</a>
@@ -511,7 +515,8 @@
 </dialog>
 <dialog id="privacyDlg" tabindex="-1" aria-labelledby="privTitle">
   <h2 id="privTitle" data-i18n="privacy.title">Privacy</h2>
-  <div data-i18n-html="privacy.body"></div>
+  <div data-i18n-html="privacy.body"><p>Audio is recorded and processed only on your device. Nothing you record is sent to any server.</p><p>Your project (settings and audio) is kept in this browser's storage (IndexedDB) so you can continue after reloading. “Clear all” deletes it. Exported files are saved only where you choose.</p><p>Only when you choose MP3 for a mixdown, the MP3 encoder (lamejs) is downloaded once from jsDelivr (cdn.jsdelivr.net), which receives your IP address like any website. Your audio is not sent: the conversion runs on your device.</p><p>Page views are counted with Cloudflare Web Analytics (no cookies). See the <a href="/demotrackmaker/privacy/" target="_blank" rel="noopener">privacy policy</a> for details.</p><p>Only if you choose “Accept all” in the cookie banner, Google Analytics (through Cloudflare Zaraz, sent from Cloudflare's servers with a shortened IP address) records how the app is used: pages viewed and for how long, buttons tapped and settings changed, playing and recording time, and the kinds of files exported or imported. Names, chords, and your recordings are never sent. Change your choice from “Cookie settings” at the bottom of the page.</p>
+</div>
   <div class="acts"><button data-close data-i18n="dlg.close">Close</button></div>
 </dialog>
 <dialog id="aboutDlg" tabindex="-1" aria-labelledby="aboutTitle">
@@ -555,7 +560,7 @@ const I18N = {
     "rel.2.text": "Add a harmony to your demo vocals",
     "rel.2.href": "/vocalharmonymaker/",
     "home.url": "https://ktkwmr.com/",
-    "foot.meta": "<span>Demo Track Maker · © 2026 ktkwmr</span>\n<a href=\"/demotrackmaker/privacy/\" target=\"_blank\" rel=\"noopener\">Privacy policy</a>\n<a href=\"/demotrackmaker/about/\" target=\"_blank\" rel=\"noopener\">About this site</a>\n<a href=\"https://github.com/ktkwmr/DemoTrackMaker\" target=\"_blank\" rel=\"noopener\">Source code on GitHub</a>\n<a href=\"https://github.com/ktkwmr/DemoTrackMaker/issues\" target=\"_blank\" rel=\"noopener\">Feedback</a>\n<a href=\"https://ktkwmr.com/\" target=\"_blank\" rel=\"noopener\">More apps by ktkwmr</a>",
+    "foot.meta": "<span>Demo Track Maker · © 2026 ktkwmr</span>\n<a href=\"/demotrackmaker/privacy/\" target=\"_blank\" rel=\"noopener\">Privacy policy</a>\n<a href=\"/demotrackmaker/about/\" target=\"_blank\" rel=\"noopener\">About this site</a>\n<a href=\"#\" class=\"cookie-settings\">Cookie settings</a>\n<a href=\"https://github.com/ktkwmr/DemoTrackMaker\" target=\"_blank\" rel=\"noopener\">Source code on GitHub</a>\n<a href=\"https://github.com/ktkwmr/DemoTrackMaker/issues\" target=\"_blank\" rel=\"noopener\">Feedback</a>\n<a href=\"https://ktkwmr.com/\" target=\"_blank\" rel=\"noopener\">More apps by ktkwmr</a>",
     "tr.home": "Go to start", "tr.play": "Play / pause", "tr.stop": "Stop", "tr.rec": "Record",
     "tr.bpm": "BPM", "tr.beats": "Beats", "tr.metro": "Click", "tr.countin": "Count-in", "tr.countinHelp": "Play one bar of clicks before recording starts", "tr.input": "Input", "tr.undo": "Undo",
     "pj.label": "Project", "pj.name": "Project name", "pj.export": "Export project (.zip)", "pj.import": "Open project…",
@@ -576,7 +581,7 @@ const I18N = {
     "help.title": "How to use",
     "help.body": "<ol><li>Type chords in <b>Chords &amp; backing</b> (one box per beat; an empty box keeps the previous chord). Bass, piano and drums play along automatically. Pick a pattern and a sound for each part, and choose a drum fill for any bar.</li><li><b>Backing as MIDI</b> saves bass, piano and drums as a standard MIDI file (with tempo, time signature and chord names as markers) to open in a DAW. <b>Backing → audio track</b> (or ⋯ on a part) renders the backing into a recorded track, so you can edit or export it like any take.</li><li><b>Variation</b> makes the band play like people do: bass runs into the next chord, the piano anticipates chord changes and adds colour notes, the drums add crashes, open hi-hats, ghost notes and short lead-ins at the end of 4- and 8-bar phrases. <b>Another take</b> picks a different set; set Variation to 0 for the plain pattern. <b>Ending</b> lets the band play the last bar up to its last chord, then hold that chord. <b>Key</b> moves the whole backing up or down by up to 6 half steps (the chords you typed stay as they are; recorded audio does not change).</li><li>To change single notes, press <b>Edit</b> on a part (or double-tap its lane). Choose <b>Whole pattern</b> to change every bar, or <b>This bar only</b>.</li><li>Press <b>R</b> on a track to arm it (the browser asks for the microphone the first time).</li><li>Press <b>●</b> to record. With Count-in on, one bar of clicks plays first. Use headphones so other tracks do not leak into the microphone.</li><li>Press <b>■</b> to stop. Recording again on the same track replaces only the recorded range. <b>Undo</b> brings back the previous take.</li><li><b>FX</b> on each track and part opens its effects: EQ, compressor, drive, and how much goes to the shared reverb and tempo-synced delay. Presets (vocal, acoustic, crunch guitar …) are a starting point.</li><li>To move a take, long-press its waveform and drag (Alt + drag on a computer; hold Shift to snap to 16ths). For fine steps use ⋯ → <b>Adjust position…</b> on the track: move it by 1 ms, 10 ms, a beat or a bar, or type the offset, while looping the bar.</li><li>Each part has a <b>Sound</b> menu: 8 bass sounds (finger, pick, slap, muted, upright, synth, analog synth, 808) and 6 drum kits (standard, rock, brushes, 808, 909, lo-fi). Drums also have clap, tambourine, shaker and cowbell.</li><li>Tap the timeline to move the playhead (■ always goes back to the start, and playback stops and goes back to the start at the end of the song). Pinch, Ctrl + wheel or − / + to zoom, drag or scroll sideways to move along; during playback the view follows the playhead. Drag a bar in the chord chart (long-press on a touch screen, or ⠿ and the arrow keys) to move it.</li><li>Your work is saved in this browser automatically. To keep it safe or move it to another device, use <b>Export project (.zip)</b> and later <b>Open project…</b>. When exporting you choose the file name (the project name by default); in Chrome / Edge on a computer you also choose the folder. The zip contains <code>project.json</code> (settings) and one WAV file per track.</li></ol><p>See the <a href=\"/demotrackmaker/guide/\" target=\"_blank\" rel=\"noopener\">full guide with screenshots</a>.</p>",
     "privacy.title": "Privacy",
-    "privacy.body": "<p>Audio is recorded and processed only on your device. Nothing you record is sent to any server.</p><p>Your project (settings and audio) is kept in this browser's storage (IndexedDB) so you can continue after reloading. “Clear all” deletes it. Exported files are saved only where you choose.</p><p>Only when you choose MP3 for a mixdown, the MP3 encoder (lamejs) is downloaded once from jsDelivr (cdn.jsdelivr.net), which receives your IP address like any website. Your audio is not sent: the conversion runs on your device.</p><p>Page views are counted with Cloudflare Web Analytics (no cookies). See the <a href=\"/demotrackmaker/privacy/\" target=\"_blank\" rel=\"noopener\">privacy policy</a> for details.</p>",
+    "privacy.body": "<p>Audio is recorded and processed only on your device. Nothing you record is sent to any server.</p><p>Your project (settings and audio) is kept in this browser's storage (IndexedDB) so you can continue after reloading. “Clear all” deletes it. Exported files are saved only where you choose.</p><p>Only when you choose MP3 for a mixdown, the MP3 encoder (lamejs) is downloaded once from jsDelivr (cdn.jsdelivr.net), which receives your IP address like any website. Your audio is not sent: the conversion runs on your device.</p><p>Page views are counted with Cloudflare Web Analytics (no cookies). See the <a href=\"/demotrackmaker/privacy/\" target=\"_blank\" rel=\"noopener\">privacy policy</a> for details.</p><p>Only if you choose “Accept all” in the cookie banner, Google Analytics (through Cloudflare Zaraz, sent from Cloudflare's servers with a shortened IP address) records how the app is used: pages viewed and for how long, buttons tapped and settings changed, playing and recording time, and the kinds of files exported or imported. Names, chords, and your recordings are never sent. Change your choice from “Cookie settings” at the bottom of the page.</p>",
     "about.title": "About this app",
     "about.body": "<p><b>Demo Track Maker</b> — sketch a demo of your song in the browser: type the chords, get bass, piano and drums, then record your voice or instrument on top.</p><p>It is made for song demos, practice and backing tracks, and arrangement sketches — not as a full recording studio. For detailed editing and mixing, export WAV or MIDI to a DAW.</p><p>Prototype. Made by ktkwmr. Recording timing depends on the device; adjust it in ⚙ → Recording latency.</p>",
     "intro.title": "Make a demo track: type chords, get a band, record on top",
@@ -610,7 +615,7 @@ const I18N = {
     "rel.2.text": "デモの歌にハモリを追加",
     "rel.2.href": "/vocalharmonymaker/ja/",
     "home.url": "https://ktkwmr.com/ja/",
-    "foot.meta": "<span>Demo Track Maker · © 2026 ktkwmr</span>\n<a href=\"/demotrackmaker/ja/privacy/\" target=\"_blank\" rel=\"noopener\">プライバシーポリシー</a>\n<a href=\"/demotrackmaker/ja/about/\" target=\"_blank\" rel=\"noopener\">運営者情報</a>\n<a href=\"https://github.com/ktkwmr/DemoTrackMaker\" target=\"_blank\" rel=\"noopener\">GitHub のソースコード</a>\n<a href=\"https://github.com/ktkwmr/DemoTrackMaker/issues\" target=\"_blank\" rel=\"noopener\">ご意見・ご質問</a>\n<a href=\"https://ktkwmr.com/ja/\" target=\"_blank\" rel=\"noopener\">ktkwmr のほかのアプリ</a>",
+    "foot.meta": "<span>Demo Track Maker · © 2026 ktkwmr</span>\n<a href=\"/demotrackmaker/ja/privacy/\" target=\"_blank\" rel=\"noopener\">プライバシーポリシー</a>\n<a href=\"/demotrackmaker/ja/about/\" target=\"_blank\" rel=\"noopener\">運営者情報</a>\n<a href=\"#\" class=\"cookie-settings\">Cookie の設定</a>\n<a href=\"https://github.com/ktkwmr/DemoTrackMaker\" target=\"_blank\" rel=\"noopener\">GitHub のソースコード</a>\n<a href=\"https://github.com/ktkwmr/DemoTrackMaker/issues\" target=\"_blank\" rel=\"noopener\">ご意見・ご質問</a>\n<a href=\"https://ktkwmr.com/ja/\" target=\"_blank\" rel=\"noopener\">ktkwmr のほかのアプリ</a>",
     "tr.home": "先頭へ", "tr.play": "再生／一時停止", "tr.stop": "停止", "tr.rec": "録音",
     "tr.bpm": "BPM", "tr.beats": "拍子", "tr.metro": "クリック", "tr.countin": "録音前カウント", "tr.countinHelp": "録音を始める前に、クリックを 1 小節鳴らします", "tr.input": "入力", "tr.undo": "元に戻す",
     "pj.label": "プロジェクト", "pj.name": "プロジェクト名", "pj.export": "書き出し（.zip）", "pj.import": "読み込み…",
@@ -631,7 +636,7 @@ const I18N = {
     "help.title": "使い方",
     "help.body": "<ol><li><b>コードと伴奏</b> にコードを入力します（1 拍に 1 マス。空のマスは前のコードが続きます）。ベース・ピアノ・ドラムが自動で伴奏します。パートごとにパターンと音色を選び、ドラムのフィルは小節ごとに選べます。</li><li><b>伴奏を MIDI で書き出し</b> で、ベース・ピアノ・ドラムを標準 MIDI ファイル（テンポ・拍子・コード名のマーカー入り）に書き出し、DAW で開けます。<b>伴奏を音声トラックに</b>（またはパートの ⋯）で、伴奏を録音トラックの音声に変換できます。</li><li><b>バリエーション</b> で、人が弾くような変化を自動で付けます。ベースは次のコードへ駆け上がり、ピアノはコードを先取りして和音に色を足し、ドラムは 4 小節・8 小節の区切りでクラッシュ・オープンハイハット・ゴーストノート・短いつなぎを入れます。<b>別の案</b> で組み合わせが変わり、0 にすると元のパターンのままです。<b>エンディング</b> がオンなら、最後の小節は最後のコードまでふつうに演奏し、そのコードを全員で伸ばして終わります。<b>キー</b> で伴奏全体を半音ずつ最大 6 つ上げ下げできます（入力したコードはそのまま。録音した音声は変わりません）。</li><li>1 音ずつ変えるときは、パートの <b>編集</b>（またはパートの行をダブルタップ）。<b>パターン全体</b> ならすべての小節に、<b>この小節だけ</b> ならその小節にだけ反映されます。</li><li>トラックの <b>R</b> を押して録音待機にします（初回はマイクの許可を求められます）。</li><li><b>●</b> で録音開始。「カウント」がオンなら 1 小節クリックが鳴ってから始まります。ほかのトラックの音がマイクに入らないよう、ヘッドホンを使ってください。</li><li><b>■</b> で停止。同じトラックにもう一度録ると、録った範囲だけ置き換わります。<b>元に戻す</b>で前のテイクに戻せます。</li><li>トラックとパートの <b>FX</b> でエフェクト（EQ・コンプ・歪み、共通のリバーブとテンポに合わせたディレイへ送る量）を付けられます。プリセット（ボーカル・アコギ・エレキなど）から始めると簡単です。</li><li>読み込んだ音声や録ったテイクは、波形を長押ししてからドラッグすると動かせます（PC では Alt を押しながらドラッグでも可。Shift で 16 分音符に吸い付きます）。細かい調整はトラックの ⋯ →「<b>位置を調整…</b>」でできます（1 ms・10 ms・1 拍・1 小節ずつ、または数字で。小節を繰り返し聞きながら調整できます）。</li><li>パートごとに <b>音色</b> を選べます。ベースは 8 種類（指弾き・ピック・スラップ・ミュート・ウッドベース・シンセ・アナログシンセ・808）、ドラムは 6 セット（スタンダード・ロック・ブラシ・808・909・ローファイ）。ドラムにはクラップ・タンバリン・シェイカー・カウベルもあります。</li><li>タイムラインを押すと再生位置が動きます（■ はいつも先頭に戻ります。曲の終わりまで再生すると、止まって先頭に戻ります）。ピンチ・Ctrl＋ホイール・− / + で拡大縮小、ドラッグや横スクロールで左右に移動し、再生中は再生位置に合わせて表示が送られます。コード譜の小節は、ドラッグ（タッチ画面では長押ししてから）か ⠿ と矢印キーで移動できます。</li><li>作業内容はこのブラウザに自動で保存されます。消えないように残したいときや別の端末に移すときは <b>書き出し（.zip）</b>、続きをやるときは <b>読み込み…</b>。書き出すときはファイル名を選べます（最初はプロジェクト名）。PC の Chrome・Edge では保存先のフォルダも選べます。zip の中身は設定の <code>project.json</code> とトラックごとの WAV ファイルです。</li></ol><p>詳しい説明と画面の写真は <a href=\"/demotrackmaker/ja/guide/\" target=\"_blank\" rel=\"noopener\">使い方ガイド</a> にあります。</p>",
     "privacy.title": "プライバシー",
-    "privacy.body": "<p>録音と処理はすべてお使いの端末の中で行います。録音した音をサーバーに送ることはありません。</p><p>再読み込みしても続けられるよう、プロジェクト（設定と音声）をこのブラウザの保存領域（IndexedDB）に保存します。「すべてクリア」で消去できます。書き出したファイルは、あなたが選んだ場所にだけ保存されます。</p><p>ミックスダウンで MP3 を選んだときだけ、MP3 に変換する部品（lamejs）を jsDelivr（cdn.jsdelivr.net）から 1 回だけ読み込みます。そのとき、一般の Web サイトと同じく IP アドレスが jsDelivr に届きます。音声は送りません（変換は端末の中で行います）。</p><p>ページの閲覧数を Cloudflare Web Analytics（Cookie を使わない）で数えています。詳しくは <a href=\"/demotrackmaker/ja/privacy/\" target=\"_blank\" rel=\"noopener\">プライバシーポリシー</a> をご覧ください。</p>",
+    "privacy.body": "<p>録音と処理はすべてお使いの端末の中で行います。録音した音をサーバーに送ることはありません。</p><p>再読み込みしても続けられるよう、プロジェクト（設定と音声）をこのブラウザの保存領域（IndexedDB）に保存します。「すべてクリア」で消去できます。書き出したファイルは、あなたが選んだ場所にだけ保存されます。</p><p>ミックスダウンで MP3 を選んだときだけ、MP3 に変換する部品（lamejs）を jsDelivr（cdn.jsdelivr.net）から 1 回だけ読み込みます。そのとき、一般の Web サイトと同じく IP アドレスが jsDelivr に届きます。音声は送りません（変換は端末の中で行います）。</p><p>ページの閲覧数を Cloudflare Web Analytics（Cookie を使わない）で数えています。詳しくは <a href=\"/demotrackmaker/ja/privacy/\" target=\"_blank\" rel=\"noopener\">プライバシーポリシー</a> をご覧ください。</p><p>Cookie のバナーで「すべて同意」を選んだ場合に限り、Google アナリティクス（Cloudflare Zaraz 経由。Cloudflare のサーバーから IP アドレスの末尾を削って送信）でアプリの使われ方（見たページと時間、押したボタンと変えた設定、再生・録音の時間、書き出し・読み込んだファイルの種類）を記録します。名前・コード・録音した音は送りません。選択はページ下の「Cookie の設定」から変えられます。</p>",
     "about.title": "このアプリについて",
     "about.body": "<p><b>Demo Track Maker</b> — コードを入れると伴奏ができ、その上に歌や楽器を重ねて録れる、デモ音源づくりのためのブラウザのアプリです。</p><p>曲のアイデアを聞かせるデモ、練習用の伴奏、アレンジの下書きのための道具で、本格的な録音スタジオ（DAW）の代わりではありません。細かい編集やミックスは、WAV や MIDI に書き出して DAW で行ってください。</p><p>試作版。作者 ktkwmr。録音のタイミングは端末によって変わります。⚙ →「録音のずれ補正」で調整してください。</p>",
     "intro.title": "デモ音源づくりに：コードを入れるだけで伴奏、歌や楽器を重ねて録音",
@@ -875,6 +880,13 @@ function startMetro(withCountIn) {
   transport.metroTimer = setInterval(tick, 25);
 }
 
+// ---------------------------------------------------------------- usage events
+// usage-events.js (Cloudflare Zaraz → GA4, only after consent). Never the project or track names, chords, or audio:
+// only counts, lengths, kinds, and results (docs/analytics.md)
+function track(name, params) { try { if (window.usage) window.usage.track(name, params); } catch (e) {} }
+function soundOn(on) { try { if (window.usage) window.usage.playing(on); } catch (e) {} }
+const usageSong = () => ({ tracks: state.tracks.filter((x) => x.buffer).length, bars: state.song.bars, backing: state.song.enabled ? "on" : "off", bpm: state.bpm });
+let usageStart = 0, usageSeeking = false;
 function play() {
   if (transport.playing) return;
   if (!$("#posDlg").open) transport.loop = null;
@@ -883,6 +895,8 @@ function play() {
   transport.startPos = Math.max(0, transport.pos);
   transport.startAt = ctx.currentTime + 0.06;
   transport.playing = true;
+  soundOn(true);
+  if (!usageSeeking) { usageStart = performance.now(); track("play", usageSong()); }
   startSources();
   startMetro(false);
   updateTransportUi();
@@ -893,6 +907,8 @@ function pause() {
   if (transport.recording) return stopRecording();
   transport.pos = Math.max(0, curPos());
   transport.playing = false;
+  soundOn(false);
+  if (!usageSeeking) track("pause", { seconds: Math.round((performance.now() - usageStart) / 1000) });
   stopSources();
   clearInterval(transport.metroTimer);
   stopBacking();
@@ -912,9 +928,11 @@ function stopAll() {
 function seek(sec) {
   if (transport.recording) return;
   const wasPlaying = transport.playing;
+  usageSeeking = true;
   if (wasPlaying) pause();
   transport.pos = Math.max(0, sec);
   if (wasPlaying) play();
+  usageSeeking = false;
   drawPlayheads(); updateClock();
 }
 
@@ -967,8 +985,8 @@ function latencySec() {
 let rec = null; // { node, chunks, firstTime, track }
 async function startRecording() {
   const tr = state.tracks.find((x) => x.armed);
-  if (!tr) { toast(t("msg.noArm")); return; }
-  try { await ensureMic(); } catch (e) { toast(t("msg.noMic"), 4500); return; }
+  if (!tr) { toast(t("msg.noArm")); track("record", { result: "no-arm" }); return; }
+  try { await ensureMic(); } catch (e) { toast(t("msg.noMic"), 4500); track("record", { result: "no-mic" }); return; }
   if (transport.playing) pause();
   ensureCtx();
   const node = ctx.createScriptProcessor(PROC_SIZE, 1, 1);
@@ -989,6 +1007,7 @@ async function startRecording() {
   transport.startAt = ctx.currentTime + 0.1 + countIn;
   transport.recording = true;
   transport.playing = true;
+  soundOn(true);
   rec.recStartPos = transport.startPos;
   startSources();
   startMetro(state.countIn);
@@ -1004,10 +1023,11 @@ function stopRecording() {
   r.node.disconnect(); r.sink.disconnect();
   transport.pos = Math.max(0, curPos());
   transport.playing = false; transport.recording = false;
+  soundOn(false);
   stopSources(); clearInterval(transport.metroTimer); stopBacking();
   updateTransportUi();
 
-  if (r.firstTime == null || !r.chunks.length) { drawAll(); return; }
+  if (r.firstTime == null || !r.chunks.length) { track("record", { result: "empty" }); drawAll(); return; }
   const total = r.chunks.reduce((a, c) => a + c.length, 0);
   const all = new Float32Array(total);
   let o = 0; for (const c of r.chunks) { all.set(c, o); o += c.length; }
@@ -1019,7 +1039,7 @@ function stopRecording() {
   let from = Math.ceil((r.recStartPos - posOfSample0) * sr);
   let to = Math.floor((endPos - posOfSample0) * sr);
   from = Math.max(0, from); to = Math.min(all.length, to);
-  if (to - from < sr * 0.05) { drawAll(); return; }
+  if (to - from < sr * 0.05) { track("record", { result: "too-short" }); drawAll(); return; }
   const take = all.subarray(from, to);
   const at = posOfSample0 + from / sr;
   undoInfo = { trackId: r.track.id, buffer: r.track.buffer, offset: r.track.offset || 0 };
@@ -1037,6 +1057,8 @@ function stopRecording() {
   markAudioDirty(r.track);
   $("#undoBtn").disabled = false;
   toast(t("msg.recDone", { sec: (take.length / sr).toFixed(1) }));
+  // punch_in: recorded over existing audio. count_in / backing: what was on
+  track("record", Object.assign(usageSong(), { result: "ok", seconds: Math.round(take.length / sr * 10) / 10, punch_in: undoInfo.buffer ? "yes" : "no", count_in: state.countIn ? "on" : "off" }));
   drawAll();
 }
 // Write mono samples into a track buffer at a position (punch-in), keeping the rest
@@ -1368,31 +1390,39 @@ function projectBase() { return safeName(state.name || t("pj.untitled")); }
 // Chrome / Edge on a computer: the system "Save as" dialog (name and folder). Elsewhere: a name field in the page,
 // then the browser's normal download (or the claude.ai save prompt in the Artifact preview).
 const FILE_TYPES = { zip: ["application/zip", "Demo Track Maker project"], wav: ["audio/wav", "WAV audio"], mp3: ["audio/mpeg", "MP3 audio"], mid: ["audio/midi", "MIDI"] };
-async function exportFile(base, ext, makeBlob) {
+// kind: what is exported (project / mix / backing / track), for the usage events. extra: more parameters
+async function exportFile(base, ext, makeBlob, kind, extra) {
+  const result = await exportFileTo(base, ext, makeBlob);
+  track("export", Object.assign({ kind: kind || ext, type: ext, result: result }, extra || {}));
+}
+// Returns picker / download, or cancel / nothing / error
+async function exportFileTo(base, ext, makeBlob) {
   const [mime, desc] = FILE_TYPES[ext];
   if (window.showSaveFilePicker && !window.claude) {
     let handle = null;
     try {
       handle = await window.showSaveFilePicker({ suggestedName: base + "." + ext, types: [{ description: desc, accept: { [mime]: ["." + ext] } }] });
     } catch (e) {
-      if (e && e.name === "AbortError") return; // cancelled
+      if (e && e.name === "AbortError") return "cancel"; // cancelled
       handle = null; // not allowed here (e.g. inside a frame): fall back to the name field
     }
     if (handle) {
       try {
         const blob = await makeBlob();
-        if (!blob) return;
+        if (!blob) return "nothing";
         const w = await handle.createWritable();
         await w.write(blob); await w.close();
         toast(t("msg.exported", { file: handle.name }));
-      } catch (e) { console.warn(e); toast(t("msg.saveFail")); }
-      return;
+      } catch (e) { console.warn(e); toast(t("msg.saveFail")); return "error"; }
+      return "picker";
     }
   }
   const name = await askFileName(base, ext);
-  if (!name) return;
+  if (!name) return "cancel";
   const blob = await makeBlob();
-  if (blob) await saveFile(blob, name + "." + ext);
+  if (!blob) return "nothing";
+  await saveFile(blob, name + "." + ext);
+  return "download";
 }
 function askFileName(base, ext) {
   return new Promise((resolve) => {
@@ -1417,7 +1447,7 @@ function askFileName(base, ext) {
 }
 async function exportProject() {
   materializePending();
-  await exportFile(projectBase(), "zip", async () => makeZip(projectFiles()));
+  await exportFile(projectBase(), "zip", async () => makeZip(projectFiles()), "project", usageSong());
 }
 async function importProjectFile(file) {
   try {
@@ -1430,7 +1460,8 @@ async function importProjectFile(file) {
     const json = JSON.parse(new TextDecoder().decode(files[key]));
     await loadProject(json, async (name) => files[base + name] || null);
     toast(t("msg.loaded", { name: state.name || t("pj.untitled") }));
-  } catch (e) { console.warn(e); toast(t("msg.badProject")); }
+    track("import", Object.assign({ kind: "project", result: "ok" }, usageSong()));
+  } catch (e) { console.warn(e); toast(t("msg.badProject")); track("import", { kind: "project", result: "error" }); }
 }
 // ---- master limiter
 // Live and offline: a fast, hard compressor (-1 dB, 20:1) and then a soft clipper that never goes above 0.99.
@@ -1552,7 +1583,7 @@ async function mixdown(fmt = "wav", kbps = 192) {
   const events = getEvents();
   const tail = events.length ? songLen() + 1 + state.fx.revLen : 0;
   const len = Math.max(tail, ...state.tracks.filter((x) => x.buffer && audibleGain(x) > 0).map((x) => x.buffer.duration + (x.offset || 0) + state.fx.revLen));
-  if (!len) { toast(t("msg.nothing")); return; }
+  if (!len) { toast(t("msg.nothing")); track("export", { kind: "mix", type: fmt, result: "nothing" }); return; }
   await exportFile(projectBase() + "-mix", fmt === "mp3" ? "mp3" : "wav", async () => {
   if (fmt === "mp3") {
     // make sure the encoder is available before spending time on rendering
@@ -1571,7 +1602,7 @@ async function mixdown(fmt = "wav", kbps = 192) {
   toast(t("mix.encoding"), 60000);
   try { return await encodeMp3(out, kbps); }
   catch (e) { console.warn(e); toast(t("mix.lameFail"), 6000); return null; }
-  });
+  }, "mix", Object.assign(usageSong(), { kbps: fmt === "mp3" ? kbps : 0, minutes: Math.round(len / 6) / 10 }));
 }
 
 // ---------------------------------------------------------------- backing -> audio track
@@ -1608,6 +1639,7 @@ async function bounceBacking(names) {
   markAudioDirty(tr);
   renderAll();
   toast(t("msg.bounced", { name: nm }), 4000);
+  track("bounce", { parts: names.length === 1 ? names[0] : "all" });
 }
 
 // ---------------------------------------------------------------- backing -> Standard MIDI File
@@ -1667,8 +1699,8 @@ function buildMidi() {
   return new Uint8Array(header.concat(...tracks));
 }
 async function exportMidi() {
-  if (!state.song.enabled || !getEvents().length) { toast(t("msg.noBacking")); return; }
-  await exportFile(projectBase() + "-backing", "mid", async () => new Blob([buildMidi()], { type: "audio/midi" }));
+  if (!state.song.enabled || !getEvents().length) { toast(t("msg.noBacking")); track("export", { kind: "backing", type: "mid", result: "nothing" }); return; }
+  await exportFile(projectBase() + "-backing", "mid", async () => new Blob([buildMidi()], { type: "audio/midi" }), "backing", usageSong());
 }
 
 
@@ -1769,7 +1801,7 @@ function renderTrack(tr) {
   q(".m-export").addEventListener("click", () => {
     closeMenus(); materializePending();
     if (!tr.buffer) { toast(t("msg.nothing")); return; }
-    exportFile(projectBase() + "-" + safeName(tr.name), "wav", async () => new Blob([encodeWav(alignedBuffer(tr), true)], { type: "audio/wav" }));
+    exportFile(projectBase() + "-" + safeName(tr.name), "wav", async () => new Blob([encodeWav(alignedBuffer(tr), true)], { type: "audio/wav" }), "track");
   });
   const clearBtn = q(".m-clear"), delBtn = q(".m-delete");
   twoTap(clearBtn, "tk.clear", () => { closeMenus(); undoInfo = { trackId: tr.id, buffer: tr.buffer, offset: tr.offset || 0 }; $("#undoBtn").disabled = !tr.buffer; tr.buffer = null; tr.offset = 0; tr.rev++; markAudioDirty(tr); drawAll(); });
@@ -2267,7 +2299,8 @@ $("#audioFile").addEventListener("change", async (e) => {
     tr.buffer = buf; tr.offset = 0; tr.rev++;
     if (/^(Track|トラック) \d+$/.test(tr.name)) tr.name = f.name.replace(/\.[^.]+$/, "").slice(0, 40);
     markAudioDirty(tr); renderAll();
-  } catch (err) { console.warn(err); toast(t("msg.decodeFail")); }
+    track("import", { kind: "audio", type: ((/\.([a-z0-9]{1,5})$/i.exec(f.name) || [, "other"])[1]).toLowerCase(), result: "ok", minutes: Math.round(buf.duration / 6) / 10 });
+  } catch (err) { console.warn(err); toast(t("msg.decodeFail")); track("import", { kind: "audio", result: "error" }); }
 });
 $("#mixBtn").addEventListener("click", (e) => openMixDialog(e.currentTarget));
 setupMixDialog();

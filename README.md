@@ -32,6 +32,8 @@ Planned URL / 公開予定: https://ktkwmr.com/demotrackmaker/
 ## Privacy / プライバシー
 Audio is processed only on your device. Nothing is sent to a server. Page views are counted with Cloudflare Web Analytics (no cookies). Only when MP3 is chosen for a mixdown, the MP3 encoder (lamejs) is downloaded once from jsDelivr (cdn.jsdelivr.net). / 音声は端末内だけで処理し、サーバーには送りません。ページの閲覧数は Cloudflare Web Analytics（Cookie なし）で数えます。ミックスダウンで MP3 を選んだときだけ、MP3 変換の部品（lamejs）を jsDelivr から 1 回読み込みます。
 
+Only if you choose “Accept all” in the cookie banner, Google Analytics (through Cloudflare Zaraz, sent from Cloudflare's servers with a shortened IP address) records how the app is used: pages viewed and for how long, buttons tapped and settings changed, playing and recording time, and the kinds of files exported or imported. Names, chords, and your recordings are never sent. Change your choice from “Cookie settings” at the bottom of the page. See [docs/analytics.md](docs/analytics.md). / Cookie のバナーで「すべて同意」を選んだ場合に限り、Google アナリティクス（Cloudflare Zaraz 経由。Cloudflare のサーバーから IP アドレスの末尾を削って送信）でアプリの使われ方（見たページと時間、押したボタンと変えた設定、再生・録音の時間、書き出し・読み込んだファイルの種類）を記録します。名前・コード・録音した音は送りません。選択はページ下の「Cookie の設定」から変えられます。
+
 Full policy / 詳細: https://ktkwmr.com/demotrackmaker/privacy/
 
 ## Structure / 構成
