@@ -54,5 +54,6 @@
 - 記事は `scripts/pages/<slug>.mjs`（`guide`・`make-a-demo`・`chord-symbols`・`backing-patterns`・`recording-tips`・`faq`）。パターン名・音色名・上限・コードの構成音は書き写さず `scripts/pages/app.mjs` がアプリから読む（見つからなければビルドが止まる）。記事を足したら `build-pages.mjs` の `PAGES` と、`index.html` の `intro.body` のガイド一覧（英日）、トップページ（ktkwmr/ktkwmr.com の `home.mjs`）にも足す。見た目を変えたら `node scripts/render-guide-images.mjs` で画面写真を撮り直す。
 - 記事を追加・変更したら、PR のプレビューで人間が内容を確認してからマージする（ベースライン §10-7。観点は `docs/article-review.md`）。
 - トップページ（https://ktkwmr.com/）のアプリ一覧に載せている（`ktkwmr/ktkwmr.com` の `scripts/pages/home.mjs` の `APPS`・`ICON`・`PREVIEW`、`robots.txt` の `Sitemap:` 行）。アプリ名・説明・アイコン・主な画面・記事を変えたら、そちらにも PR を出す（ベースライン §2-16）。
+- 利用状況の計測（Cloudflare Zaraz → GA4、同意バナーで同意した人だけ。ベースライン §17）: `usage-events.js`（ベースラインの雛形のコピー。タップ `dtm_tap`・設定の変更 `dtm_change`・滞在時間 `dtm_engaged`）と、主な機能の `track()`（`index.html` の `play()`・`pause()`・`startRecording()`・`stopRecording()`・`exportFile()`（書き出しはすべてここを通る）・`importProjectFile()`・音声ファイルの読み込み・`bounceBacking()`）。プロジェクト名・トラック名・ファイル名・入力したコード・録音した音は送らない（数・長さ・種類・結果だけ）。イベントを足したら `docs/analytics.md` の表と GA4 のカスタム定義、送る内容を変えたらプライバシーの説明も直す。
 - 外部ホストを足したら public/_headers の CSP と、プライバシーの説明（ポリシー・アプリ内・README）を同じ PR で直す。
 - 作業はブランチ → PR → Cloudflare のプレビュービルド確認 → squash マージ。
